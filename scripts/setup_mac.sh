@@ -21,11 +21,14 @@ PY="$(brew --prefix python@3.12)/bin/python3.12"
 [ -f .env ] || cp .env.example .env
 mkdir -p data work reports media/raw/_retired media/music media/edited
 
-# File server as a LaunchAgent (starts at login, restarts if it dies)
-PLIST="$HOME/Library/LaunchAgents/com.kairoapps.vdos.serve.plist"
-sed -e "s#__REPO__#$REPO#g" scripts/com.kairoapps.vdos.serve.plist > "$PLIST"
-launchctl unload "$PLIST" 2>/dev/null || true
-launchctl load "$PLIST"
+# LaunchAgents: the video server (always on) and the worker (every 15 min:
+# ingest, transcribe, render, cleanup, git push)
+for name in serve worker; do
+  PLIST="$HOME/Library/LaunchAgents/com.kairoapps.vdos.$name.plist"
+  sed -e "s#__REPO__#$REPO#g" "scripts/com.kairoapps.vdos.$name.plist" > "$PLIST"
+  launchctl unload "$PLIST" 2>/dev/null || true
+  launchctl load "$PLIST"
+done
 
 cat <<EOF
 

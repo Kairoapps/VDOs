@@ -18,6 +18,17 @@ prompts/              the daily/weekly scheduled-task prompts, edit + voice guid
 config.toml           posting times, reuse rules, experiments, render settings
 ```
 
+## Who does what
+
+| Where | Runs | Does |
+|---|---|---|
+| **Mac worker** (launchd, every 15 min) | `vdos worker` | ingest + rename new clips/music, transcribe, sample frames, render variants from `edit.json`, delete retired renders, commit + push |
+| **Mac server** (launchd, always on) | `vdos serve` + Tailscale Funnel | serves `media/edited/` to Buffer |
+| **Claude daily task** | `prompts/daily_run.md` | writes `edit.json` for new clips, syncs Buffer, plans, writes captions, schedules posts, notifies, publishes the dashboard |
+| **Claude weekly task** | `prompts/weekly_run.md` | metrics → rankings → weights, experiments, evergreen, extra variants for winners, report |
+
+Claude's scheduled runs use a Linux shell that sees the connected repo folder (Python 3.10, no GitHub login), so they never run git or rendering; the worker does.
+
 ## Setup (Mac, once)
 
 ```
@@ -26,7 +37,7 @@ git clone https://github.com/Kairoapps/VDOs ~/Documents/Projects/VDOs && cd ~/Do
 tailscale funnel --bg 8787          # then put the ts.net URL in .env as PUBLIC_BASE_URL
 ```
 
-Then in the Claude desktop app, connect the `~/Documents/Projects/VDOs` folder and create two scheduled tasks that require this computer:
+Then in the Claude desktop app, connect the `~/Documents/projects` folder (or the VDOs folder itself) and create two scheduled tasks that require this computer:
 - **Daily, ~6:40am:** "Follow prompts/daily_run.md in ~/Documents/Projects/VDOs."
 - **Weekly, Sunday ~7:40pm:** "Follow prompts/weekly_run.md in ~/Documents/Projects/VDOs."
 

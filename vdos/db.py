@@ -92,6 +92,10 @@ def connect() -> sqlite3.Connection:
     con = sqlite3.connect(cfg.path("db"))
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
+    # TRUNCATE keeps the journal file instead of deleting it: works on mounted folders where
+    # deletes aren't allowed, and avoids WAL shared memory across the Mac and Claude's Linux shell.
+    con.execute("PRAGMA journal_mode = TRUNCATE")
+    con.execute("PRAGMA busy_timeout = 15000")
     con.executescript(SCHEMA)
     return con
 

@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import os
-import tomllib
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:  # Python 3.10 (Claude's Linux shell): pip install tomli
+    import tomli as tomllib
 from dataclasses import dataclass
 from pathlib import Path
 

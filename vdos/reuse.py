@@ -65,15 +65,26 @@ def retire_exhausted(con) -> list[str]:
         src = cfg.path("raw") / c["file_name"]
         if src.exists():
             shutil.move(str(src), cfg.path("retired") / c["file_name"])
-        for v in con.execute("SELECT file_name FROM variants WHERE clip_id=?", (row["id"],)):
-            p = cfg.path("edited") / v["file_name"]
-            if p.exists():
-                p.unlink()
         con.execute("UPDATE variants SET active=0 WHERE clip_id=?", (row["id"],))
         con.execute("UPDATE clips SET status='retired' WHERE id=?", (row["id"],))
         db.log_event(con, "retired", {"clip": row["id"], "topic": row["topic"], "format": row["format"]})
         retired.append(row["id"])
     return retired
+
+
+def cleanup(con) -> list[str]:
+    """Delete rendered files of inactive variants (run by the Mac worker, which may delete files)."""
+    cfg = config.load()
+    removed = []
+    for v in con.execute("SELECT file_name FROM variants WHERE active=0"):
+        p = cfg.path("edited") / v["file_name"]
+        if p.exists():
+            try:
+                p.unlink()
+                removed.append(v["file_name"])
+            except OSError:
+                pass
+    return removed
 
 
 def unretire(con, clip_id: str) -> None:
