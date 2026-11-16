@@ -1,0 +1,74 @@
+# VDOs configuration. Paths are relative to the repo root unless absolute.
+
+[paths]
+raw = "media/raw"
+retired = "media/raw/_retired"
+music = "media/music"
+edited = "media/edited"
+work = "work"              # transcripts, sampled frames, edit decisions (git-ignored)
+db = "data/ledger.sqlite"  # git-ignored
+reports = "reports"        # weekly reports + dashboard (committed)
+
+[server]
+port = 8787
+# Public base URL that Tailscale Funnel exposes, e.g. https://my-mac.tail1234.ts.net
+# Set PUBLIC_BASE_URL in .env (preferred) or here.
+public_base_url = ""
+
+[posting]
+posts_per_day = 3
+timezone = "America/New_York"
+min_gap_hours = 4
+platforms = ["instagram", "tiktok", "youtube"]
+# Same variant goes to all three platforms in a slot (one "use").
+same_variant_all_platforms = true
+# Used when no time-slot experiment is running (and as the fallback).
+default_slots = ["08:30", "13:00", "19:00"]
+
+[reuse]
+max_uses = 3            # lifetime uses before a clip retires
+min_days_between = 7    # spacing between uses of the same clip
+evergreen_max_uses = 5
+music_min_days_between = 5
+
+[inventory]
+heads_up_days = 7
+urgent_days = 3
+
+[render]
+width = 1080
+height = 1920
+fps = 30
+crf = 20
+preset = "veryfast"
+target_lufs = -14
+music_bed_lufs = -26      # music level under speech (then ducked further while talking)
+music_solo_lufs = -16     # music level for clips with no speech
+reframe = "blurpad"       # "crop" (fill) or "blurpad" (fit + blurred background)
+min_len = 12
+max_len = 45
+
+[variants]
+per_clip = 3
+caption_styles = ["pop", "minimal", "karaoke"]
+hook_types = ["question", "bold_claim", "mid_action", "text_overlay"]
+speeds = [1.0, 1.05, 0.95, 1.1]
+
+[analysis]
+min_posts_per_value = 6
+exploit_share = 0.7
+score_age_days = 7      # compare posts at this age
+early_age_days = 3
+
+# Experiments: one variable at a time. "active" picks which one is rotating.
+[experiments]
+active = "time_slot"     # "time_slot" | "hashtag_set" | "none"
+
+[experiments.time_slot]
+# Candidate local times; 3 are used per day, rotated for equal exposure.
+arms = ["08:30", "12:30", "16:30", "19:00", "21:30"]
+
+[experiments.hashtag_set]
+# Keep IG to 3-5 tags. TikTok/YouTube can take the same set.
+arms = { "tags-1" = ["#dayinthelife", "#pov", "#college"], "tags-2" = ["#raybanmeta", "#pov", "#studentlife"], "tags-3" = ["#vlog", "#college", "#productivity"] }
+default = "tags-1"

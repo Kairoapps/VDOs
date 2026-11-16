@@ -1,0 +1,16 @@
+[project]
+name = "vdos"
+version = "0.1.0"
+description = "Ray-Ban clips -> edited short-form variants -> Buffer, with reuse tracking and weekly learning"
+requires-python = ">=3.11"
+dependencies = ["faster-whisper>=1.0"]
+
+[project.scripts]
+vdos = "vdos.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["vdos"]

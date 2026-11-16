@@ -1,0 +1,10 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+data/
+work/
+media/edited/*
+!media/edited/.gitkeep
+.DS_Store
+reports/dashboard.json
