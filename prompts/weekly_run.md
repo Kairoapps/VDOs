@@ -1,6 +1,6 @@
 # VDOs weekly review (scheduled task prompt, Sunday evening)
 
-Run on Chika's Mac with the device shell, from `~/code/VDOs` with `.venv` activated. Don't stop to ask questions; make the best call and note it.
+Run on Chika's Mac with the device shell, from `~/Documents/Projects/VDOs` with `.venv` activated. Don't stop to ask questions; make the best call and note it.
 
 1. `git pull --rebase --autostash`
 2. Refresh Buffer data exactly as in step 3 of `prompts/daily_run.md` (list_posts for the last 40 days with `includeMetrics: true`, save each page, `vdos sync-buffer <file>`).

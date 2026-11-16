@@ -21,14 +21,14 @@ config.toml           posting times, reuse rules, experiments, render settings
 ## Setup (Mac, once)
 
 ```
-git clone https://github.com/Kairoapps/VDOs ~/code/VDOs && cd ~/code/VDOs
+git clone https://github.com/Kairoapps/VDOs ~/Documents/Projects/VDOs && cd ~/Documents/Projects/VDOs
 ./scripts/setup_mac.sh
 tailscale funnel --bg 8787          # then put the ts.net URL in .env as PUBLIC_BASE_URL
 ```
 
-Then in the Claude desktop app, connect the `~/code/VDOs` folder and create two scheduled tasks that require this computer:
-- **Daily, ~6:40am:** "Follow prompts/daily_run.md in ~/code/VDOs."
-- **Weekly, Sunday ~7:40pm:** "Follow prompts/weekly_run.md in ~/code/VDOs."
+Then in the Claude desktop app, connect the `~/Documents/Projects/VDOs` folder and create two scheduled tasks that require this computer:
+- **Daily, ~6:40am:** "Follow prompts/daily_run.md in ~/Documents/Projects/VDOs."
+- **Weekly, Sunday ~7:40pm:** "Follow prompts/weekly_run.md in ~/Documents/Projects/VDOs."
 
 ## Naming
 

@@ -2,10 +2,10 @@
 
 You are running the VDOs posting pipeline on Chika's Mac. Work through every step without stopping to ask questions; when something is ambiguous, make the best call, keep going, and note it in the final summary.
 
-Use the device shell (`device_bash`) for every command. The repo lives at `$VDOS_REPO` (default `~/code/VDOs`); every command below runs from there inside its virtualenv:
+Use the device shell (`device_bash`) for every command. The repo lives at `$VDOS_REPO` (default `~/Documents/Projects/VDOs`); every command below runs from there inside its virtualenv:
 
 ```
-cd ~/code/VDOs && source .venv/bin/activate
+cd ~/Documents/Projects/VDOs && source .venv/bin/activate
 ```
 
 ## 1. Sync the repo and ingest
