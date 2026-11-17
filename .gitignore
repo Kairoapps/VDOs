@@ -14,3 +14,4 @@ work/*/frames/
 work/.worker.lock
 data/*.sqlite-journal
 reports/dashboard.json
+*.egg-info/
