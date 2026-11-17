@@ -46,7 +46,7 @@ python3 -m vdos plan
 
 Every slot's `video_url` must be set (if `PUBLIC_BASE_URL` is missing from `.env`, stop scheduling and report it). If `curl -sfI <video_url>` works from this shell, use it to confirm a 200; if this shell's network can't reach the URL at all, skip the check.
 
-For each slot, write a caption per platform in Chika's voice (`prompts/voice.md`), using the slot's `summary`, `transcript`, `topic`, `format`, `hook_type` and `overlay_text`:
+For each slot, write a caption per platform in Chika's voice (`prompts/voice.md`, plus `references/style.md`), using the slot's `summary`, `transcript`, `topic`, `format`, `hook_type` and `overlay_text`:
 - **Instagram:** a 1-line hook, 1–2 short lines of context, a soft CTA, then the slot's `hashtags` (3–5).
 - **TikTok:** a punchy 1–2 lines plus the hashtags.
 - **YouTube Shorts:** title ≤ 70 characters (no hashtags in it), then a description of 1–2 lines + hashtags.
