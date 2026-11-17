@@ -11,8 +11,8 @@ def _git(*args: str) -> str:
 
 
 def sync(message: str, push: bool = True) -> str:
-    _git("add", "-A", "media/raw", "media/music", "media/sfx", "references", "data", "work", "reports", "config.toml")
-    if not _git("status", "--porcelain", "--", "media/raw", "media/music", "media/sfx", "references", "data", "work", "reports", "config.toml"):
+    _git("add", "-A", "media/raw", "media/edited", "media/music", "media/sfx", "references", "data", "work", "reports", "config.toml")
+    if not _git("status", "--porcelain", "--", "media/raw", "media/edited", "media/music", "media/sfx", "references", "data", "work", "reports", "config.toml"):
         return "nothing to commit"
     staged = _git("diff", "--cached", "--name-only")
     if not staged:

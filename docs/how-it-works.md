@@ -10,7 +10,7 @@ Turns raw Ray-Ban Meta clips into 3 short-form posts a day on Instagram Reels, T
 media/raw/            drop raw clips here (topic prefix optional: gym__anything.mov)   [Git LFS]
 media/raw/_retired/   clips that used up their reuses                                  [Git LFS]
 media/music/<mood>/   licensed tracks: "<Artist> - <Title>__<source>.mp3"              [Git LFS]
-media/edited/         rendered variants, served publicly by `vdos serve`               [ignored]
+media/edited/         rendered variants, served publicly by `vdos serve`               [Git LFS]
 work/<clip>/          transcript, frames, edit.json                                    [committed; frames ignored]
 data/ledger.sqlite    clips, variants, slots, posts, metrics, weights                  [committed]
 reports/              weekly reports + dashboard.html                                  [committed]
