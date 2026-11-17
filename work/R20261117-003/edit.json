@@ -1,0 +1,34 @@
+{
+ "topic": "pushup",
+ "keep": [
+  [
+   43.5,
+   84.0
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 43.5
+  },
+  {
+   "type": "mid_action",
+   "start": 56.0
+  }
+ ],
+ "premise": [
+  "Gotta do pushups to turn off my alarm",
+  "My alarm makes me do pushups before it stops"
+ ],
+ "summary": "Alarm at 3:33; props the phone on the floor and does pushups in front of the camera to dismiss it.",
+ "format": "pov",
+ "moods": [],
+ "sfx": [
+  {
+   "category": "alarm",
+   "at": 0.0,
+   "dur": 3.0
+  }
+ ],
+ "unusable": false
+}

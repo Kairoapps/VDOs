@@ -1,0 +1,34 @@
+{
+ "topic": "walk",
+ "keep": [
+  [
+   7.0,
+   50.0
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 7.0
+  },
+  {
+   "type": "mid_action",
+   "start": 16.0
+  }
+ ],
+ "premise": [
+  "Gotta walk 200 steps to turn off this alarm",
+  "My alarm won't stop until I walk 200 steps"
+ ],
+ "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",
+ "format": "pov",
+ "moods": [],
+ "sfx": [
+  {
+   "category": "alarm",
+   "at": 0.0,
+   "dur": 3.0
+  }
+ ],
+ "unusable": false
+}

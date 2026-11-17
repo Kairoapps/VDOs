@@ -1,0 +1,38 @@
+{
+ "topic": "memory",
+ "keep": [
+  [
+   28.0,
+   50.5
+  ],
+  [
+   53.5,
+   68.0
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 28.0
+  },
+  {
+   "type": "mid_action",
+   "start": 34.0
+  }
+ ],
+ "premise": [
+  "Gotta beat a memory game to turn off my alarm",
+  "My alarm won't stop until I pass this memory test"
+ ],
+ "summary": "Alarm goes off at 3:31; has to memorize and tap a color sequence (two rounds) to dismiss it.",
+ "format": "pov",
+ "moods": [],
+ "sfx": [
+  {
+   "category": "alarm",
+   "at": 0.0,
+   "dur": 3.0
+  }
+ ],
+ "unusable": false
+}
