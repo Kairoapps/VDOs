@@ -15,7 +15,7 @@ def out(obj) -> None:
 
 
 def cmd_ingest(a):
-    res = {"clips": ingest.ingest_clips(), "music": ingest.ingest_music()}
+    res = {"clips": ingest.ingest_clips(), "music": ingest.ingest_music(), "sfx": ingest.ingest_sfx()}
     if not a.no_git and (res["clips"] or res["music"]):
         res["git"] = gitops.sync(f"ingest: {len(res['clips'])} clip(s), {len(res['music'])} track(s)", push=not a.no_push)
     out(res)
@@ -129,7 +129,7 @@ def cmd_worker(a):
     lock.write_text(str(time.time()))
     res = {}
     try:
-        res["ingest"] = {"clips": ingest.ingest_clips(), "music": ingest.ingest_music()}
+        res["ingest"] = {"clips": ingest.ingest_clips(), "music": ingest.ingest_music(), "sfx": ingest.ingest_sfx()}
         with db.tx() as con:
             new = [r["id"] for r in con.execute("SELECT id FROM clips WHERE status='new' ORDER BY id")]
         res["prepped"] = [str(prep.prep_clip(c)) for c in new]

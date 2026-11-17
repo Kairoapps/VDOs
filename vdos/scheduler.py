@@ -107,7 +107,7 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                 "scheduled_at": local.isoformat(), "time_slot": t,
                 "hashtag_set": hs, "hashtags": cfg["experiments"]["hashtag_set"]["arms"][hs],
                 "topic": clip["topic"], "format": clip["format"], "hook_type": v["hook_type"],
-                "overlay_text": v["overlay_text"], "duration_s": v["duration_s"],
+                "overlay_text": v["overlay_text"], "caption_text": v["caption_text"], "duration_s": v["duration_s"],
                 "summary": edit.get("summary", ""), "transcript": transcript,
                 "use_number": clip["committed"] + 1, "cap": clip["cap"],
             })

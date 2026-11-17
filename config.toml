@@ -4,6 +4,7 @@
 raw = "media/raw"
 retired = "media/raw/_retired"
 music = "media/music"
+sfx = "media/sfx"
 edited = "media/edited"
 work = "work"              # transcripts, sampled frames, edit decisions (git-ignored)
 db = "data/ledger.sqlite"  # git-ignored
@@ -44,13 +45,15 @@ preset = "veryfast"
 target_lufs = -14
 music_bed_lufs = -26      # music level under speech (then ducked further while talking)
 music_solo_lufs = -16     # music level for clips with no speech
+sfx_lufs = -16            # sound-effect level (e.g. the alarm at the start)
+max_voice_boost_db = 10   # clips with no speech: raise quiet camera audio by at most this much
 reframe = "blurpad"       # "crop" (fill) or "blurpad" (fit + blurred background)
 min_len = 12
 max_len = 45
 
 [variants]
 per_clip = 3
-caption_styles = ["pop", "minimal", "karaoke"]
+caption_styles = ["pop", "minimal", "karaoke"]   # word-by-word styles, used when the clip has speech
 hook_types = ["question", "bold_claim", "mid_action", "text_overlay"]
 speeds = [1.0, 1.05, 0.95, 1.1]
 

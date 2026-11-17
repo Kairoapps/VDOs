@@ -41,6 +41,12 @@ CREATE TABLE IF NOT EXISTS tracks (
     duration_s REAL, lufs REAL, bpm REAL,
     added_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS sfx (
+    id TEXT PRIMARY KEY,               -- relative path under media/sfx, e.g. alarm/scifi-alarm-02__epidemic.mp3
+    category TEXT, description TEXT, source TEXT,
+    duration_s REAL, lufs REAL,
+    added_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS slots (       -- one daily slot = one "use" of a clip
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     variant_id TEXT NOT NULL REFERENCES variants(id),
@@ -97,6 +103,11 @@ def connect() -> sqlite3.Connection:
     con.execute("PRAGMA journal_mode = TRUNCATE")
     con.execute("PRAGMA busy_timeout = 15000")
     con.executescript(SCHEMA)
+    cols = {r["name"] for r in con.execute("PRAGMA table_info(variants)")}
+    if "sfx_ids" not in cols:
+        con.execute("ALTER TABLE variants ADD COLUMN sfx_ids TEXT")
+    if "caption_text" not in cols:
+        con.execute("ALTER TABLE variants ADD COLUMN caption_text TEXT")
     return con
 
 

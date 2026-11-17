@@ -2,7 +2,9 @@
 
 Raw clips: drop any file into media/raw/. Optional topic prefix: `gym__anything.mov`.
 On ingest they are renamed to R<YYYYMMDD>-<seq>__<topic>.<ext>.
-Music: media/music/<mood>/<artist> - <title>__<source>.mp3
+Music: media/music/<mood>/<artist>__<title>__<source>.mp3
+Sound effects: media/sfx/<category>/<description>__<source>.mp3
+(See docs/naming.md.)
 """
 from __future__ import annotations
 
@@ -75,7 +77,6 @@ def ingest_clips() -> list[dict]:
     return results
 
 
-MUSIC_NAME = re.compile(r"^(?P<artist>.+?) - (?P<title>.+?)(?:__(?P<source>[^_]+))?$")
 
 
 def ingest_music() -> list[dict]:
@@ -93,8 +94,8 @@ def ingest_music() -> list[dict]:
             if rel in known:
                 continue
             mood = f.parent.name if f.parent != root else "any"
-            m = MUSIC_NAME.match(f.stem)
-            artist, title, source = (m.group("artist"), m.group("title"), m.group("source")) if m else ("", f.stem, None)
+            parts = f.stem.split("__")
+            artist, title, source = (parts + [None, None])[:3] if len(parts) >= 3 else ("", parts[0], parts[1] if len(parts) > 1 else None)
             info = media.probe(f)
             lufs = media.loudness(f)
             con.execute("INSERT INTO tracks(id, mood, artist, title, source, duration_s, lufs, added_at) VALUES (?,?,?,?,?,?,?,?)",
@@ -102,4 +103,31 @@ def ingest_music() -> list[dict]:
             added.append({"track": rel, "mood": mood, "lufs": lufs, "source": source})
         for gone in known - present:
             con.execute("DELETE FROM tracks WHERE id=?", (gone,))
+    return added
+
+
+def ingest_sfx() -> list[dict]:
+    """Catalog media/sfx/<category>/<description>__<source>.mp3 (measures loudness)."""
+    cfg = config.load()
+    root = cfg.path("sfx")
+    added = []
+    with db.tx() as con:
+        known = {r["id"] for r in con.execute("SELECT id FROM sfx")}
+        present = set()
+        for f in sorted(root.rglob("*")):
+            if not f.is_file() or f.suffix.lower() not in AUDIO_EXT:
+                continue
+            rel = str(f.relative_to(root))
+            present.add(rel)
+            if rel in known:
+                continue
+            category = f.parent.name if f.parent != root else "misc"
+            parts = f.stem.split("__")
+            info = media.probe(f)
+            con.execute("INSERT INTO sfx(id, category, description, source, duration_s, lufs, added_at) VALUES (?,?,?,?,?,?,?)",
+                        (rel, category.lower(), parts[0], parts[1] if len(parts) > 1 else None, info["duration"],
+                         media.loudness(f), db.now_iso()))
+            added.append({"sfx": rel, "category": category})
+        for gone in known - present:
+            con.execute("DELETE FROM sfx WHERE id=?", (gone,))
     return added

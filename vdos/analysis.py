@@ -8,8 +8,8 @@ from datetime import datetime, timedelta, timezone
 
 from . import config, db, reuse
 
-DIMENSIONS = ["topic_format", "topic", "format", "hook_type", "caption_style", "music_mood", "track",
-              "length_bucket", "time_slot", "hashtag_set"]
+DIMENSIONS = ["topic_format", "topic", "format", "hook_type", "caption_style", "caption_text", "music_mood", "track",
+              "sfx", "length_bucket", "time_slot", "hashtag_set"]
 
 
 def _pct(values: list[float], v: float) -> float:
@@ -33,7 +33,7 @@ def scored_slots(con, days: int = 30) -> list[dict]:
     since = (datetime.now(timezone.utc) - timedelta(days=days + target)).isoformat()
     posts = con.execute(
         """SELECT p.id, p.platform, p.slot_id, s.time_slot, s.hashtag_set, s.scheduled_at, s.variant_id,
-                  v.clip_id, v.hook_type, v.caption_style, v.track_id, v.duration_s, c.topic, c.format, t.mood
+                  v.clip_id, v.hook_type, v.caption_style, v.caption_text, v.sfx_ids, v.track_id, v.duration_s, c.topic, c.format, t.mood
            FROM posts p JOIN slots s ON s.id=p.slot_id JOIN variants v ON v.id=s.variant_id
            JOIN clips c ON c.id=v.clip_id LEFT JOIN tracks t ON t.id=v.track_id
            WHERE p.status='sent' AND s.scheduled_at >= ?""", (since,)).fetchall()
@@ -69,6 +69,7 @@ def scored_slots(con, days: int = 30) -> list[dict]:
             "views": {r["platform"]: r["views"] for r in rows},
             "topic": r0["topic"], "format": r0["format"], "topic_format": f"{r0['topic']}|{r0['format']}",
             "hook_type": r0["hook_type"], "caption_style": r0["caption_style"] or "none",
+            "caption_text": r0["caption_text"] or "none", "sfx": r0["sfx_ids"] or "none",
             "music_mood": r0["mood"] or "none", "track": r0["track_id"] or "none",
             "length_bucket": _length_bucket(r0["duration_s"]), "time_slot": r0["time_slot"], "hashtag_set": r0["hashtag_set"],
         })

@@ -28,7 +28,7 @@ python3 -m vdos status --all
 For every clip with `db_status` = `prepped` and no `work/<clip>/edit.json` (oldest first, at most 8 per run):
 1. Read `work/<clip>/context.md` (cat it).
 2. Stage 6–10 frames spread across the clip from `work/<clip>/frames/` with `device_stage_files` (Mac path: `<repo>/work/<clip>/frames/f_0001.jpg` …) and look at them with Read.
-3. Write `work/<clip>/edit.json` following `prompts/edit_clip.md` exactly (write it with a short `python3 -c` / heredoc in `device_bash`).
+3. Write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (write it with a short `python3 -c` / heredoc in `device_bash`).
 
 The worker renders these within ~15 minutes; new clips join the plan from the next run.
 
@@ -46,7 +46,7 @@ python3 -m vdos plan
 
 Every slot's `video_url` must be set (if `PUBLIC_BASE_URL` is missing from `.env`, stop scheduling and report it). If `curl -sfI <video_url>` works from this shell, use it to confirm a 200; if this shell's network can't reach the URL at all, skip the check.
 
-For each slot, write a caption per platform in Chika's voice (`prompts/voice.md`, plus `references/style.md`), using the slot's `summary`, `transcript`, `topic`, `format`, `hook_type` and `overlay_text`:
+For each slot, write a caption per platform in Chika's voice (`prompts/voice.md`, plus `references/style.md`), using the slot's `summary`, `transcript`, `topic`, `format`, `hook_type`, `overlay_text` and `caption_text` (the line already on screen; the caption can echo it with emojis, e.g. "Gotta walk 200 steps to turn off this alarm 😭😭😭", but shouldn't just repeat it):
 - **Instagram:** a 1-line hook, 1–2 short lines of context, a soft CTA, then the slot's `hashtags` (3–5).
 - **TikTok:** a punchy 1–2 lines plus the hashtags.
 - **YouTube Shorts:** title ≤ 70 characters (no hashtags in it), then a description of 1–2 lines + hashtags.

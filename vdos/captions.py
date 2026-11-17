@@ -26,6 +26,8 @@ STYLES = {
     # phrase with progressive karaoke fill
     "karaoke": dict(font_size=76, primary="&H00FFFFFF", highlight="&H0066FF66", outline=5, bold=-1, words=4, upper=False),
 }
+# One line stating the clip's premise, on screen for the whole video (the reference-clip style).
+PREMISE_STYLES = {"premise": "outline", "premise_box": "box"}
 
 
 def header(width: int, height: int, style_name: str) -> str:
@@ -48,6 +50,31 @@ Style: Hook,Arial,84,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,-1,0,0,0,100,10
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+"""
+
+
+def premise_ass(text: str, width: int, height: int, duration: float, look: str = "outline") -> str:
+    """Big top-centre caption for the whole clip, below the platforms' top UI."""
+    side = int(width * 0.08)
+    top = int(height * 0.11)
+    if look == "box":   # dark text on a white box
+        style = f"Style: Premise,Arial,68,&H00111111,&H00111111,&H00FFFFFF,&H00FFFFFF,-1,0,0,0,100,100,0,0,3,14,0,8,{side},{side},{top},1"
+    else:               # white text, heavy black outline
+        style = f"Style: Premise,Arial,72,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,6,2,8,{side},{side},{top},1"
+    return f"""[Script Info]
+ScriptType: v4.00+
+PlayResX: {width}
+PlayResY: {height}
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+{style}
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,{_ts(0)},{_ts(duration + 0.5)},Premise,,0,0,0,,{_esc(text)}
 """
 
 

@@ -1,6 +1,6 @@
 # Writing `work/<clip>/edit.json`
 
-You decide the edit; the worker renders it. First read `references/style.md` and `references/links.md` (open any linked posts you haven't seen with the browser tools, and read `references/clips/INDEX.md`) so hooks, pacing and length match the style Chika wants. Then read `work/<clip>/context.md` (transcript with timestamps, silences) and look at the sampled frames (`frames/f_0001.jpg` is t=0, then one every 2 s).
+You decide the edit; the worker renders it. First read `references/style.md` and `references/links.md` (open any linked posts you haven't seen with the browser tools, and read `references/clips/index.md`) so hooks, pacing and length match the style Chika wants. Then read `work/<clip>/context.md` (transcript with timestamps, silences) and look at the sampled frames (`frames/f_0001.jpg` is t=0, then one every 2 s).
 
 ```json
 {
@@ -13,6 +13,8 @@ You decide the edit; the worker renders it. First read `references/style.md` and
     {"type": "mid_action", "start": 0.0},
     {"type": "question", "start": 0.0, "text": "Would you train like this?"}
   ],
+  "premise": ["Gotta walk 200 steps to turn off my alarm", "My alarm makes me walk 200 steps every morning"],
+  "sfx": [{"category": "alarm", "at": 0.0, "dur": 3.0}],
   "moods": ["hype", "chill"],
   "unusable": false
 }
@@ -30,6 +32,10 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 - `question`: a question the viewer will want to answer in the comments
 - `text_overlay`: a plain context line ("day 12 of learning to cook")
 Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
+
+**premise** (for clips without useful speech, like the reference clips): 1–3 phrasings of one line that says what's happening, shown at the top of the screen for the whole video. Variants rotate through them, and the weekly review learns which wording wins. Keep each ≤ 9 words, first person, the struggle framing ("Gotta …"). No emojis in on-screen text (they don't render); put emojis in the post caption instead. Leave `premise` out when the clip has speech: word-by-word captions are used then.
+
+**sfx**: sound effects to lay over the cut, by category (a subfolder of `media/sfx/`): `at` = seconds into the edited video, `dur` = how long to play it. Variants pick different files from the category. For alarm clips, put the alarm at `0.0` for ~3 s so the video opens on the alarm going off.
 
 **moods**: subfolders of `media/music/` that fit the energy (`[]` for no music, e.g. a talking clip where music would distract).
 

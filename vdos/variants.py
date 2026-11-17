@@ -23,6 +23,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 
 from . import config, db, media, render, weights
+from .captions import PREMISE_STYLES
 
 FORMATS = ["pov", "tutorial", "storytime", "montage", "reaction", "before_after"]
 
@@ -94,7 +95,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
     edit = json.loads(edit_path.read_text()) if edit_path.exists() else auto_edit(clip_id)
     if not edit_path.exists():
         edit_path.write_text(json.dumps(edit, indent=2))
-    tr = json.loads((wd / "transcript.json").read_text()) if (wd / "transcript.json").exists() else {"words": []}
+    tr = json.loads((wd / "transcript.json").read_text()) if (wd / "transcript.json").exists() else {"words": [], "segments": []}
 
     made = []
     with db.tx() as con:
@@ -114,6 +115,18 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
         tracks = _eligible_tracks(con, moods, cfg["reuse"]["music_min_days_between"]) if moods else []
         used_hooks = {(v["hook_type"], v["start_s"]) for v in con.execute(
             "SELECT hook_type, start_s FROM variants WHERE clip_id=? AND active=1", (clip_id,))}
+        # Premise captions (one line on screen the whole clip) for clips without useful speech.
+        premises = edit.get("premise") or []
+        if isinstance(premises, str):
+            premises = [premises]
+        use_premise = bool(premises) and not tr["words"]
+        caption_options = list(PREMISE_STYLES) if use_premise else vcfg["caption_styles"]
+        used_texts = {s["caption_text"] for s in con.execute(
+            "SELECT caption_text FROM variants WHERE clip_id=? AND active=1", (clip_id,))}
+        sfx_plan = edit.get("sfx") or []
+        used_sfx: set[str] = set()
+        src_path = cfg.path("raw") / clip["file_name"]
+        src_lufs = media.loudness(src_path) if clip["has_audio"] and not dry_run else None
 
         for i in range(n):
             # hook: weighted by hook_type, rotate so variants differ
@@ -125,8 +138,27 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             ht = weights.choose(con, "hook_type", [h["type"] for h in fresh], rng=rng)
             hook = rng.choice([h for h in fresh if h["type"] == ht])
             used_hooks.add((hook["type"], hook.get("start")))
-            style = weights.choose(con, "caption_style", vcfg["caption_styles"], exclude=used_styles, rng=rng)
+            style = weights.choose(con, "caption_style", caption_options, exclude=used_styles, rng=rng)
             used_styles.add(style)
+            if len(used_styles & set(caption_options)) >= len(caption_options):
+                used_styles.clear()
+            caption_text = None
+            if use_premise:
+                fresh_t = [t for t in premises if t not in used_texts]
+                caption_text = fresh_t[0] if fresh_t else premises[(existing + i) % len(premises)]
+                used_texts.add(caption_text)
+            sfx_list, sfx_ids = [], []
+            for s in sfx_plan:
+                rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (s.get("category", "alarm"),)).fetchall()
+                if not rows:
+                    continue
+                pool = [x for x in rows if x["id"] not in used_sfx] or rows
+                pick = rng.choice(pool)
+                used_sfx.add(pick["id"])
+                sfx_ids.append(pick["id"])
+                sfx_list.append({"path": str(cfg.path("sfx") / pick["id"]), "lufs": pick["lufs"],
+                                 "at": s.get("at", 0), "dur": min(float(s.get("dur", 3)), pick["duration_s"] or 3),
+                                 "gain_db": s.get("gain_db", 0)})
             track = None
             if tracks:
                 pool = [t for t in tracks if t["id"] not in used_tracks] or tracks
@@ -139,12 +171,13 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             if length < min(rcfg["min_len"], clip["duration_s"] * 0.8):
                 spans = _spans_from(edit["keep"], edit["keep"][0][0], rcfg["max_len"] * speed)
                 length = sum(b - a for a, b in spans) / speed
-            overlay = hook.get("text") if hook["type"] in ("bold_claim", "question", "text_overlay") else None
-            vid = f"{clip_id}_v{existing + i + 1}"
-            fname = f"{vid}_{secrets.token_hex(3)}.mp4"
+            overlay = hook.get("text") if hook["type"] in ("bold_claim", "question", "text_overlay") and not use_premise else None
+            vid = f"{clip_id}__v{existing + i + 1}"
+            fname = f"{clip_id}__v{existing + i + 1}__{secrets.token_hex(3)}.mp4"
             spec = {
-                "src": str(cfg.path("raw") / clip["file_name"]), "segments": spans, "speed": speed,
-                "caption_style": style if tr["words"] else None, "hook_text": overlay, "words": tr["words"],
+                "src": str(src_path), "segments": spans, "speed": speed,
+                "caption_style": style if (tr["words"] or use_premise) else None, "hook_text": overlay,
+                "words": tr["words"], "caption_text": caption_text, "sfx": sfx_list, "src_lufs": src_lufs,
                 "has_audio": bool(clip["has_audio"]),
                 "track": str(cfg.path("music") / track["id"]) if track else None,
                 "track_lufs": track["lufs"] if track else None,
@@ -152,15 +185,17 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "reframe": rcfg["reframe"],
             }
             info = {"id": vid, "file": fname, "hook_type": hook["type"], "caption_style": spec["caption_style"],
+                    "caption_text": caption_text, "sfx": sfx_ids,
                     "track": track["id"] if track else None, "speed": speed, "length": round(length, 1), "overlay": overlay}
             if not dry_run:
                 render.render(spec, cfg.path("edited") / fname)
                 real = media.probe(cfg.path("edited") / fname)["duration"]
                 con.execute(
                     """INSERT INTO variants(id, clip_id, file_name, hook_type, caption_style, track_id, overlay_text, speed,
-                       start_s, duration_s, spec_json, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
+                       start_s, duration_s, spec_json, created_at, sfx_ids, caption_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (vid, clip_id, fname, hook["type"], spec["caption_style"], info["track"], overlay, speed,
-                     spans[0][0], real, json.dumps({k: v for k, v in spec.items() if k != "words"}), db.now_iso()))
+                     spans[0][0], real, json.dumps({k: v for k, v in spec.items() if k != "words"}), db.now_iso(),
+                     ",".join(sfx_ids) or None, caption_text))
                 info["length"] = round(real, 1)
             made.append(info)
         if not dry_run:

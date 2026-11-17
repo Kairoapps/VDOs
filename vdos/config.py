@@ -51,7 +51,7 @@ def load(path: Path | None = None) -> Config:
     p = path or Path(os.environ.get("VDOS_CONFIG", ROOT / "config.toml"))
     with open(p, "rb") as f:
         _cfg = Config(tomllib.load(f))
-    for key in ("raw", "retired", "music", "edited", "work", "reports"):
+    for key in ("raw", "retired", "music", "sfx", "edited", "work", "reports"):
         _cfg.path(key).mkdir(parents=True, exist_ok=True)
     _cfg.path("db").parent.mkdir(parents=True, exist_ok=True)
     return _cfg

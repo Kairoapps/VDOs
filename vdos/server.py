@@ -1,7 +1,7 @@
 """Read-only file server for media/edited, meant to sit behind Tailscale Funnel.
 
 - Binds to 127.0.0.1 only (Funnel proxies to it).
-- Serves only files named like R20261111-003_v2_k7f3q9.mp4 directly inside media/edited.
+- Serves only files named like R20261111-003__v2__k7f3q9.mp4 directly inside media/edited.
 - No directory listings, no other paths, GET/HEAD only, supports Range requests.
 """
 from __future__ import annotations
@@ -11,7 +11,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from . import config
 
-NAME = re.compile(r"^/(R\d{8}-\d{3}_v\d+_[0-9a-f]{6}\.mp4)$")
+NAME = re.compile(r"^/(R\d{8}-\d{3}__v\d+__[0-9a-f]{6}\.mp4)$")
 
 
 class Handler(BaseHTTPRequestHandler):

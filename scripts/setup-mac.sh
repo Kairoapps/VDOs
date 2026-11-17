@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time Mac setup for VDOs. Run from the repo root: ./scripts/setup_mac.sh
+# One-time Mac setup for VDOs. Run from the repo root: ./scripts/setup-mac.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REPO="$(pwd)"

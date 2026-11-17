@@ -10,4 +10,4 @@ What "good" looks like for this account. Claude reads this folder before editing
 
 Reference clips: **`REF-<YYYYMMDD>-<seq>__<topic>__<short-description>.<ext>`**, lowercase, hyphens inside the description.
 Example: `REF-20261116-001__unsnooze__walk-200-steps.mov` (date recorded, then a 3-digit number for that day).
-Add one row per clip to `clips/INDEX.md` saying what it is and what to copy from it.
+Add one row per clip to `clips/index.md` (full rules: `docs/naming.md`) saying what it is and what to copy from it.
