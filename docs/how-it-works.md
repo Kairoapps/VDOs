@@ -49,6 +49,7 @@ Then in the Claude desktop app, connect the `~/Documents/projects` folder (or th
 | Raw clip (after ingest) | `R<YYYYMMDD>-<seq>__<topic>.<ext>`, e.g. `R20261111-003__gym.mov` |
 | Variant | `<clipId>_v<n>_<random6>.mp4`, e.g. `R20261111-003_v2_k7f3q9.mp4` (random part keeps URLs unguessable) |
 | Music | `media/music/<mood>/<Artist> - <Title>__<source>.mp3` |
+| Reference clip | `references/clips/REF-<YYYYMMDD>-<seq>__<topic>__<short-description>.<ext>`, e.g. `REF-20261116-001__unsnooze__walk-200-steps.mov` (listed in `references/clips/INDEX.md`) |
 
 ## Commands
 
