@@ -1,10 +1,16 @@
+# Secrets: never committed
 .env
+
+# Rendered videos: rebuilt from raw clips + edit.json at any time
+media/edited/*
+!media/edited/.gitkeep
+
+# Scratch / machine-specific
 .venv/
 __pycache__/
 *.pyc
-data/
-work/
-media/edited/*
-!media/edited/.gitkeep
 .DS_Store
+work/*/frames/
+work/.worker.lock
+data/*.sqlite-journal
 reports/dashboard.json

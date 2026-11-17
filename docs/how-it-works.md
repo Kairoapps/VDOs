@@ -11,8 +11,8 @@ media/raw/            drop raw clips here (topic prefix optional: gym__anything.
 media/raw/_retired/   clips that used up their reuses                                  [Git LFS]
 media/music/<mood>/   licensed tracks: "<Artist> - <Title>__<source>.mp3"              [Git LFS]
 media/edited/         rendered variants, served publicly by `vdos serve`               [ignored]
-work/<clip>/          transcript, frames, edit.json                                    [ignored]
-data/ledger.sqlite    clips, variants, slots, posts, metrics, weights                  [ignored]
+work/<clip>/          transcript, frames, edit.json                                    [committed; frames ignored]
+data/ledger.sqlite    clips, variants, slots, posts, metrics, weights                  [committed]
 reports/              weekly reports + dashboard.html                                  [committed]
 prompts/              the daily/weekly scheduled-task prompts, edit + voice guides
 references/           style notes, links to posts to emulate, example clips (read before edits/captions)
