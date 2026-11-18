@@ -30,6 +30,7 @@ IDs start with an uppercase prefix so they stand out: `R` = raw clip, `REF` = re
 | Reference clip | `references/clips/REF-<YYYYMMDD>-<seq>__<topic>__<description>.<ext>` | `REF-20261116-001__unsnooze__walk-200-steps.mov` |
 
 - `<YYYYMMDD>` is the day the clip was recorded; `<seq>` is a 3-digit counter for that day.
+- `sounds/unlicensed/` holds audio without clear commercial rights; it is never picked automatically.
 - `<source>` is where an audio file came from (`epidemic`, `artlist`, `mixkit`, `pixabay`, …), so a copyright claim can be traced.
 - `<topic>`, `<mood>`, `<category>` are short lowercase words reused across files (`walk`, `shake`, `memory`; `hype`, `chill`; `alarm`, `whoosh`).
 
