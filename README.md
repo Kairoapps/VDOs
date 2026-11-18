@@ -4,7 +4,7 @@ Turns raw Ray-Ban Meta clips into 3 short videos a day on Instagram Reels, TikTo
 
 ## How it works
 
-1. **You** drop clips into `media/raw/`, licensed music into `media/music/<mood>/` and sound effects into `media/sfx/<category>/`.
+1. **You** drop clips into `media/raw/`, and sounds (alarms, music, effects) into `sounds/<category>/`.
 2. **The Mac worker** (every 15 min) renders edited 9:16 versions: original audio muted, an alarm sound that stops the moment you finish the challenge, and an emoji title at the top.
 3. **Claude's daily run** decides the edits, writes captions and schedules 3 posts in Buffer. Each clip is used at most 3 times, a week apart.
 4. **Claude's weekly run** checks what performed best (video type, hook, captions, music, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
@@ -24,8 +24,7 @@ Put the `https://….ts.net` address it prints into `.env` as `PUBLIC_BASE_URL`.
 | Folder | What's in it |
 |---|---|
 | `media/raw/` | your raw clips (optional topic prefix: `gym__anything.mov`) |
-| `media/music/` | licensed background tracks, one subfolder per mood |
-| `media/sfx/` | sound effects (alarms, whooshes…), one subfolder per category |
+| `sounds/` | all audio, one subfolder per category: `alarm/`, `whoosh/`, … and background music in `music-<mood>/` |
 | `references/` | examples and notes on the style you want |
 | `prompts/` | instructions for Claude's daily and weekly runs |
 | `reports/` | weekly reports and the dashboard |

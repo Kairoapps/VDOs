@@ -3,8 +3,7 @@
 [paths]
 raw = "media/raw"
 retired = "media/raw/_retired"
-music = "media/music"
-sfx = "media/sfx"
+sounds = "sounds"         # all audio: sounds/<category>/... (music beds in sounds/music-<mood>/)
 edited = "media/edited"
 work = "work"              # transcripts, sampled frames, edit decisions (git-ignored)
 db = "data/ledger.sqlite"  # git-ignored

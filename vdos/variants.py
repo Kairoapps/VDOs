@@ -180,7 +180,8 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 b = rng.choice(pool)
                 used_beds.add(b["id"])
                 sfx_ids.append(b["id"])
-                bed = {"path": str(cfg.path("sfx") / b["id"]), "lufs": b["lufs"], "dismiss_src": edit.get("dismiss_at")}
+                bed = {"path": str(cfg.path("sfx") / b["id"]), "lufs": b["lufs"], "dur": b["duration_s"],
+                       "dismiss_src": edit.get("dismiss_at")}
             for s in sfx_plan:
                 rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (s.get("category", "alarm"),)).fetchall()
                 if not rows:

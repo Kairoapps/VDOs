@@ -9,3 +9,6 @@ media/**/*.wav filter=lfs diff=lfs merge=lfs -text
 references/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
 references/**/*.mov filter=lfs diff=lfs merge=lfs -text
 references/**/*.MOV filter=lfs diff=lfs merge=lfs -text
+sounds/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+sounds/**/*.m4a filter=lfs diff=lfs merge=lfs -text
+sounds/**/*.wav filter=lfs diff=lfs merge=lfs -text

@@ -2,8 +2,9 @@
 
 Raw clips: drop any file into media/raw/. Optional topic prefix: `gym__anything.mov`.
 On ingest they are renamed to R<YYYYMMDD>-<seq>__<topic>.<ext>.
-Music: media/music/<mood>/<artist>__<title>__<source>.mp3
-Sound effects: media/sfx/<category>/<description>__<source>.mp3
+All audio lives in sounds/<category>/:
+  background music: sounds/music-<mood>/<artist>__<title>__<source>.mp3
+  everything else (alarms, whooshes, ...): sounds/<category>/<description>__<source>.mp3
 (See docs/naming.md.)
 """
 from __future__ import annotations
@@ -93,7 +94,10 @@ def ingest_music() -> list[dict]:
             present.add(rel)
             if rel in known:
                 continue
-            mood = f.parent.name if f.parent != root else "any"
+            folder = f.parent.name if f.parent != root else ""
+            if not folder.startswith("music"):
+                continue  # not background music (alarms etc. are catalogued by ingest_sfx)
+            mood = folder[len("music-"):] if folder.startswith("music-") else "any"
             parts = f.stem.split("__")
             artist, title, source = (parts + [None, None])[:3] if len(parts) >= 3 else ("", parts[0], parts[1] if len(parts) > 1 else None)
             info = media.probe(f)
@@ -107,7 +111,7 @@ def ingest_music() -> list[dict]:
 
 
 def ingest_sfx() -> list[dict]:
-    """Catalog media/sfx/<category>/<description>__<source>.mp3 (measures loudness)."""
+    """Catalog sounds/<category>/<description>__<source>.mp3 except music-* folders (measures loudness)."""
     cfg = config.load()
     root = cfg.path("sfx")
     added = []
@@ -122,6 +126,8 @@ def ingest_sfx() -> list[dict]:
             if rel in known:
                 continue
             category = f.parent.name if f.parent != root else "misc"
+            if category.startswith("music"):
+                continue
             parts = f.stem.split("__")
             info = media.probe(f)
             con.execute("INSERT INTO sfx(id, category, description, source, duration_s, lufs, added_at) VALUES (?,?,?,?,?,?,?)",

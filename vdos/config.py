@@ -31,6 +31,8 @@ class Config:
         return self.raw[k]
 
     def path(self, key: str) -> Path:
+        if key in ("music", "sfx"):  # one folder for all audio
+            key = "sounds"
         p = Path(self.raw["paths"][key])
         return p if p.is_absolute() else ROOT / p
 
@@ -51,7 +53,7 @@ def load(path: Path | None = None) -> Config:
     p = path or Path(os.environ.get("VDOS_CONFIG", ROOT / "config.toml"))
     with open(p, "rb") as f:
         _cfg = Config(tomllib.load(f))
-    for key in ("raw", "retired", "music", "sfx", "edited", "work", "reports"):
+    for key in ("raw", "retired", "sounds", "edited", "work", "reports"):
         _cfg.path(key).mkdir(parents=True, exist_ok=True)
     _cfg.path("db").parent.mkdir(parents=True, exist_ok=True)
     return _cfg

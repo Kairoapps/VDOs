@@ -36,13 +36,13 @@ CREATE TABLE IF NOT EXISTS variants (
     active INTEGER DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS tracks (
-    id TEXT PRIMARY KEY,               -- relative path under media/music
+    id TEXT PRIMARY KEY,               -- relative path under sounds/, e.g. music-hype/lumen__drift__artlist.mp3
     mood TEXT, artist TEXT, title TEXT, source TEXT,
     duration_s REAL, lufs REAL, bpm REAL,
     added_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS sfx (
-    id TEXT PRIMARY KEY,               -- relative path under media/sfx, e.g. alarm/scifi-alarm-02__epidemic.mp3
+    id TEXT PRIMARY KEY,               -- relative path under sounds/, e.g. alarm/scifi-alarm-02__epidemic.mp3
     category TEXT, description TEXT, source TEXT,
     duration_s REAL, lufs REAL,
     added_at TEXT NOT NULL

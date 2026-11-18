@@ -19,7 +19,7 @@ PY="$(brew --prefix python@3.12)/bin/python3.12"
 .venv/bin/pip install -q -e .
 
 [ -f .env ] || cp .env.example .env
-mkdir -p data work reports media/raw/_retired media/music media/edited
+mkdir -p data work reports media/raw/_retired media/edited sounds
 
 # LaunchAgents: the video server (always on) and the worker (every 15 min:
 # ingest, transcribe, render, cleanup, git push)
@@ -36,6 +36,6 @@ Done. Remaining manual steps:
   1. Open Tailscale, sign in, then:   tailscale funnel --bg 8787
   2. Run:  tailscale funnel status   and put the https://...ts.net URL in .env as PUBLIC_BASE_URL
   3. Test: curl -sI \$PUBLIC_BASE_URL/does-not-exist   -> should return 404 from "vdos"
-  4. Drop clips into media/raw/ and music into media/music/<mood>/
+  4. Drop clips into media/raw/ and sounds into sounds/<category>/ (music in sounds/music-<mood>/)
   5. Keep the Mac awake during posting windows (System Settings > Battery > prevent sleep on power adapter).
 EOF

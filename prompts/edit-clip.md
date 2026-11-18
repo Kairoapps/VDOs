@@ -38,7 +38,7 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 - `text_overlay`: a plain context line ("day 12 of learning to cook")
 Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
-**The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `media/sfx/<category>/` (default `alarm`) that loops from the first frame and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
+**The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `sounds/<category>/` (default `alarm`) that loops from the first frame (short sounds repeat with a smooth crossfade) and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
 
 **premise**: the title shown at the top for the whole video: white bold text with a thick black outline, emojis allowed and encouraged (😭💀🧠🎈). Write one per **title style** so variants test styles against each other; the weekly review learns which style wins:
 - `gotta`: "Gotta <challenge> to turn off my alarm 😭"
@@ -48,6 +48,6 @@ Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
 Keep titles short (≤ 12 words, ≤ 2 lines on screen) so they don't cover the video; only state numbers/times that are visible in the clip (e.g. 3am only if the lock screen shows it). Leave `premise` out when the clip has speech you want captioned word by word.
 
-**moods**: subfolders of `media/music/` that fit the energy (`[]` for no music, e.g. a talking clip where music would distract).
+**moods**: background-music moods (the `<mood>` of `sounds/music-<mood>/`) that fit the energy (`[]` for no music, e.g. a talking clip where music would distract).
 
 **unusable**: true if nothing is worth posting (blurry, accidental recording, private content). The clip is then skipped forever.

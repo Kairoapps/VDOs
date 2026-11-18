@@ -14,7 +14,7 @@ One rule set for every file in the repo. When in doubt: **lowercase, words joine
 | macOS LaunchAgents | reverse-DNS `com.kairoapps.vdos.<name>.plist` (macOS convention) | `scripts/com.kairoapps.vdos.worker.plist` |
 | Config | `config.toml`, `.env` (from `.env.example`) | |
 | Fonts | original file names under `assets/fonts/` (keep the upstream names so licenses match) | `assets/fonts/Poppins-Bold.ttf` |
-| Folders | lowercase, kebab-case | `media/raw`, `media/sfx/alarm` |
+| Folders | lowercase, kebab-case | `media/raw`, `sounds/alarm` |
 
 ## Media
 
@@ -25,8 +25,8 @@ IDs start with an uppercase prefix so they stand out: `R` = raw clip, `REF` = re
 | Raw clip (drop in) | `<topic>__<anything>.<ext>` — the topic prefix is optional | `walk__IMG_4410.MOV` |
 | Raw clip (after ingest, automatic) | `R<YYYYMMDD>-<seq>__<topic>.<ext>` | `R20261117-001__walk.mov` |
 | Rendered variant (automatic) | `<clip-id>__v<n>__<random6>.mp4` | `R20261117-001__v2__k7f3q9.mp4` |
-| Music | `media/music/<mood>/<artist>__<title>__<source>.mp3` | `media/music/hype/lumen__drift__artlist.mp3` |
-| Sound effect | `media/sfx/<category>/<description>__<source>.mp3` | `media/sfx/alarm/scifi-alarm-02__epidemic.mp3` |
+| Sound (alarm, effect) | `sounds/<category>/<description>__<source>.mp3` | `sounds/alarm/scifi-alarm-02__epidemic.mp3` |
+| Background music | `sounds/music-<mood>/<artist>__<title>__<source>.mp3` | `sounds/music-hype/lumen__drift__artlist.mp3` |
 | Reference clip | `references/clips/REF-<YYYYMMDD>-<seq>__<topic>__<description>.<ext>` | `REF-20261116-001__unsnooze__walk-200-steps.mov` |
 
 - `<YYYYMMDD>` is the day the clip was recorded; `<seq>` is a 3-digit counter for that day.
