@@ -37,7 +37,7 @@ def prep_clip(clip_id: str, frame_every: float = 2.0, skip_transcribe: bool = Fa
         clip = con.execute("SELECT * FROM clips WHERE id=?", (clip_id,)).fetchone()
         if not clip:
             raise SystemExit(f"unknown clip {clip_id}")
-        src = cfg.path("raw") / clip["file_name"]
+        src = cfg.clip_path(clip["file_name"])
         out = cfg.path("work") / clip_id
         out.mkdir(parents=True, exist_ok=True)
 

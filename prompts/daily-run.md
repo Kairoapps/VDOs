@@ -17,8 +17,8 @@ Runs entirely in Claude's cloud — Chika's Mac does not need to be on. Don't st
 ## 1. New clips: ingest, edit, render
 
 ```
-python3 -m vdos pending-raw          # raw clips the database doesn't know yet
-git lfs pull -I "<those paths, comma-separated>"
+python3 -m vdos pending-raw          # new clips in media/raw (Mac, LFS) or media/inbox (web uploads, plain git)
+git lfs pull -I "<the media/raw paths, comma-separated>"   # skip if only media/inbox files
 python3 -m vdos ingest --no-git
 python3 -m vdos prep --skip-transcribe
 ```

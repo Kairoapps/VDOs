@@ -132,7 +132,8 @@ def cmd_pending_raw(a):
     cfg = config.load()
     with db.tx() as con:
         known = {r["file_name"] for r in con.execute("SELECT file_name FROM clips")}
-    files = [f"media/raw/{f.name}" for f in sorted(cfg.path("raw").iterdir())
+    files = [str(f.relative_to(config.ROOT)) for key in ("raw", "inbox") if key in cfg.raw["paths"] and cfg.path(key).exists()
+             for f in sorted(cfg.path(key).iterdir())
              if f.is_file() and f.suffix.lower() in ingest.VIDEO_EXT and f.name not in known]
     out(files)
 

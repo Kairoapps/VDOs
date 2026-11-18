@@ -23,7 +23,16 @@ CANON = re.compile(r"^R(\d{8})-(\d{3})__([a-z0-9-]+)$")
 TOPIC_PREFIX = re.compile(r"^([A-Za-z0-9-]+)__")
 
 
+NAME_DATE = re.compile(r"__(\d{8})(?=__|\.|$)")
+
+
 def _capture_date(info: dict, path: Path) -> datetime:
+    m = NAME_DATE.search(path.name)  # web uploads carry the date in the name: <topic>__<YYYYMMDD>__<id>.mp4
+    if m and not CANON.match(path.stem):
+        try:
+            return datetime.strptime(m.group(1), "%Y%m%d")
+        except ValueError:
+            pass
     ct = info.get("creation_time")
     if ct:
         try:
@@ -110,10 +119,12 @@ def _to_trash(f: Path) -> None:
 
 def ingest_clips() -> list[dict]:
     cfg = config.load()
-    raw = cfg.path("raw")
+    dirs = [cfg.path("raw")] + ([cfg.path("inbox")] if "inbox" in cfg.raw["paths"] else [])
+    files = [f for d in dirs if d.exists() for f in sorted(d.iterdir())]
     results = []
     with db.tx() as con:
-        for f in sorted(raw.iterdir()):
+        for f in files:
+            raw = f.parent
             if not f.is_file() or f.suffix.lower() not in VIDEO_EXT:
                 continue
             if CANON.match(f.stem) and con.execute("SELECT 1 FROM clips WHERE file_name=?", (f.name,)).fetchone():

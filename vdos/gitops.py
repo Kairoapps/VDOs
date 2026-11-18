@@ -11,7 +11,7 @@ def _git(*args: str) -> str:
 
 
 MAC_PATHS = ("media/raw", "references")                       # what the Mac uploads (Git LFS)
-CLOUD_PATHS = ("data", "work", "reports", "sounds", "config.toml")  # what the cloud run saves (plain git)
+CLOUD_PATHS = ("data", "work", "reports", "sounds", "config.toml", "media/inbox")  # what the cloud run saves (plain git)
 
 
 def sync(message: str, push: bool = True, paths: tuple[str, ...] = MAC_PATHS) -> str:

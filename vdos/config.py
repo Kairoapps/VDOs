@@ -36,6 +36,15 @@ class Config:
         p = Path(self.raw["paths"][key])
         return p if p.is_absolute() else ROOT / p
 
+    def clip_path(self, file_name: str) -> Path:
+        """Where a raw clip lives: media/raw (Mac uploads, LFS) or media/inbox (web uploads)."""
+        for key in ("raw", "inbox"):
+            if key in self.raw["paths"]:
+                p = self.path(key) / file_name
+                if p.exists():
+                    return p
+        return self.path("raw") / file_name
+
     @property
     def public_base_url(self) -> str:
         url = os.environ.get("PUBLIC_BASE_URL") or self.raw["server"].get("public_base_url", "")

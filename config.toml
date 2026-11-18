@@ -3,6 +3,7 @@
 [paths]
 raw = "media/raw"
 retired = "media/raw/_retired"
+inbox = "media/inbox"       # clips uploaded on github.com (already compressed; plain git, not LFS)
 sounds = "sounds"         # all audio: sounds/<category>/... (music beds in sounds/music-<mood>/)
 edited = "media/edited"
 work = "work"              # transcripts, sampled frames, edit decisions (git-ignored)

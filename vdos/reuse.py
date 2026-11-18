@@ -62,9 +62,12 @@ def retire_exhausted(con) -> list[str]:
         if pending:
             continue
         c = con.execute("SELECT file_name FROM clips WHERE id=?", (row["id"],)).fetchone()
-        src = cfg.path("raw") / c["file_name"]
+        src = cfg.clip_path(c["file_name"])
         if src.exists():
-            shutil.move(str(src), cfg.path("retired") / c["file_name"])
+            if src.parent == cfg.path("raw"):
+                shutil.move(str(src), cfg.path("retired") / c["file_name"])
+            else:
+                src.unlink()  # web upload: drop it from the repo (history keeps it)
         con.execute("UPDATE variants SET active=0 WHERE clip_id=?", (row["id"],))
         con.execute("UPDATE clips SET status='retired' WHERE id=?", (row["id"],))
         db.log_event(con, "retired", {"clip": row["id"], "topic": row["topic"], "format": row["format"]})

@@ -156,7 +156,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             "SELECT sfx_ids FROM variants WHERE clip_id=? AND active=1 AND sfx_ids IS NOT NULL", (clip_id,))}
         sfx_plan = edit.get("sfx") or []
         used_sfx: set[str] = set()
-        src_path = cfg.path("raw") / clip["file_name"]
+        src_path = cfg.clip_path(clip["file_name"])
         src_lufs = media.loudness(src_path) if clip["has_audio"] and not dry_run else None
 
         for i in range(n):

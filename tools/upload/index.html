@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VDOs clip upload</title>
+<style>
+:root{--bg:#fafaf8;--card:#fff;--ink:#1a1a18;--muted:#6b6b66;--line:#e6e5e0;--accent:#2f6fde;--good:#2e8b57;--warn:#b7791f;--bad:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--card:#1f1f1d;--ink:#ecebe6;--muted:#9a9993;--line:#33322f;--accent:#6c9bf0;--good:#4cbf7f;--warn:#e0a84a;--bad:#e2695b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:24px;margin:0 0 4px}
+.sub{color:var(--muted);margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.step{display:flex;gap:10px;align-items:baseline;margin:0 0 10px;font-weight:600;font-size:16px}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;flex:none}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+.drop.on,.drop:hover{border-color:var(--accent);color:var(--ink)}
+.drop input{display:none}
+table{width:100%;border-collapse:collapse;margin-top:14px}
+th{text-align:left;font-size:12px;color:var(--muted);font-weight:500;padding:6px 6px;border-bottom:1px solid var(--line)}
+td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
+td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+select,input[type=date],input[type=text]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 6px}
+input[type=text]{width:90px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:90px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.st{font-size:12px;color:var(--muted);margin-top:3px}
+.st.good{color:var(--good)}.st.warn{color:var(--warn)}.st.bad{color:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;background:var(--accent);color:#fff;text-decoration:none;display:inline-block}
+button.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.x{background:none;border:0;color:var(--muted);font-size:18px;padding:0 4px;cursor:pointer}
+ol{margin:6px 0 0;padding-left:20px}ol li{margin:4px 0}
+code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:13px}
+.note{color:var(--muted);font-size:13px;margin-top:10px}
+.err{color:var(--bad);font-size:14px;margin-top:10px}
+</style>
+</head>
+<body>
+<main>
+<h1>Upload Ray-Ban clips</h1>
+<div class="sub">Clips are shrunk in this browser (about 6× smaller, 1080p), then you drop them into GitHub. The next nightly run (10:05pm ET) edits and schedules them.</div>
+
+<div class="card">
+  <div class="step"><span class="n">1</span>Pick clips and tag each one</div>
+  <label class="drop" id="drop"><input type="file" id="pick" accept="video/*,.mov,.mp4,.m4v" multiple>
+    Drop clips here or click to choose</label>
+  <table id="tbl" hidden>
+    <thead><tr><th>Clip</th><th>Challenge</th><th>Recorded</th><th>Progress</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="row">
+    <button id="go" disabled>Compress</button>
+    <button id="saveAll" class="ghost" disabled>Save all compressed clips</button>
+    <span id="msg" class="note"></span>
+  </div>
+  <div id="err" class="err" hidden></div>
+</div>
+
+<div class="card">
+  <div class="step"><span class="n">2</span>Put them on GitHub</div>
+  <ol>
+    <li>Open the upload page: <a class="btn" style="padding:5px 12px;font-size:14px" href="https://github.com/Kairoapps/VDOs/upload/main/media/inbox" target="_blank" rel="noopener">GitHub → media/inbox</a></li>
+    <li>Drag in the saved <code>.mp4</code> files (names look like <code>shake__20261118__k3f9.mp4</code>).</li>
+    <li>Click <b>Commit changes</b>. That's it: tonight's run names, edits and schedules them.</li>
+  </ol>
+  <div class="note">GitHub's website takes files up to 25 MB, so each clip is compressed to fit. Clips longer than about 2½ minutes won't fit; trim them first.</div>
+</div>
+</main>
+
+<script type="module">
+import { Input, Output, Conversion, BlobSource, BufferTarget, Mp4OutputFormat, ALL_FORMATS, canEncodeAudio }
+  from "https://cdn.jsdelivr.net/npm/mediabunny@1.66.0/+esm";
+
+const TOPICS = ["memory", "pushup", "shake", "tap", "walk", "squat", "misc", "other…"];
+const MAX = 25 * 1024 * 1024, BUDGET = 23 * 1024 * 1024;
+const items = [];
+const $ = s => document.querySelector(s);
+const tbody = $("#tbl tbody");
+let downloads = null;
+(async () => { try { downloads = await window.claude?.use?.("downloads"); } catch { downloads = null; } refresh(); })();
+
+function guessTopic(name) {
+  const n = name.toLowerCase();
+  return TOPICS.find(t => t !== "other…" && t !== "misc" && n.includes(t)) || "misc";
+}
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const mb = b => (b / 1048576).toFixed(1) + " MB";
+const rid = () => Math.random().toString(36).slice(2, 6);
+
+function add(files) {
+  for (const f of files) {
+    if (!/^video\//.test(f.type) && !/\.(mov|mp4|m4v)$/i.test(f.name)) continue;
+    const it = { file: f, topic: guessTopic(f.name), custom: "", date: ymd(new Date(f.lastModified || Date.now())), state: "ready", out: null, saved: false };
+    items.push(it);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="name" title="${f.name.replace(/"/g, "")}">${f.name.replace(/</g, "&lt;")}<div class="st">${mb(f.size)}</div></td>
+      <td><select>${TOPICS.map(t => `<option ${t === it.topic ? "selected" : ""}>${t}</option>`).join("")}</select> <input type="text" placeholder="name" hidden></td>
+      <td><input type="date" value="${it.date}"></td>
+      <td><div class="bar"><i></i></div><div class="st">Ready</div></td>
+      <td><button class="x" title="Remove">×</button></td>`;
+    const [sel, txt] = [tr.querySelector("select"), tr.querySelector("input[type=text]")];
+    sel.onchange = () => { it.topic = sel.value; txt.hidden = sel.value !== "other…"; if (!txt.hidden) txt.focus(); };
+    txt.oninput = () => it.custom = txt.value;
+    tr.querySelector("input[type=date]").onchange = e => it.date = e.target.value;
+    tr.querySelector(".x").onclick = () => { if (it.state === "working") return; items.splice(items.indexOf(it), 1); tr.remove(); refresh(); };
+    it.tr = tr; tbody.appendChild(tr);
+  }
+  refresh();
+}
+
+function topicOf(it) {
+  const t = it.topic === "other…" ? it.custom : it.topic;
+  return (t || "misc").toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "") || "misc";
+}
+function setStatus(it, text, cls = "", pct = null) {
+  const st = it.tr.querySelector("td:nth-child(4) .st");
+  st.textContent = text; st.className = "st " + cls;
+  if (pct !== null) it.tr.querySelector(".bar i").style.width = Math.round(pct * 100) + "%";
+}
+function refresh() {
+  $("#tbl").hidden = items.length === 0;
+  const busy = items.some(i => i.state === "working");
+  $("#go").disabled = busy || !items.some(i => i.state === "ready" || i.state === "failed");
+  $("#saveAll").disabled = busy || !downloads || !items.some(i => i.out);
+  $("#saveAll").hidden = !downloads && !items.some(i => i.out);
+  const done = items.filter(i => i.out).length;
+  $("#msg").textContent = items.length ? `${done} of ${items.length} compressed` : "";
+}
+
+async function compress(it) {
+  it.state = "working"; setStatus(it, "Reading…", "", 0.02); refresh();
+  try {
+    const input = new Input({ source: new BlobSource(it.file), formats: ALL_FORMATS });
+    const dur = await input.computeDuration();
+    const vt = await input.getPrimaryVideoTrack();
+    if (!vt) throw new Error("no video track");
+    const audioKbps = 96;
+    const keepAudio = await canEncodeAudio("aac").catch(() => false);
+    const vbits = Math.max(700_000, Math.min(4_500_000, (BUDGET * 8) / Math.max(dur, 1) - (keepAudio ? audioKbps * 1000 : 0)));
+    const srcW = vt.displayWidth || vt.codedWidth || 1080;
+    const width = Math.min(1080, srcW) & ~1;
+    const output = new Output({ format: new Mp4OutputFormat({ fastStart: "in-memory" }), target: new BufferTarget() });
+    const conv = await Conversion.init({
+      input, output,
+      video: { width, codec: "avc", bitrate: Math.round(vbits), frameRate: 30, forceTranscode: true },
+      audio: keepAudio ? { codec: "aac", bitrate: audioKbps * 1000 } : { discard: true },
+    });
+    if (!conv.isValid) throw new Error("this browser can't convert this file (" + conv.discardedTracks.map(d => d.reason).join(", ") + ")");
+    conv.onProgress = p => setStatus(it, `Compressing… ${Math.round(p * 100)}%`, "", Math.max(0.03, p));
+    await conv.execute();
+    const blob = new Blob([output.target.buffer], { type: "video/mp4" });
+    it.name = `${topicOf(it)}__${it.date.replace(/-/g, "")}__${rid()}.mp4`;
+    it.out = blob;
+    if (blob.size > MAX) { it.state = "toobig"; setStatus(it, `${mb(blob.size)}: too big for GitHub, trim the clip`, "bad", 1); }
+    else { it.state = "done"; setStatus(it, `${mb(it.file.size)} → ${mb(blob.size)}`, "good", 1); }
+  } catch (e) {
+    it.state = "failed"; it.out = null;
+    setStatus(it, "Failed: " + (e?.message || e), "bad", 0);
+    $("#err").hidden = false;
+    $("#err").textContent = "If compressing fails, try Chrome or Safari on a computer (they can decode iPhone/Ray-Ban HEVC video).";
+  }
+  refresh();
+}
+
+async function saveOne(it) {
+  if (!downloads || !it.out || it.state === "toobig") return false;
+  try { await downloads.save({ filename: it.name, data: it.out }); it.saved = true; setStatus(it, `Saved as ${it.name}`, "good", 1); return true; }
+  catch (e) {
+    if (e?.code === "declined") { setStatus(it, "Save skipped", "warn", 1); return false; }
+    if (e?.code === "rate_limited") { await new Promise(r => setTimeout(r, 1500)); return saveOne(it); }
+    setStatus(it, "Couldn't save: " + (e?.message || e?.code || e), "bad", 1); return false;
+  }
+}
+
+$("#go").onclick = async () => {
+  for (const it of items) if (it.state === "ready" || it.state === "failed") await compress(it);
+  if (downloads && items.some(i => i.state === "done" && !i.saved)) $("#msg").textContent += " · click “Save all” next";
+};
+$("#saveAll").onclick = async () => {
+  $("#saveAll").disabled = true;
+  for (const it of items) if (it.state === "done" && !it.saved) await saveOne(it);
+  refresh();
+};
+$("#pick").onchange = e => { add(e.target.files); e.target.value = ""; };
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", e => add(e.dataTransfer.files));
+</script>
+</body>
+</html>
