@@ -13,7 +13,7 @@ STATUS_LABEL = {"available": "Available", "cooling": "Cooling down", "needs_edit
 LEVEL = {"healthy": ("good", "Healthy"), "heads_up": ("warning", "Heads-up"), "urgent": ("critical", "Urgent"),
          "empty": ("critical", "Empty")}
 DIM_TITLES = {"topic_format": "Video type (topic × format)", "format": "Format", "hook_type": "Hook",
-              "caption_style": "Caption style", "caption_text": "On-screen line", "music_mood": "Music mood", "sfx": "Sound effect", "track": "Track",
+              "caption_style": "Caption style", "title_style": "Title style", "caption_text": "On-screen line", "music_mood": "Music mood", "sfx": "Sound effect", "track": "Track",
               "length_bucket": "Length", "time_slot": "Time slot", "hashtag_set": "Hashtag set"}
 
 CSS = """
@@ -75,7 +75,7 @@ def build(result: dict | None = None, out: Path | None = None) -> Path:
   <span class="badge"><span class="dot" style="background:var(--{'good' if failed == 0 else 'critical'})"></span>{'None' if failed == 0 else 'Check Buffer'}</span></div>
 </div>"""
     dims = "".join(f'<div class="card"><h2>{_e(DIM_TITLES[d])}</h2>{_bars(r["ranking"].get(d, []), d)}</div>'
-                   for d in ["topic_format", "format", "hook_type", "caption_style", "caption_text", "sfx", "music_mood", "length_bucket", "time_slot", "hashtag_set"])
+                   for d in ["topic_format", "format", "hook_type", "title_style", "caption_text", "sfx", "music_mood", "length_bucket", "time_slot", "hashtag_set"])
     e = r["experiment"]
     exp_rows = "".join(f"<tr><td>{_e(a['arm'])}</td><td>{_e(a['median'])}</td><td>{a['n']}</td></tr>" for a in e.get("arms", []))
     exp = (f'<div class="card"><h2>Experiment: {_e(e.get("active"))}</h2>'

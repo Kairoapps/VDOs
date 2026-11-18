@@ -13,6 +13,7 @@ One rule set for every file in the repo. When in doubt: **lowercase, words joine
 | Shell scripts | `kebab-case.sh` | `scripts/setup-mac.sh` |
 | macOS LaunchAgents | reverse-DNS `com.kairoapps.vdos.<name>.plist` (macOS convention) | `scripts/com.kairoapps.vdos.worker.plist` |
 | Config | `config.toml`, `.env` (from `.env.example`) | |
+| Fonts | original file names under `assets/fonts/` (keep the upstream names so licenses match) | `assets/fonts/Poppins-Bold.ttf` |
 | Folders | lowercase, kebab-case | `media/raw`, `media/sfx/alarm` |
 
 ## Media

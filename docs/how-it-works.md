@@ -2,6 +2,8 @@
 
 Turns raw Ray-Ban Meta clips into 3 short-form posts a day on Instagram Reels, TikTok and YouTube Shorts, through Buffer. Claude edits the clips and runs the daily and weekly jobs; this repo is the machinery.
 
+**Edit style (current):** original audio muted; an alarm sound from `media/sfx/alarm/` loops from the first frame and cuts off the moment the challenge completes; a title at the top (white bold text, thick black outline, emojis) in one of several styles (`gotta`, `pov`, `crashing_out`) that the weekly review A/B tests.
+
 **How it works:** clips you drop into `media/raw/` are renamed, deduplicated and committed (Git LFS). Claude reads each clip's transcript and sampled frames, decides the edit (`work/<clip>/edit.json`), and `vdos variants` renders 3 distinct 9:16 versions with ffmpeg (different openings, caption styles, licensed music, speeds). Every day Claude plans 3 slots, writes per-platform captions and schedules them in Buffer with videos served from your Mac through Tailscale Funnel. Each clip is used at most 3 times, 7+ days apart, then retired. Every week the analysis scores posts within each platform, ranks what works (video type, hook, captions, music, length, time, hashtags), shifts future choices toward the winners, and refreshes the dashboard. You get a push notification when clips retire or you're running low, plus a calendar block to record more.
 
 ## Layout

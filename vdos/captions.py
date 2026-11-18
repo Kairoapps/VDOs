@@ -27,7 +27,7 @@ STYLES = {
     "karaoke": dict(font_size=76, primary="&H00FFFFFF", highlight="&H0066FF66", outline=5, bold=-1, words=4, upper=False),
 }
 # One line stating the clip's premise, on screen for the whole video (the reference-clip style).
-PREMISE_STYLES = {"premise": "outline", "premise_box": "box"}
+PREMISE_STYLES = {"premise": "outline"}  # white bold text, thick black outline (rendered by title.py)
 
 
 def header(width: int, height: int, style_name: str) -> str:

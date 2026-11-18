@@ -5,7 +5,7 @@ Turns raw Ray-Ban Meta clips into 3 short videos a day on Instagram Reels, TikTo
 ## How it works
 
 1. **You** drop clips into `media/raw/`, licensed music into `media/music/<mood>/` and sound effects into `media/sfx/<category>/`.
-2. **The Mac worker** (every 15 min) transcribes new clips and renders edited 9:16 versions with captions and music.
+2. **The Mac worker** (every 15 min) renders edited 9:16 versions: original audio muted, an alarm sound that stops the moment you finish the challenge, and an emoji title at the top.
 3. **Claude's daily run** decides the edits, writes captions and schedules 3 posts in Buffer. Each clip is used at most 3 times, a week apart.
 4. **Claude's weekly run** checks what performed best (video type, hook, captions, music, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
 

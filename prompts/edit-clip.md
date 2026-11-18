@@ -13,9 +13,14 @@ You decide the edit; the worker renders it. First read `references/style.md` and
     {"type": "mid_action", "start": 0.0},
     {"type": "question", "start": 0.0, "text": "Would you train like this?"}
   ],
-  "premise": ["Gotta walk 200 steps to turn off my alarm", "My alarm makes me walk 200 steps every morning"],
-  "sfx": [{"category": "alarm", "at": 0.0, "dur": 3.0}],
-  "moods": ["hype", "chill"],
+  "dismiss_at": 48.2,
+  "premise": [
+    {"style": "gotta", "text": "Gotta walk 200 steps to turn off my alarm 😭😭😭"},
+    {"style": "pov", "text": "POV: your alarm makes you walk 200 steps 💀"},
+    {"style": "crashing_out", "text": "crashing out because my alarm won't stop until I walk 200 steps 😭"}
+  ],
+  "bed": {"category": "alarm"},
+  "moods": [],
   "unusable": false
 }
 ```
@@ -33,9 +38,15 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 - `text_overlay`: a plain context line ("day 12 of learning to cook")
 Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
-**premise** (for clips without useful speech, like the reference clips): 1–3 phrasings of one line that says what's happening, shown at the top of the screen for the whole video. Variants rotate through them, and the weekly review learns which wording wins. Keep each ≤ 9 words, first person, the struggle framing ("Gotta …"). No emojis in on-screen text (they don't render); put emojis in the post caption instead. Leave `premise` out when the clip has speech: word-by-word captions are used then.
+**The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `media/sfx/<category>/` (default `alarm`) that loops from the first frame and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
 
-**sfx**: sound effects to lay over the cut, by category (a subfolder of `media/sfx/`): `at` = seconds into the edited video, `dur` = how long to play it. Variants pick different files from the category. For alarm clips, put the alarm at `0.0` for ~3 s so the video opens on the alarm going off.
+**premise**: the title shown at the top for the whole video: white bold text with a thick black outline, emojis allowed and encouraged (😭💀🧠🎈). Write one per **title style** so variants test styles against each other; the weekly review learns which style wins:
+- `gotta`: "Gotta <challenge> to turn off my alarm 😭"
+- `pov`: "POV: your alarm makes you <challenge> 💀"
+- `crashing_out`: "crashing out because my alarm <situation> 😭"
+- (new styles are fine — `me_when`, `nobody_warned_me`, … — give each a short snake_case name)
+
+Keep titles short (≤ 12 words, ≤ 2 lines on screen) so they don't cover the video; only state numbers/times that are visible in the clip (e.g. 3am only if the lock screen shows it). Leave `premise` out when the clip has speech you want captioned word by word.
 
 **moods**: subfolders of `media/music/` that fit the energy (`[]` for no music, e.g. a talking clip where music would distract).
 

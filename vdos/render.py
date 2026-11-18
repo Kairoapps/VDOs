@@ -16,15 +16,20 @@ def render(spec: dict, out_path: Path) -> Path:
     speed = float(spec.get("speed", 1.0))
     segs = [(float(a), float(b)) for a, b in spec["segments"]]
     dur = sum(b - a for a, b in segs) / speed
-    has_audio = bool(spec.get("has_audio", True))
+    # mute_original: drop the camera audio entirely; the soundtrack is the alarm bed + effects (+ music)
+    has_audio = bool(spec.get("has_audio", True)) and not r.get("mute_original", False)
     style = spec.get("caption_style")
     premise = style in captions.PREMISE_STYLES
     words_out = captions.map_words(spec.get("words", []), segs, speed) if style and not premise else []
 
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
+        title_png = None
         if premise:
-            ass = captions.premise_ass(spec.get("caption_text") or "", W, H, dur, captions.PREMISE_STYLES[style])
+            from . import title  # Pillow; only needed for titles
+            title_png = td / "title.png"
+            title.render_png(spec.get("caption_text") or "", title_png, W, size=r.get("title_size", 54))
+            ass = captions.build_ass([], W, H, "minimal")  # empty: the title is an image overlay
         else:
             ass = captions.build_ass(words_out, W, H, style or "minimal", spec.get("hook_text"))
         (td / "subs.ass").write_text(ass)
@@ -39,6 +44,17 @@ def render(spec: dict, out_path: Path) -> Path:
         if not has_audio:
             inputs += ["-f", "lavfi", "-t", f"{dur + 1:.2f}", "-i", "anullsrc=r=48000:cl=stereo"]
             null_idx = idx
+            idx += 1
+        title_idx = None
+        if title_png:
+            inputs += ["-i", str(title_png)]
+            title_idx = idx
+            idx += 1
+        bed = spec.get("bed")  # looping sound (the alarm) from 0 until bed["end"] (output seconds)
+        bed_idx = None
+        if bed:
+            inputs += ["-stream_loop", "-1", "-i", str(Path(bed["path"]).resolve())]
+            bed_idx = idx
             idx += 1
         sfx_idx = []
         for s in spec.get("sfx", []):
@@ -65,7 +81,11 @@ def render(spec: dict, out_path: Path) -> Path:
             f.append(f"[bgs]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=40:2,eq=brightness=-0.08[bg]")
             f.append(f"[fgs]scale={W}:{H}:force_original_aspect_ratio=decrease[fg]")
             f.append("[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1[vr]")
-        f.append("[vr]ass=subs.ass,format=yuv420p[vout]")
+        if title_idx is not None:
+            ty = int(H * r.get("title_top", 0.10))
+            f.append(f"[vr][{title_idx}:v]overlay=(W-w)/2:{ty},format=yuv420p[vout]")
+        else:
+            f.append("[vr]ass=subs.ass,format=yuv420p[vout]")
 
         speechy = bool(words_out) or (bool(spec.get("words")) and not premise)
         if has_audio:
@@ -78,6 +98,15 @@ def render(spec: dict, out_path: Path) -> Path:
             f.append(f"[ac]anull{tempo}{boost},aresample=48000,aformat=channel_layouts=stereo[voice]")
         else:
             f.append(f"[{null_idx}:a]atrim=duration={dur:.3f}[voice]")
+        if bed_idx is not None:
+            end = min(dur, max(0.3, float(bed["end"])))
+            g = r["sfx_lufs"] - (bed.get("lufs") if bed.get("lufs") is not None else -14)
+            f.append(f"[{bed_idx}:a]atrim=duration={end:.3f},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo,"
+                     f"volume={g:.1f}dB,afade=t=out:st={max(0, end - 0.06):.3f}:d=0.06,apad=whole_dur={dur:.3f}[bed]")
+            f.append("[voice][bed]amix=inputs=2:normalize=0:duration=first[voicebed]")
+            bed_label = "voicebed"
+        else:
+            bed_label = "voice"
         if sfx_idx:
             names = []
             for k, (i, s) in enumerate(sfx_idx):
@@ -88,10 +117,10 @@ def render(spec: dict, out_path: Path) -> Path:
                 f.append(f"[{i}:a]atrim=duration={d:.2f},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo,"
                          f"volume={g:.1f}dB,afade=t=out:st={max(0, d - fade):.2f}:d={fade:.2f},adelay={int(at * 1000)}:all=1[fx{k}]")
                 names.append(f"[fx{k}]")
-            f.append(f"[voice]{''.join(names)}amix=inputs={1 + len(names)}:normalize=0:duration=first[voicefx]")
+            f.append(f"[{bed_label}]{''.join(names)}amix=inputs={1 + len(names)}:normalize=0:duration=first[voicefx]")
             voice_label = "voicefx"
         else:
-            voice_label = "voice"
+            voice_label = bed_label
 
         if music_idx is not None:
             target = r["music_bed_lufs"] if speechy else r["music_solo_lufs"]

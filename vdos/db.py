@@ -108,6 +108,8 @@ def connect() -> sqlite3.Connection:
         con.execute("ALTER TABLE variants ADD COLUMN sfx_ids TEXT")
     if "caption_text" not in cols:
         con.execute("ALTER TABLE variants ADD COLUMN caption_text TEXT")
+    if "title_style" not in cols:
+        con.execute("ALTER TABLE variants ADD COLUMN title_style TEXT")
     return con
 
 

@@ -73,6 +73,21 @@ def _spans_from(keep: list, start: float, max_len: float) -> list[list[float]]:
     return out
 
 
+def _out_time(spans: list, speed: float, src_t: float | None) -> float:
+    """Map a source time onto the edited video's timeline (end of video if None or cut out)."""
+    total = sum(b - a for a, b in spans) / speed
+    if src_t is None:
+        return total
+    acc = 0.0
+    for a, b in spans:
+        if a <= src_t <= b:
+            return (acc + src_t - a) / speed
+        if src_t < a:
+            return acc / speed
+        acc += b - a
+    return total
+
+
 def _eligible_tracks(con, moods: list[str], days: int) -> list:
     cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
     recent = {r["track_id"] for r in con.execute(
@@ -117,12 +132,18 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             "SELECT hook_type, start_s FROM variants WHERE clip_id=? AND active=1", (clip_id,))}
         # Premise captions (one line on screen the whole clip) for clips without useful speech.
         premises = edit.get("premise") or []
-        if isinstance(premises, str):
+        if isinstance(premises, (str, dict)):
             premises = [premises]
+        # each premise is {"style": "gotta"|"pov"|"crashing_out"|..., "text": "..."} (a bare string = style "plain")
+        premises = [p if isinstance(p, dict) else {"style": "plain", "text": p} for p in premises]
         use_premise = bool(premises) and not tr["words"]
         caption_options = list(PREMISE_STYLES) if use_premise else vcfg["caption_styles"]
         used_texts = {s["caption_text"] for s in con.execute(
             "SELECT caption_text FROM variants WHERE clip_id=? AND active=1", (clip_id,))}
+        bed_cat = (edit.get("bed") or {}).get("category", "alarm") if (edit.get("dismiss_at") or edit.get("bed")) else None
+        bed_rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (bed_cat,)).fetchall() if bed_cat else []
+        used_beds = {s["sfx_ids"].split(",")[0] for s in con.execute(
+            "SELECT sfx_ids FROM variants WHERE clip_id=? AND active=1 AND sfx_ids IS NOT NULL", (clip_id,))}
         sfx_plan = edit.get("sfx") or []
         used_sfx: set[str] = set()
         src_path = cfg.path("raw") / clip["file_name"]
@@ -142,12 +163,24 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             used_styles.add(style)
             if len(used_styles & set(caption_options)) >= len(caption_options):
                 used_styles.clear()
-            caption_text = None
+            caption_text, title_style = None, None
             if use_premise:
-                fresh_t = [t for t in premises if t not in used_texts]
-                caption_text = fresh_t[0] if fresh_t else premises[(existing + i) % len(premises)]
+                fresh_t = [p for p in premises if p["text"] not in used_texts]
+                if fresh_t:  # weighted by how each title style has performed
+                    ts = weights.choose(con, "title_style", sorted({p["style"] for p in fresh_t}), rng=rng)
+                    pick_p = next(p for p in fresh_t if p["style"] == ts)
+                else:
+                    pick_p = premises[(existing + i) % len(premises)]
+                caption_text, title_style = pick_p["text"], pick_p["style"]
                 used_texts.add(caption_text)
             sfx_list, sfx_ids = [], []
+            bed = None
+            if bed_rows:
+                pool = [x for x in bed_rows if x["id"] not in used_beds] or bed_rows
+                b = rng.choice(pool)
+                used_beds.add(b["id"])
+                sfx_ids.append(b["id"])
+                bed = {"path": str(cfg.path("sfx") / b["id"]), "lufs": b["lufs"], "dismiss_src": edit.get("dismiss_at")}
             for s in sfx_plan:
                 rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (s.get("category", "alarm"),)).fetchall()
                 if not rows:
@@ -178,6 +211,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "src": str(src_path), "segments": spans, "speed": speed,
                 "caption_style": style if (tr["words"] or use_premise) else None, "hook_text": overlay,
                 "words": tr["words"], "caption_text": caption_text, "sfx": sfx_list, "src_lufs": src_lufs,
+                "bed": dict(bed, end=_out_time(spans, speed, bed["dismiss_src"])) if bed else None,
                 "has_audio": bool(clip["has_audio"]),
                 "track": str(cfg.path("music") / track["id"]) if track else None,
                 "track_lufs": track["lufs"] if track else None,
@@ -185,17 +219,18 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "reframe": rcfg["reframe"],
             }
             info = {"id": vid, "file": fname, "hook_type": hook["type"], "caption_style": spec["caption_style"],
-                    "caption_text": caption_text, "sfx": sfx_ids,
+                    "caption_text": caption_text, "title_style": title_style, "sfx": sfx_ids,
                     "track": track["id"] if track else None, "speed": speed, "length": round(length, 1), "overlay": overlay}
             if not dry_run:
                 render.render(spec, cfg.path("edited") / fname)
                 real = media.probe(cfg.path("edited") / fname)["duration"]
                 con.execute(
                     """INSERT INTO variants(id, clip_id, file_name, hook_type, caption_style, track_id, overlay_text, speed,
-                       start_s, duration_s, spec_json, created_at, sfx_ids, caption_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                       start_s, duration_s, spec_json, created_at, sfx_ids, caption_text, title_style)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (vid, clip_id, fname, hook["type"], spec["caption_style"], info["track"], overlay, speed,
                      spans[0][0], real, json.dumps({k: v for k, v in spec.items() if k != "words"}), db.now_iso(),
-                     ",".join(sfx_ids) or None, caption_text))
+                     ",".join(sfx_ids) or None, caption_text, title_style))
                 info["length"] = round(real, 1)
             made.append(info)
         if not dry_run:
