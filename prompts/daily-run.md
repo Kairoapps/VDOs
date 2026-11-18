@@ -5,7 +5,7 @@ You are running the VDOs posting pipeline for Chika. Work through every step wit
 ## How the work is split
 
 - **The Mac worker** (launchd, every 15 min, `vdos worker`) does the heavy, credentialed work: ingests new clips and music, transcribes, samples frames, renders variants from the `edit.json` files you write, deletes retired renders, and commits + pushes to GitHub.
-- **You** (this run) make the judgment calls and talk to Buffer: write edits, sync Buffer, plan, write captions, schedule, notify, publish the dashboard. **Do not run git, `vdos worker`, `vdos prep` or `vdos variants`** — the worker owns those.
+- **You** (this run) make the judgment calls and talk to Buffer: write edits, sync Buffer, plan, write captions, schedule, notify, publish the dashboard. **Do not run git on the Mac, or `vdos worker`, `vdos prep` or `vdos variants`** — the worker owns those. (Pushing videos to the `publish` branch happens from your cloud shell; see step 3.)
 
 ## 0. Setup (every run)
 
