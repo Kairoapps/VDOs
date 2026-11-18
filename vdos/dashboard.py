@@ -57,6 +57,17 @@ def _bars(rows: list[dict], key: str) -> str:
     return "".join(out)
 
 
+def _cover(inv: dict) -> str:
+    from datetime import date
+    f = lambda x: date.fromisoformat(x).strftime("%a %b %-d")
+    if not inv.get("covered_through"):
+        return "Nothing can post today"
+    out = f"Posts covered through {f(inv['covered_through'])}"
+    if inv.get("first_gap"):
+        out += f" · first empty day {f(inv['first_gap'])}"
+    return _e(out)
+
+
 def build(result: dict | None = None, out: Path | None = None) -> Path:
     cfg = config.load()
     r = result or analysis.weekly(write=False)
@@ -68,6 +79,7 @@ def build(result: dict | None = None, out: Path | None = None) -> Path:
     tiles = f"""
 <div class="grid g4">
  <div class="card tile"><div class="l">Days of clips left</div><div class="v">{inv['days']}</div>
+  <div class="l">{_cover(inv)}</div>
   <span class="badge"><span class="dot" style="background:var(--{lvl_color})"></span>{lvl_label}{' · record ~' + str(inv['clips_needed']) + ' clips' if inv['clips_needed'] else ''}</span></div>
  <div class="card tile"><div class="l">Active clips</div><div class="v">{inv['active_clips']}</div><span class="badge">{inv['remaining_uses']} uses left</span></div>
  <div class="card tile"><div class="l">Posts sent (7 days)</div><div class="v">{sent}</div><span class="badge">{sched} scheduled</span></div>

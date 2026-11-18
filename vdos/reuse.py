@@ -116,12 +116,14 @@ def inventory(con, horizon: int = 60) -> dict:
         booked[d] = booked.get(d, 0) + 1
     remaining_uses = sum(p["left"] for p in pool.values())
     days = 0
+    first_gap = None
     for i in range(horizon):
         d = today + timedelta(days=i)
         need = per_day - booked.get(d, 0)
         elig = sorted((cid for cid, p in pool.items() if p["left"] > 0 and (p["last"] is None or (d - p["last"]).days >= gap)),
                       key=lambda cid: -pool[cid]["left"])
         if len(elig) < need:
+            first_gap = d
             break
         for cid in elig[:need]:
             pool[cid]["left"] -= 1
@@ -134,4 +136,7 @@ def inventory(con, horizon: int = 60) -> dict:
         # each new clip adds at most one slot per `gap` days -> clips needed to sustain per_day for 7 days
         clips_needed = max(1, per_day * min(gap, 7) - len([p for p in pool.values() if p["left"] > 0]))
     return {"days": days, "level": level, "remaining_uses": remaining_uses, "active_clips": len(pool),
-            "clips_needed": clips_needed}
+            "clips_needed": clips_needed,
+            "covered_through": (today + timedelta(days=days - 1)).isoformat() if days else None,
+            "first_gap": first_gap.isoformat() if first_gap else None,
+            "available_now": sum(1 for p in pool.values() if p["left"] > 0 and (p["last"] is None or (today - p["last"]).days >= gap))}
