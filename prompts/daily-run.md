@@ -10,7 +10,7 @@ Runs entirely in Claude's cloud — Chika's Mac does not need to be on. Don't st
 ## 0. Setup
 
 1. `add_repo` owner `Kairoapps`, repo `VDOs`, access `push`, then clone **without downloading media**:
-   `GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/Kairoapps/VDOs vdos && cd vdos`
+   `GIT_LFS_SKIP_SMUDGE=1 git clone --single-branch -b main https://github.com/Kairoapps/VDOs vdos && cd vdos` (main only: the publish branch is large)
 2. `pip install -q --break-system-packages pillow` (ffmpeg and Python 3.11+ are already there).
 3. `export VDOS_ROOT=$PWD` and run every command below from the repo as `python3 -m vdos …`. Always add `--no-git` to `ingest`, `retire` and `weekly` (saving happens in step 6).
 
