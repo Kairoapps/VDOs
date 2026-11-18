@@ -11,3 +11,11 @@ work/.worker.lock
 data/*.sqlite-journal
 reports/dashboard.json
 *.egg-info/
+
+# Rendered videos live on the `publish` branch (served to Buffer), not on main
+media/edited/*
+!media/edited/.gitkeep
+work/publish-branch/
+
+# Audio without clear commercial rights stays local
+sounds/unlicensed/

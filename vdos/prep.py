@@ -46,7 +46,10 @@ def prep_clip(clip_id: str, frame_every: float = 2.0, skip_transcribe: bool = Fa
             if skip_transcribe or not clip["has_audio"]:
                 tr = {"language": None, "words": [], "segments": []}
             else:
-                tr = transcribe(src)
+                try:
+                    tr = transcribe(src)
+                except (SystemExit, Exception) as e:  # no whisper / model download blocked (cloud): no captions
+                    tr = {"language": None, "words": [], "segments": [], "note": f"transcription unavailable: {str(e)[:120]}"}
             tpath.write_text(json.dumps(tr, indent=1))
         tr = json.loads(tpath.read_text())
 

@@ -4,20 +4,18 @@ Turns raw Ray-Ban Meta clips into 3 short videos a day on Instagram Reels, TikTo
 
 ## How it works
 
-1. **You** drop clips into `media/raw/`, and sounds (alarms, music, effects) into `sounds/<category>/`.
-2. **The Mac worker** (every 15 min) renders edited 9:16 versions: original audio muted, an alarm sound that stops the moment you finish the challenge, and an emoji title at the top.
-3. **Claude's daily run** decides the edits, writes captions and schedules 3 posts in Buffer. Each clip is used at most 3 times, a week apart.
-4. **Claude's weekly run** checks what performed best (video type, hook, captions, music, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
+1. **You** drop clips into `media/raw/` on your Mac. The Mac only names them and uploads them to GitHub (every 15 min).
+2. **Claude's daily cloud run** (6:13am ET, no laptop needed) edits new clips (muted audio, an alarm that stops the moment you finish the challenge, an emoji title), renders 3 versions of each, puts the videos on the `publish` branch, and schedules 3 posts in Buffer for Instagram, TikTok and YouTube. Each clip is used at most 3 times, a week apart.
+3. **Claude's weekly cloud run** (Sunday evening) checks what performed best (video type, title style, sound, length, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
 
 ## Setup (once, on your Mac)
 
 ```
 cd ~/Documents/projects/VDOs
 ./scripts/setup-mac.sh
-tailscale funnel --bg 8787
 ```
 
-Put the `https://….ts.net` address it prints into `.env` as `PUBLIC_BASE_URL`.
+That installs the uploader. Nothing else needs to run on the Mac.
 
 ## Folders
 

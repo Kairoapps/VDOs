@@ -3,7 +3,7 @@
  "keep": [
   [
    43.5,
-   84.0
+   78.3
   ]
  ],
  "hooks": [
@@ -17,18 +17,25 @@
   }
  ],
  "premise": [
-  "Gotta do pushups to turn off my alarm",
-  "My alarm makes me do pushups before it stops"
+  {
+   "style": "gotta",
+   "text": "Gotta do pushups to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm makes you do pushups 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm is making me do pushups at 3am 😭"
+  }
  ],
  "summary": "Alarm at 3:33; props the phone on the floor and does pushups in front of the camera to dismiss it.",
  "format": "pov",
  "moods": [],
- "sfx": [
-  {
-   "category": "alarm",
-   "at": 0.0,
-   "dur": 3.0
-  }
- ],
- "unusable": false
+ "unusable": false,
+ "dismiss_at": 76.3,
+ "bed": {
+  "category": "alarm"
+ }
 }

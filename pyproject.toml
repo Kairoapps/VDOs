@@ -3,7 +3,10 @@ name = "vdos"
 version = "0.1.0"
 description = "Ray-Ban clips -> edited short-form variants -> Buffer, with reuse tracking and weekly learning"
 requires-python = ">=3.10"
-dependencies = ["faster-whisper>=1.0", "pillow>=10", "tomli>=2; python_version < '3.11'"]
+dependencies = ["pillow>=10", "tomli>=2; python_version < '3.11'"]
+
+[project.optional-dependencies]
+whisper = ["faster-whisper>=1.0"]   # word-by-word captions for clips with speech
 
 [project.scripts]
 vdos = "vdos.cli:main"

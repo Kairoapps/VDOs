@@ -3,7 +3,7 @@
  "keep": [
   [
    19.5,
-   51.2
+   50.3
   ]
  ],
  "hooks": [
@@ -17,18 +17,25 @@
   }
  ],
  "premise": [
-  "Gotta pass a memory test to turn off my alarm",
-  "Can't turn off my alarm until I remember the pattern"
+  {
+   "style": "gotta",
+   "text": "Gotta remember the pattern to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm won't stop until you beat a memory game 🧠"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm is testing my memory at midnight 😭"
+  }
  ],
  "summary": "In bed at 12:20; memorize-the-sequence then tap-in-order challenge before the alarm stops.",
  "format": "pov",
  "moods": [],
- "sfx": [
-  {
-   "category": "alarm",
-   "at": 0.0,
-   "dur": 3.0
-  }
- ],
- "unusable": false
+ "unusable": false,
+ "dismiss_at": 48.3,
+ "bed": {
+  "category": "alarm"
+ }
 }

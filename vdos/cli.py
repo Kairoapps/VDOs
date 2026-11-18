@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import analysis, buffer_sync, config, dashboard, db, gitops, ingest, prep, reuse, scheduler, server, variants
+from . import analysis, buffer_sync, config, dashboard, db, gitops, ingest, prep, publish, reuse, scheduler, server, variants
 
 
 def out(obj) -> None:
@@ -118,45 +118,33 @@ def cmd_cleanup(a):
 
 
 def cmd_worker(a):
-    """Mac-side loop step (launchd, every 15 min): ingest, transcribe, render edits Claude wrote,
-    clean up, commit + push. Claude's scheduled runs do the judgment (edits, captions, Buffer)."""
-    import time
+    """Mac step (launchd, every 15 min): name new raw clips and upload them (Git LFS) with references.
+    Everything else (edits, renders, Buffer, the database) happens in Claude's cloud runs."""
     cfg = config.load()
-    lock = cfg.path("work") / ".worker.lock"
-    if lock.exists() and time.time() - lock.stat().st_mtime < 3 * 3600:
-        out({"skipped": "another worker run is in progress"})
-        return
-    lock.write_text(str(time.time()))
-    res = {}
-    try:
-        res["ingest"] = {"clips": ingest.ingest_clips(), "music": ingest.ingest_music(), "sfx": ingest.ingest_sfx()}
-        with db.tx() as con:
-            new = [r["id"] for r in con.execute("SELECT id FROM clips WHERE status='new' ORDER BY id")]
-        res["prepped"] = [str(prep.prep_clip(c)) for c in new]
-        rendered = {}
-        with db.tx() as con:
-            prepped = con.execute("SELECT id, ingested_at FROM clips WHERE status='prepped' ORDER BY id").fetchall()
-        for row in prepped:
-            has_edit = (cfg.path("work") / row["id"] / "edit.json").exists()
-            age_h = (time.time() - datetime.fromisoformat(row["ingested_at"]).timestamp()) / 3600
-            if has_edit or age_h > a.auto_after_hours:  # don't let un-edited clips stall the pipeline
-                rendered[row["id"]] = variants.generate(row["id"])
-        # extra variants requested by the weekly review: work/<clip>/more.json {"n": 2}
-        for req in sorted(cfg.path("work").glob("*/more.json")):
-            cid = req.parent.name
-            try:
-                n = int(json.loads(req.read_text()).get("n", 2))
-                rendered[cid + " (more)"] = variants.generate(cid, n=n)
-            finally:
-                req.rename(req.with_name(f"more.done-{int(time.time())}.json"))
-        res["rendered"] = rendered
-        with db.tx() as con:
-            res["cleaned"] = reuse.cleanup(con)
-        if not a.no_git:
-            res["git"] = gitops.sync("worker: ingest/render", push=True)
-    finally:
-        lock.unlink()
+    res = {"renamed": ingest.canonical_rename(cfg.path("raw"), cfg.path("retired"))}
+    if not a.no_git:
+        res["git"] = gitops.sync("mac: upload new clips", push=True)
     out(res)
+
+
+def cmd_pending_raw(a):
+    """Raw clips on disk/in git that the database doesn't know yet (the cloud run pulls these from LFS)."""
+    cfg = config.load()
+    with db.tx() as con:
+        known = {r["file_name"] for r in con.execute("SELECT file_name FROM clips")}
+    files = [f"media/raw/{f.name}" for f in sorted(cfg.path("raw").iterdir())
+             if f.is_file() and f.suffix.lower() in ingest.VIDEO_EXT and f.name not in known]
+    out(files)
+
+
+def cmd_publish(a):
+    import os
+    remote = a.remote or os.environ.get("VDOS_REMOTE") or gitops._git("remote", "get-url", "origin")
+    out(publish.publish(remote))
+
+
+def cmd_cloud_save(a):
+    out({"git": gitops.sync(a.message, push=True, paths=gitops.CLOUD_PATHS)})
 
 
 def cmd_serve(a):
@@ -189,9 +177,13 @@ def main(argv=None):
     s.add_argument("--no-git", action="store_true"); s.add_argument("--no-push", action="store_true"); s.set_defaults(f=cmd_weekly)
     s = sub.add_parser("dashboard"); s.set_defaults(f=cmd_dashboard)
     s = sub.add_parser("cleanup", help="delete rendered files of retired variants"); s.set_defaults(f=cmd_cleanup)
-    s = sub.add_parser("worker", help="Mac worker step: ingest, transcribe, render, cleanup, git push")
-    s.add_argument("--no-git", action="store_true"); s.add_argument("--auto-after-hours", type=float, default=36)
-    s.set_defaults(f=cmd_worker)
+    s = sub.add_parser("worker", help="Mac step: name new raw clips, upload them to GitHub")
+    s.add_argument("--no-git", action="store_true"); s.set_defaults(f=cmd_worker)
+    s = sub.add_parser("pending-raw", help="raw clips not yet in the database"); s.set_defaults(f=cmd_pending_raw)
+    s = sub.add_parser("publish", help="put the videos Buffer needs on the publish branch")
+    s.add_argument("--remote"); s.set_defaults(f=cmd_publish)
+    s = sub.add_parser("cloud-save", help="commit + push the database, edits and reports (cloud run)")
+    s.add_argument("-m", "--message", default="cloud run: ledger + edits"); s.set_defaults(f=cmd_cloud_save)
     s = sub.add_parser("serve"); s.add_argument("--port", type=int); s.set_defaults(f=cmd_serve)
 
     a = p.parse_args(argv)

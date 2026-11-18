@@ -36,6 +36,33 @@ def _next_seq(con, date_str: str) -> int:
     return int(row["id"].split("-")[1]) + 1 if row else 1
 
 
+def canonical_rename(raw: Path, retired: Path) -> list[dict]:
+    """Rename new drop-ins to R<date>-<seq>__<topic> using only the files on disk (no database).
+    The Mac does this before uploading, so names are final before the cloud ever sees them."""
+    taken = {f.stem.split("__")[0] for d in (raw, retired) if d.exists() for f in d.iterdir() if CANON.match(f.stem)}
+    out = []
+    for f in sorted(raw.iterdir()):
+        if not f.is_file() or f.suffix.lower() not in VIDEO_EXT or CANON.match(f.stem):
+            continue
+        try:
+            info = media.probe(f)
+        except Exception as e:
+            out.append({"file": f.name, "result": "unreadable", "error": str(e)[:200]})
+            continue
+        m = TOPIC_PREFIX.match(f.name)
+        topic = m.group(1).lower() if m else "misc"
+        date_str = _capture_date(info, f).strftime("%Y%m%d")
+        seq = 1
+        while f"R{date_str}-{seq:03d}" in taken:
+            seq += 1
+        cid = f"R{date_str}-{seq:03d}"
+        taken.add(cid)
+        new_name = f"{cid}__{topic}{f.suffix.lower()}"
+        f.rename(raw / new_name)
+        out.append({"file": f.name, "name": new_name})
+    return out
+
+
 def ingest_clips() -> list[dict]:
     cfg = config.load()
     raw = cfg.path("raw")
@@ -57,14 +84,19 @@ def ingest_clips() -> list[dict]:
             except Exception as e:  # corrupt
                 results.append({"file": f.name, "result": "unreadable", "error": str(e)[:200]})
                 continue
-            m = TOPIC_PREFIX.match(f.name)
-            topic = m.group(1).lower() if m else "misc"
             cap = _capture_date(info, f)
-            date_str = cap.strftime("%Y%m%d")
-            seq = _next_seq(con, date_str)
-            cid = f"R{date_str}-{seq:03d}"
-            new_name = f"{cid}__{topic}{f.suffix.lower()}"
-            f.rename(raw / new_name)
+            canon = CANON.match(f.stem)
+            if canon and not con.execute("SELECT 1 FROM clips WHERE id=?", (f.stem.split("__")[0],)).fetchone():
+                # already named (by the Mac): register as-is, no rename
+                cid, topic, new_name = f.stem.split("__")[0], canon.group(3), f.name
+            else:
+                m = TOPIC_PREFIX.match(f.name)
+                topic = m.group(1).lower() if m else "misc"
+                date_str = cap.strftime("%Y%m%d")
+                seq = _next_seq(con, date_str)
+                cid = f"R{date_str}-{seq:03d}"
+                new_name = f"{cid}__{topic}{f.suffix.lower()}"
+                f.rename(raw / new_name)
             status = "new"
             if info["duration"] < 4 or info["width"] == 0:
                 status = "unusable"

@@ -1,0 +1,14 @@
+{"slots": [
+ {"variant_id": "R20261117-005__v1", "scheduled_at": "2026-11-18T08:30:00-05:00", "time_slot": "08:30", "hashtag_set": "tags-1", "posts": [
+  {"platform": "instagram", "channel_id": "6acd0e54778b240e2fe91763", "buffer_post_id": "6afd7dc5e4de71c5c6db3e5b", "status": "scheduled"},
+  {"platform": "tiktok", "channel_id": "6acd0e18778b240e2fe9157f", "buffer_post_id": "6afd7dd9e4de71c5c6db412f", "status": "scheduled"},
+  {"platform": "youtube", "channel_id": "6ad5c498778b240e2f557a0c", "buffer_post_id": "6afd7ddaedbabcb410e8e450", "status": "scheduled"}]},
+ {"variant_id": "R20261117-006__v2", "scheduled_at": "2026-11-18T12:30:00-05:00", "time_slot": "12:30", "hashtag_set": "tags-1", "posts": [
+  {"platform": "instagram", "channel_id": "6acd0e54778b240e2fe91763", "buffer_post_id": "6afd7ddbedbabcb410e8e4b9", "status": "scheduled"},
+  {"platform": "tiktok", "channel_id": "6acd0e18778b240e2fe9157f", "buffer_post_id": "6afd7ddbe6ccf7cfbbbd7f66", "status": "scheduled"},
+  {"platform": "youtube", "channel_id": "6ad5c498778b240e2f557a0c", "buffer_post_id": "6afd7ddcb74fdaddf6326a1c", "status": "scheduled"}]},
+ {"variant_id": "R20261117-003__v1", "scheduled_at": "2026-11-18T19:00:00-05:00", "time_slot": "19:00", "hashtag_set": "tags-1", "posts": [
+  {"platform": "instagram", "channel_id": "6acd0e54778b240e2fe91763", "buffer_post_id": "6afd7ddd172d936229ee3923", "status": "scheduled"},
+  {"platform": "tiktok", "channel_id": "6acd0e18778b240e2fe9157f", "buffer_post_id": "6afd7dde172d936229ee3959", "status": "scheduled"},
+  {"platform": "youtube", "channel_id": "6ad5c498778b240e2f557a0c", "buffer_post_id": "6afd7dde172d936229ee39a7", "status": "scheduled"}]}
+]}

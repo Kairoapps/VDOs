@@ -3,7 +3,7 @@
  "keep": [
   [
    33.5,
-   64.0
+   63.7
   ]
  ],
  "hooks": [
@@ -17,18 +17,25 @@
   }
  ],
  "premise": [
-  "Gotta shake my phone 50 times to turn off my alarm",
-  "My alarm won't stop until I shake my phone 50 times"
+  {
+   "style": "gotta",
+   "text": "Gotta shake my phone 50 times to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm only stops if you shake it 50 times 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because I have to shake my phone 50 times at 3am 😭"
+  }
  ],
  "summary": "Alarm in the lounge; shakes the phone hard until the shake challenge completes.",
  "format": "pov",
  "moods": [],
- "sfx": [
-  {
-   "category": "alarm",
-   "at": 0.0,
-   "dur": 3.0
-  }
- ],
- "unusable": false
+ "unusable": false,
+ "dismiss_at": 61.7,
+ "bed": {
+  "category": "alarm"
+ }
 }

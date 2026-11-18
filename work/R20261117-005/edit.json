@@ -3,7 +3,7 @@
  "keep": [
   [
    28.5,
-   52.6
+   51.0
   ]
  ],
  "hooks": [
@@ -17,18 +17,25 @@
   }
  ],
  "premise": [
-  "Gotta tap 60 times to turn off my alarm",
-  "My alarm makes me pump up a balloon to turn it off"
+  {
+   "style": "gotta",
+   "text": "Gotta tap 60 times to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm makes you pump a balloon until it pops 🎈"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm wants 60 taps at midnight 😭"
+  }
  ],
  "summary": "In bed at 12:18; taps 60 times to inflate a balloon until it pops and the alarm stops.",
  "format": "pov",
  "moods": [],
- "sfx": [
-  {
-   "category": "alarm",
-   "at": 0.0,
-   "dur": 3.0
-  }
- ],
- "unusable": false
+ "unusable": false,
+ "dismiss_at": 49.0,
+ "bed": {
+  "category": "alarm"
+ }
 }

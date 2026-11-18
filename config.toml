@@ -13,17 +13,21 @@ reports = "reports"        # weekly reports + dashboard (committed)
 port = 8787
 # Public base URL that Tailscale Funnel exposes, e.g. https://my-mac.tail1234.ts.net
 # Set PUBLIC_BASE_URL in .env (preferred) or here.
-public_base_url = ""
+public_base_url = "https://raw.githubusercontent.com/Kairoapps/VDOs/publish"   # Buffer downloads videos from here
+
+[buffer]
+organization_id = "6acd0dec0ee270b5947c74de"
+channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2fe9157f", youtube = "6ad5c498778b240e2f557a0c" }
 
 [posting]
 posts_per_day = 3
 timezone = "America/New_York"
-min_gap_hours = 4
+min_gap_hours = 3.5
 platforms = ["instagram", "tiktok", "youtube"]
 # Same variant goes to all three platforms in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
-default_slots = ["08:30", "13:00", "19:00"]
+default_slots = ["08:30", "12:30", "16:30"]
 
 [reuse]
 max_uses = 3            # lifetime uses before a clip retires
@@ -76,7 +80,7 @@ active = "time_slot"     # "time_slot" | "hashtag_set" | "none"
 
 [experiments.time_slot]
 # Candidate local times; 3 are used per day, rotated for equal exposure.
-arms = ["08:30", "12:30", "16:30", "19:00", "21:30"]
+arms = ["08:30", "09:30", "12:30", "13:00", "16:30", "17:00"]   # kept between 8:30am and 5pm
 
 [experiments.hashtag_set]
 # Keep IG to 3-5 tags. TikTok/YouTube can take the same set.

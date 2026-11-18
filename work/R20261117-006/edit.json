@@ -3,7 +3,7 @@
  "keep": [
   [
    7.0,
-   50.0
+   50.2
   ]
  ],
  "hooks": [
@@ -17,18 +17,25 @@
   }
  ],
  "premise": [
-  "Gotta walk 200 steps to turn off this alarm",
-  "My alarm won't stop until I walk 200 steps"
+  {
+   "style": "gotta",
+   "text": "Gotta walk 200 steps to turn off my alarm 😭😭😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm makes you walk 200 steps 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm won't stop until I walk 200 steps 😭"
+  }
  ],
  "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",
  "format": "pov",
  "moods": [],
- "sfx": [
-  {
-   "category": "alarm",
-   "at": 0.0,
-   "dur": 3.0
-  }
- ],
- "unusable": false
+ "unusable": false,
+ "dismiss_at": 48.2,
+ "bed": {
+  "category": "alarm"
+ }
 }
