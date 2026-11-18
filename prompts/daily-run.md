@@ -66,7 +66,7 @@ python3 -m vdos alerts --ack
 python3 -m vdos dashboard
 ```
 If `notify` is true, one push notification: inventory ("X days of clips left — record ~N, best: <shot_list>") when `heads_up`/`urgent`/`empty`, clips retired / made evergreen, failed posts. If `urgent`/`empty` and no "Record clips (VDOs)" event in the next 3 days, add a 45-min Google Calendar event on the next free evening with the shot list.
-Publish `reports/dashboard.html` to the dashboard artifact (slug in `reports/dashboard_artifact.txt`; create once if missing and save the slug there).
+Publish `reports/dashboard.html` to the dashboard artifact with publish_files (as index.html; slug in `reports/dashboard_artifact.txt`, base_version from get_artifact). Always republish to that slug, never create a new one.
 
 ## 6. Save
 
