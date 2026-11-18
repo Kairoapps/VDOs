@@ -40,6 +40,8 @@ Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
 **The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `sounds/<category>/` (default `alarm`) that loops from the first frame (short sounds repeat with a smooth crossfade) and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
 
+**speed** (optional): leave it out and long cuts are sped up automatically (over 30 s → 1.25–1.3x; see README "Speed guidelines"). Set e.g. `"speed": 1.3` only to force it.
+
 **premise**: the title shown at the top for the whole video: white bold text with a thick black outline, emojis allowed and encouraged (😭💀🧠🎈). Write one per **title style** so variants test styles against each other; the weekly review learns which style wins:
 - `gotta`: "Gotta <challenge> to turn off my alarm 😭"
 - `pov`: "POV: your alarm makes you <challenge> 💀"

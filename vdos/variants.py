@@ -73,6 +73,16 @@ def _spans_from(keep: list, start: float, max_len: float) -> list[list[float]]:
     return out
 
 
+def _speed_for(raw_len: float, vcfg: dict, override: float | None, k: int) -> float:
+    """Long cuts get sped up (1.25-1.3x), short ones stay near real time. edit.json "speed" overrides."""
+    lo, hi = vcfg.get("speed_min", 1.0), vcfg.get("speed_max", 1.3)
+    if override:
+        return round(min(hi, max(lo, float(override))), 2)
+    base = next((s for limit, s in vcfg.get("speed_rules", [[9999, 1.0]]) if raw_len <= limit), 1.0)
+    jit = vcfg.get("speed_jitter", [0.0])
+    return round(min(hi, max(lo, base + jit[k % len(jit)])), 2)
+
+
 def _out_time(spans: list, speed: float, src_t: float | None) -> float:
     """Map a source time onto the edited video's timeline (end of video if None or cut out)."""
     total = sum(b - a for a, b in spans) / speed
@@ -199,8 +209,10 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 mood = weights.choose(con, "music_mood", sorted({t["mood"] for t in pool}), rng=rng)
                 track = rng.choice([t for t in pool if t["mood"] == mood])
                 used_tracks.add(track["id"])
-            speed = vcfg["speeds"][(existing + i) % len(vcfg["speeds"])]
-            spans = _spans_from(edit["keep"], float(hook.get("start", 0)), rcfg["max_len"] * speed)
+            start = float(hook.get("start", 0))
+            raw_len = sum(b - a for a, b in _spans_from(edit["keep"], start, 10_000))  # cut length at 1x
+            speed = _speed_for(raw_len, vcfg, edit.get("speed"), existing + i)
+            spans = _spans_from(edit["keep"], start, rcfg["max_len"] * speed)
             length = sum(b - a for a, b in spans) / speed
             if length < min(rcfg["min_len"], clip["duration_s"] * 0.8):
                 spans = _spans_from(edit["keep"], edit["keep"][0][0], rcfg["max_len"] * speed)

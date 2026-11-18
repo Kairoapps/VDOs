@@ -44,7 +44,10 @@ The worker renders these within ~15 minutes; new clips join the plan from the ne
 python3 -m vdos plan
 ```
 
-Every slot's `video_url` must be set (if `PUBLIC_BASE_URL` is missing from `.env`, stop scheduling and report it). If `curl -sfI <video_url>` works from this shell, use it to confirm a 200; if this shell's network can't reach the URL at all, skip the check.
+**Hosting the videos.** `PUBLIC_BASE_URL` in `.env` decides where Buffer downloads from:
+- `https://raw.githubusercontent.com/Kairoapps/VDOs/publish` (current setup): before creating posts, put each slot's file on the `publish` branch. Stage the slot files from `<repo>/media/edited/` with `device_stage_files`, attach the repo with `add_repo` (owner `Kairoapps`, repo `VDOs`, access `push`), clone only the `publish` branch (`git clone --depth 1 -b publish https://github.com/Kairoapps/VDOs pub`), copy the files in as plain git files (not LFS), commit and push. Check each URL with `curl -sI` (expect 200 and a content-length) from the cloud shell.
+- A `https://….ts.net` address (Tailscale Funnel): the Mac serves the files itself; no upload needed.
+Never create a post whose video URL doesn't answer 200.
 
 For each slot, write a caption per platform in Chika's voice (`prompts/voice.md`, plus `references/style.md`), using the slot's `summary`, `transcript`, `topic`, `format`, `hook_type`, `overlay_text` and `caption_text` (the line already on screen; the caption can echo it with emojis, e.g. "Gotta walk 200 steps to turn off this alarm 😭😭😭", but shouldn't just repeat it):
 - **Instagram:** a 1-line hook, 1–2 short lines of context, a soft CTA, then the slot's `hashtags` (3–5).

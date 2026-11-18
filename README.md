@@ -30,4 +30,18 @@ Put the `https://….ts.net` address it prints into `.env` as `PUBLIC_BASE_URL`.
 | `reports/` | weekly reports and the dashboard |
 | `config.toml` | posting times, reuse limits, experiments |
 
+## Speed guidelines
+
+Long cuts get sped up a little so they feel snappy without looking fake. The original audio is muted, so nothing sounds chipmunked.
+
+| Cut length at normal speed | Speed | Example: 40 s cut becomes |
+|---|---|---|
+| up to 20 s | 1.0x (real time) | — |
+| 20–30 s | ~1.1–1.15x | — |
+| over 30 s | **1.25–1.3x** | ~31–32 s |
+
+- Never slower than 1.0x or faster than 1.3x; each version of a clip gets a slightly different speed so the weekly review can learn what works.
+- Set `"speed": 1.3` in a clip's `work/<clip>/edit.json` to force a speed for that clip.
+- Tunable in `config.toml` under `[variants]` (`speed_rules`, `speed_jitter`, `speed_max`).
+
 File names follow [docs/naming.md](docs/naming.md). Full details: [docs/how-it-works.md](docs/how-it-works.md). Keep this repo private.

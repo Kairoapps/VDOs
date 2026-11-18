@@ -57,7 +57,12 @@ max_len = 45
 per_clip = 3
 caption_styles = ["pop", "minimal", "karaoke"]   # word-by-word styles, used when the clip has speech
 hook_types = ["question", "bold_claim", "mid_action", "text_overlay"]
-speeds = [1.0, 1.05, 0.95, 1.1]
+# Speed by how long the cut is at normal speed (see README "Speed guidelines").
+# [up_to_seconds, speed]: the first row whose limit the cut fits under wins.
+speed_rules = [[20, 1.0], [30, 1.12], [9999, 1.27]]
+speed_jitter = [0.0, 0.03, -0.02]   # small per-variant nudge so versions differ (long cuts: 1.25-1.3x)
+speed_min = 1.0                      # never slow a clip down
+speed_max = 1.3
 
 [analysis]
 min_posts_per_value = 6
