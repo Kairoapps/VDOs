@@ -1,4 +1,4 @@
-# VDOs weekly review (cloud, Sunday evening)
+# VDOs weekly review (cloud, Sunday 12:00am ET)
 
 Same setup as `prompts/daily-run.md` step 0 (clone without media, pillow, `VDOS_ROOT`). Don't stop to ask questions.
 

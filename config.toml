@@ -28,7 +28,7 @@ platforms = ["instagram", "tiktok", "youtube"]
 # Same variant goes to all three platforms in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
-default_slots = ["08:30", "12:30", "16:30"]
+default_slots = ["08:30", "12:30", "16:30"]   # posting window: 8:30am-8:30pm Eastern
 
 [compress]
 # The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).
@@ -89,7 +89,7 @@ active = "time_slot"     # "time_slot" | "hashtag_set" | "none"
 
 [experiments.time_slot]
 # Candidate local times; 3 are used per day, rotated for equal exposure.
-arms = ["08:30", "09:30", "12:30", "13:00", "16:30", "17:00"]   # kept between 8:30am and 5pm
+arms = ["08:30", "09:30", "12:30", "13:00", "16:30", "17:00", "19:00", "20:30"]   # kept between 8:30am and 8:30pm
 
 [experiments.hashtag_set]
 # Keep IG to 3-5 tags. TikTok/YouTube can take the same set.

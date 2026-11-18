@@ -1,11 +1,11 @@
-# VDOs daily run (cloud)
+# VDOs daily run (cloud, 12:00am ET)
 
 Runs entirely in Claude's cloud — Chika's Mac does not need to be on. Don't stop to ask questions; make the best call, keep going, note it in the summary.
 
 **Where things live**
 - GitHub `Kairoapps/VDOs` (public) `main`: code, raw clips (`media/raw/`, Git LFS, uploaded by the Mac), sounds, references, the database (`data/ledger.sqlite`), edits (`work/`), reports.
 - Branch `publish`: the rendered videos Buffer downloads (`https://raw.githubusercontent.com/Kairoapps/VDOs/publish/<file>`).
-- This run renders new clips, schedules Buffer, then saves the database/edits back to `main`.
+- It runs at midnight Eastern and schedules the day that just started (`vdos plan` defaults to today in Eastern time). This run renders new clips, schedules Buffer, then saves the database/edits back to `main`.
 
 ## 0. Setup
 
@@ -48,7 +48,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 5pm Eastern (config). Buffer's plan allows 10 scheduled posts at once: schedule only today (3 slots × 3 platforms) and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). Buffer's plan allows 10 scheduled posts at once: schedule only today (3 slots × 3 platforms) and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `caption_text` (the on-screen title; echo it, don't just repeat it):
 - **Instagram:** a hook line, a short line with a soft CTA ("unsnooze makes you actually get up. link in bio"), then the slot's hashtags.
