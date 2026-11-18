@@ -31,7 +31,7 @@ default_slots = ["08:30", "12:30", "16:30"]
 
 [reuse]
 max_uses = 3            # lifetime uses before a clip retires
-min_days_between = 7    # spacing between uses of the same clip
+min_days_between = 1    # a clip never posts twice on the same day; otherwise reuse any time
 evergreen_max_uses = 5
 music_min_days_between = 5
 

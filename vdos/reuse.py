@@ -133,8 +133,9 @@ def inventory(con, horizon: int = 60) -> dict:
              else "heads_up" if days < cfg["inventory"]["heads_up_days"] else "healthy")
     clips_needed = 0
     if level != "healthy":
-        # each new clip adds at most one slot per `gap` days -> clips needed to sustain per_day for 7 days
-        clips_needed = max(1, per_day * min(gap, 7) - len([p for p in pool.values() if p["left"] > 0]))
+        # enough new clips to cover `heads_up_days` of posting
+        short = per_day * cfg["inventory"]["heads_up_days"] - remaining_uses
+        clips_needed = max(1, -(-short // cfg["reuse"]["max_uses"]))
     return {"days": days, "level": level, "remaining_uses": remaining_uses, "active_clips": len(pool),
             "clips_needed": clips_needed,
             "covered_through": (today + timedelta(days=days - 1)).isoformat() if days else None,

@@ -67,8 +67,8 @@ See [naming.md](naming.md).
 
 ## Rules (config.toml)
 
-- **Reuse:** a use = one daily slot (the same variant goes to all 3 platforms). Max 3 uses per clip, ≥7 days apart; top performers become *evergreen* (cap 5). A use counts once Buffer reports a post sent.
-- **Inventory:** days of posting the library covers. Under 7 days → heads-up; under 3 → urgent push + calendar event; 0 → posting skipped. Posting 3/day with a 7-day gap needs ~21 clips in rotation, i.e. about 7 new clips a week.
+- **Reuse:** a use = one daily slot (the same variant goes to all 3 platforms). Max 3 uses per clip, never twice on the same day; top performers become *evergreen* (cap 5). A use counts once Buffer reports a post sent.
+- **Inventory:** days of posting the library covers. Under 7 days → heads-up; under 3 → urgent push + calendar event; 0 → posting skipped. Each clip gives 3 posts, so posting 3/day uses up about 1 clip a day (~7 new clips a week).
 - **Experiments:** one variable at a time (`time_slot` first, then `hashtag_set`), rotated for equal exposure; an arm needs ≥6 posts before it can win.
 - **Scoring:** each post's 7-day views percentile within its platform (70%) + shares/saves rate percentile (30%). Weights: 70% to winners with enough data, 30% exploration.
 
