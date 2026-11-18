@@ -29,6 +29,14 @@ same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
 default_slots = ["08:30", "12:30", "16:30"]
 
+[compress]
+# The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).
+enabled = true
+width = 1080   # final videos are 1080x1920
+fps = 30
+crf = 23       # lower = better quality / bigger file
+min_age_seconds = 60   # leave files alone while they are still being copied in
+
 [reuse]
 max_uses = 3            # lifetime uses before a clip retires
 min_days_between = 1    # a clip never posts twice on the same day; otherwise reuse any time

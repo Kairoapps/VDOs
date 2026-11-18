@@ -10,6 +10,8 @@ All audio lives in sounds/<category>/:
 from __future__ import annotations
 
 import re
+import shutil
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -42,8 +44,10 @@ def canonical_rename(raw: Path, retired: Path) -> list[dict]:
     taken = {f.stem.split("__")[0] for d in (raw, retired) if d.exists() for f in d.iterdir() if CANON.match(f.stem)}
     out = []
     for f in sorted(raw.iterdir()):
-        if not f.is_file() or f.suffix.lower() not in VIDEO_EXT or CANON.match(f.stem):
+        if not f.is_file() or f.suffix.lower() not in VIDEO_EXT or CANON.match(f.stem) or ".part" in f.name:
             continue
+        if time.time() - f.stat().st_mtime < config.load().raw.get("compress", {}).get("min_age_seconds", 60):
+            continue  # still being copied in
         try:
             info = media.probe(f)
         except Exception as e:
@@ -57,10 +61,51 @@ def canonical_rename(raw: Path, retired: Path) -> list[dict]:
             seq += 1
         cid = f"R{date_str}-{seq:03d}"
         taken.add(cid)
+        cc = config.load().raw.get("compress", {})
+        if cc.get("enabled"):
+            new_name = f"{cid}__{topic}.mp4"
+            try:
+                before = f.stat().st_size
+                compress(f, raw / new_name, cc, info)
+                _to_trash(f)
+                out.append({"file": f.name, "name": new_name, "mb_before": round(before / 1e6, 1),
+                            "mb_after": round((raw / new_name).stat().st_size / 1e6, 1)})
+            except Exception as e:
+                (raw / new_name).unlink(missing_ok=True)
+                taken.discard(cid)
+                out.append({"file": f.name, "result": "compress failed", "error": str(e)[-300:]})
+            continue
         new_name = f"{cid}__{topic}{f.suffix.lower()}"
         f.rename(raw / new_name)
         out.append({"file": f.name, "name": new_name})
     return out
+
+
+def compress(src: Path, dst: Path, cc: dict, info: dict) -> None:
+    """Re-encode a raw clip to H.264 at the post's resolution. Keeps audio and the capture date."""
+    tmp = dst.with_name(dst.stem + ".part.mp4")
+    media.run(["ffmpeg", "-v", "error", "-y", "-i", str(src),
+               "-vf", f"scale='min({cc.get('width', 1080)},iw)':-2,fps={cc.get('fps', 30)}",
+               "-c:v", "libx264", "-preset", "veryfast", "-crf", str(cc.get("crf", 23)), "-pix_fmt", "yuv420p",
+               "-c:a", "aac", "-b:a", "128k", "-map_metadata", "0", "-movflags", "+faststart", str(tmp)])
+    got = media.probe(tmp).get("duration") or 0
+    want = info.get("duration") or 0
+    if want and abs(got - want) > 1.0:
+        tmp.unlink(missing_ok=True)
+        raise RuntimeError(f"duration mismatch {got} vs {want}")
+    tmp.rename(dst)
+
+
+def _to_trash(f: Path) -> None:
+    """Move the original to the macOS Trash (recoverable) instead of deleting it."""
+    trash = Path.home() / ".Trash"
+    if trash.is_dir():
+        dest = trash / f.name
+        if dest.exists():
+            dest = trash / f"{f.stem}-{int(time.time())}{f.suffix}"
+        shutil.move(str(f), dest)
+    else:
+        f.unlink()
 
 
 def ingest_clips() -> list[dict]:
