@@ -5,8 +5,8 @@ Turns raw Ray-Ban Meta clips into 3 short videos a day on Instagram Reels, TikTo
 ## How it works
 
 1. **You** drop clips into `media/raw/` on your Mac. The Mac only names them and uploads them to GitHub (every 15 min).
-2. **Claude's daily cloud run** (6:00 am ET, no laptop needed) edits new clips (muted audio, an alarm that stops the moment you finish the challenge, an emoji title), renders 3 versions of each, puts the videos on the `publish` branch, and schedules 3 posts in Buffer for Instagram, TikTok and YouTube. Each clip is used at most 3 times, a week apart.
-3. **Claude's weekly cloud run** (Sunday afternoon) checks what performed best (video type, title style, sound, length, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
+2. **Claude's daily cloud run** (10:05pm ET, plans the next day; no laptop needed) edits new clips (muted audio, an alarm that stops the moment you finish the challenge, an emoji title), renders 3 versions of each, puts the videos on the `publish` branch, and schedules 3 posts in Buffer for Instagram, TikTok and YouTube. Each clip is used at most 3 times, never twice in one day.
+3. **Claude's weekly cloud run** (Sunday 2:41pm ET) checks what performed best (video type, title style, sound, length, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
 
 ## Setup (once, on your Mac)
 
