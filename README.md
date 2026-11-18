@@ -37,8 +37,8 @@ Long cuts get sped up a little so they feel snappy without looking fake. The ori
 | Cut length at normal speed | Speed | Example: 40 s cut becomes |
 |---|---|---|
 | up to 20 s | 1.0x (real time) | — |
-| 20–30 s | ~1.1–1.15x | — |
-| over 30 s | **1.25–1.3x** | ~31–32 s |
+| 20–30 s | ~1.25–1.3x | — |
+| over 30 s | **1.3–1.5x** | ~31–32 s |
 
 - Never slower than 1.0x or faster than 1.3x; each version of a clip gets a slightly different speed so the weekly review can learn what works.
 - Set `"speed": 1.3` in a clip's `work/<clip>/edit.json` to force a speed for that clip.
