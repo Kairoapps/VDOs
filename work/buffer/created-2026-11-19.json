@@ -1,0 +1,91 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-006__v1",
+   "scheduled_at": "2026-11-19T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6afe8348f6b6aa0cd4a21348",
+     "caption": "pacing the hallway at 3am counting steps because my alarm refuses to stop until i hit 200\nunsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6afe834959eff0b616e035ab",
+     "caption": "200 steps before my alarm lets me live #dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6afe83493802f5b9fc6b7cf1",
+     "caption": "My alarm won't stop until I walk 200 steps 😭 | my alarm won't turn off until i walk 200 steps. this is unsnooze, the alarm that makes you actually get up.\n#dayinthelife #pov #college #shorts",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-004__v1",
+   "scheduled_at": "2026-11-19T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6afe834a46636f319e8b8a32",
+     "caption": "shaking my phone like it owes me money just so my alarm will stop\nunsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6afe834bf6b6aa0cd4a214e1",
+     "caption": "50 shakes or the alarm keeps going. no other options #dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6afe834c749099bdc70ffeef",
+     "caption": "Shaking my phone 50 times to stop my alarm 😭 | the only way to turn this alarm off is to shake my phone 50 times. this is unsnooze, the alarm that makes you actually get up.\n#dayinthelife #pov #college #shorts",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-001__v1",
+   "scheduled_at": "2026-11-19T20:30:00-05:00",
+   "time_slot": "20:30",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6afe834c46636f319e8b8aa6",
+     "caption": "two rounds of a color memory game before my alarm would let me go\nunsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6afe834d3802f5b9fc6b807d",
+     "caption": "pop quiz at 3:31am, courtesy of my alarm #dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6afe834eb16549e9b82662da",
+     "caption": "My alarm made me pass a memory test at 3am 🧠 | memorize the color sequence or the alarm keeps going. two rounds. this is unsnooze, the alarm that makes you actually get up.\n#dayinthelife #pov #college #shorts",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
