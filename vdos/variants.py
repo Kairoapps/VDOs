@@ -12,6 +12,7 @@ edit.json (written by Claude after reading work/<clip>/context.md and frames, or
     {"type": "question", "start": 0.0, "text": "Would you train like this?"}
   ],
   "moods": ["hype", "chill"],           # music subfolders that fit; [] = no music
+  "alarm_at": 6.0,                      # optional: source second the alarm starts ringing (silent before it)
   "unusable": false
 }
 """
@@ -191,7 +192,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 used_beds.add(b["id"])
                 sfx_ids.append(b["id"])
                 bed = {"path": str(cfg.path("sfx") / b["id"]), "lufs": b["lufs"], "dur": b["duration_s"],
-                       "dismiss_src": edit.get("dismiss_at")}
+                       "dismiss_src": edit.get("dismiss_at"), "alarm_src": edit.get("alarm_at")}
             for s in sfx_plan:
                 rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (s.get("category", "alarm"),)).fetchall()
                 if not rows:
@@ -224,7 +225,8 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "src": str(src_path), "segments": spans, "speed": speed,
                 "caption_style": style if (tr["words"] or use_premise) else None, "hook_text": overlay,
                 "words": tr["words"], "caption_text": caption_text, "sfx": sfx_list, "src_lufs": src_lufs,
-                "bed": dict(bed, end=_out_time(spans, speed, bed["dismiss_src"])) if bed else None,
+                "bed": dict(bed, end=_out_time(spans, speed, bed["dismiss_src"]),
+                            start=_out_time(spans, speed, bed["alarm_src"]) if bed.get("alarm_src") is not None else 0.0) if bed else None,
                 "has_audio": bool(clip["has_audio"]),
                 "track": str(cfg.path("music") / track["id"]) if track else None,
                 "track_lufs": track["lufs"] if track else None,

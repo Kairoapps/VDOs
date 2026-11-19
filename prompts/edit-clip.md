@@ -25,7 +25,7 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 }
 ```
 
-**topic**: short lowercase noun for the subject (`gym`, `campus`, `cooking`, `coding`, `city`, `build`…). Keep the file-name topic unless it's clearly wrong; reuse existing topics rather than inventing near-duplicates.
+**topic**: the Unsnooze challenge shown on the phone screen. Uploads don't say which challenge it is (the file name says `misc`), so **always work it out from the frames** and set it here: `memory` (color/sequence game), `pushup`, `shake`, `tap`, `walk` (step count), `squat`. A new challenge gets a short lowercase noun; reuse existing topics rather than inventing near-duplicates. This value replaces the file-name topic everywhere.
 
 **format** (pick one): `pov` (first-person moment / day-in-the-life), `tutorial` (shows how to do something), `storytime` (talking, narrative), `montage` (cuts set to music, little speech), `reaction`, `before_after`.
 
@@ -39,6 +39,14 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
 **The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `sounds/<category>/` (default `alarm`) that loops from the first frame (short sounds repeat with a smooth crossfade) and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
+
+**Sus setups (on purpose)**: some clips open with Chika scrolling something that looks suspicious (e.g. feet pics) *before* the alarm goes off; the alarm interrupting is the joke. Recognize these from the frames (a few seconds of browsing/watching the phone before the alarm screen appears). For them:
+- This is intentional comedy, not private content: don't mark it `unusable` and don't cut the setup. Keep it short (2–5 s, the clearest glimpse), then the alarm.
+- Set **`alarm_at`**: the source second the alarm screen first appears. The video stays silent before it and the alarm bed starts there (until `dismiss_at` as usual).
+- Every hook must start at or before the setup (`start` ≤ first setup second); use `mid_action` from the setup, not a later point.
+- Titles play on getting caught, e.g. `caught`: "my alarm caught me in 4k 💀", `pov`: "POV: your alarm goes off at the worst possible moment 😭", plus one `crashing_out`. Keep it innuendo-level; never describe what's on screen explicitly.
+- Note `"sus": true` in edit.json so the weekly review can compare these against normal clips.
+- If the screen is actually explicit (nudity, sexual acts) or shows a real stranger identifiably, cut that part; if nothing usable is left, `unusable: true`.
 
 **speed** (optional): leave it out and long cuts are sped up automatically (over 30 s → 1.25–1.3x; see README "Speed guidelines"). Set e.g. `"speed": 1.3` only to force it.
 

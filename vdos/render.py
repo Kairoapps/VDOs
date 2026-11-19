@@ -50,16 +50,18 @@ def render(spec: dict, out_path: Path) -> Path:
             inputs += ["-i", str(title_png)]
             title_idx = idx
             idx += 1
-        bed = spec.get("bed")  # looping sound (the alarm) from 0 until bed["end"] (output seconds)
+        bed = spec.get("bed")  # looping sound (the alarm) from bed["start"] (default 0) until bed["end"] (output seconds)
         bed_idx, bed_n, bed_xf = [], 1, 0.0
         if bed:
             import math
             bed_end = min(dur, max(0.3, float(bed["end"])))
+            bed_start = max(0.0, min(float(bed.get("start") or 0), bed_end - 0.3))
+            bed_len = bed_end - bed_start
             sd = float(bed.get("dur") or 0)
-            if sd and sd < bed_end + 0.05:
+            if sd and sd < bed_len + 0.05:
                 # Too short: play it again, crossfading each repeat into the next so seams blend.
                 bed_xf = round(min(0.5, sd / 4), 3)
-                bed_n = min(40, math.ceil((bed_end - bed_xf) / max(0.2, sd - bed_xf)) + 1)
+                bed_n = min(40, math.ceil((bed_len - bed_xf) / max(0.2, sd - bed_xf)) + 1)
             for _ in range(bed_n):  # separate inputs (asplit + acrossfade stalls on one stream)
                 inputs += ["-i", str(Path(bed["path"]).resolve())]
                 bed_idx.append(idx)
@@ -107,7 +109,7 @@ def render(spec: dict, out_path: Path) -> Path:
         else:
             f.append(f"[{null_idx}:a]atrim=duration={dur:.3f}[voice]")
         if bed_idx:
-            end = bed_end
+            end = bed_len
             g = r["sfx_lufs"] - (bed.get("lufs") if bed.get("lufs") is not None else -14)
             for k, i in enumerate(bed_idx):
                 f.append(f"[{i}:a]aresample=48000,aformat=channel_layouts=stereo[bp{k}]")
@@ -117,7 +119,9 @@ def render(spec: dict, out_path: Path) -> Path:
                 prev = f"bx{k}"
             src = f"[{prev}]anull"
             f.append(f"{src},atrim=duration={end:.3f},asetpts=PTS-STARTPTS,"
-                     f"volume={g:.1f}dB,afade=t=out:st={max(0, end - 0.06):.3f}:d=0.06,apad=whole_dur={dur:.3f}[bed]")
+                     f"volume={g:.1f}dB,afade=t=out:st={max(0, end - 0.06):.3f}:d=0.06"
+                     + (f",adelay={int(bed_start * 1000)}:all=1" if bed_start > 0 else "")
+                     + f",apad=whole_dur={dur:.3f}[bed]")
             f.append("[voice][bed]amix=inputs=2:normalize=0:duration=first[voicebed]")
             bed_label = "voicebed"
         else:
