@@ -25,6 +25,8 @@ posts_per_day = 3
 timezone = "America/New_York"
 min_gap_hours = 3.5
 platforms = ["instagram", "tiktok", "youtube"]
+# Buffer lets YouTube take only 2 posts a day; YouTube skips the middle slot.
+platform_daily_max = { youtube = 2 }
 # Same variant goes to all three platforms in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).

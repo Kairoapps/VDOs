@@ -48,7 +48,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). Buffer's plan allows 10 scheduled posts at once: schedule only today (3 slots × 3 platforms) and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). Buffer's plan allows 10 scheduled posts at once: schedule only today and skip if today is already scheduled. Respect `posting.platform_daily_max`: YouTube takes at most 2 posts a day (Buffer refuses a 3rd), so post YouTube in the first and last slots only — 8 posts a day in total. Don't retry YouTube posts that failed with "daily posting limit".
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `caption_text` (the on-screen title; echo it, don't just repeat it):
 - **Instagram:** a hook line, a short line with a soft CTA ("unsnooze makes you actually get up. link in bio"), then the slot's hashtags.
