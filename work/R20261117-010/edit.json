@@ -1,0 +1,41 @@
+{
+ "topic": "shake",
+ "format": "pov",
+ "summary": "Alarm at 2:05; has to shake the phone like crazy until the challenge fills up to dismiss it.",
+ "keep": [
+  [
+   29.5,
+   54.5
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 29.5
+  },
+  {
+   "type": "mid_action",
+   "start": 42.0
+  }
+ ],
+ "dismiss_at": 52.3,
+ "premise": [
+  {
+   "style": "gotta",
+   "text": "Gotta shake my phone to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm only stops if you shake it like crazy 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because I'm shaking my phone at 2am 😭"
+  }
+ ],
+ "bed": {
+  "category": "alarm"
+ },
+ "moods": [],
+ "unusable": false
+}

@@ -1,0 +1,84 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-008__v1",
+   "scheduled_at": "2026-11-20T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6affd958738ce4635f8bde6d",
+     "caption": "had to type this whole sentence perfectly at 2am just to stop my alarm\nunsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6affd958ca85ebefb0fb2733",
+     "caption": "typing test at 2am because my alarm said so #dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6affd9597b0a126cebad82f3",
+     "caption": "My alarm gave me a typing test at 2am 💀 | Had to type a whole sentence perfectly just to turn off my alarm. That's Unsnooze, the alarm app that makes you actually get up.\n#shorts #dayinthelife #pov #college",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-003__v2",
+   "scheduled_at": "2026-11-20T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6affd95a7b0a126cebad833c",
+     "caption": "my alarm doesn't stop until i do pushups\nphone on the floor, me on the floor. unsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6affd95a7b0a126cebad836d",
+     "caption": "pushups at 3am because my alarm won't take no for an answer #dayinthelife #pov #college",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-005__v2",
+   "scheduled_at": "2026-11-20T19:00:00-05:00",
+   "time_slot": "19:00",
+   "hashtag_set": "tags-1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6affd95b4c1afd05def4f752",
+     "caption": "had to pump a balloon until it popped just to turn off my alarm 🎈\nunsnooze makes you actually get up. link in bio\n#dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6affd95c0f5eda1a57c40403",
+     "caption": "60 taps at midnight or the alarm keeps going #dayinthelife #pov #college",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6affd95c738ce4635f8bdf47",
+     "caption": "My alarm made me pop a balloon to turn it off 🎈 | 60 taps to pop the balloon or my alarm keeps ringing. That's Unsnooze, the alarm app that makes you actually get up.\n#shorts #dayinthelife #pov #college",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

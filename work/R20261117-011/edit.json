@@ -1,0 +1,41 @@
+{
+ "topic": "photo",
+ "format": "pov",
+ "summary": "Alarm at 2:21; wanders the halls hunting for a TV to photograph so the alarm stops.",
+ "keep": [
+  [
+   46.5,
+   86.5
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 46.5
+  },
+  {
+   "type": "mid_action",
+   "start": 56.0
+  }
+ ],
+ "dismiss_at": 84.3,
+ "premise": [
+  {
+   "style": "gotta",
+   "text": "Gotta find a TV to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm sends you on a TV hunt at 2am 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm made me search the whole building for a TV 😭"
+  }
+ ],
+ "bed": {
+  "category": "alarm"
+ },
+ "moods": [],
+ "unusable": false
+}

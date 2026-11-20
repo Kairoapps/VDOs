@@ -1,0 +1,41 @@
+{
+ "topic": "photo",
+ "format": "pov",
+ "summary": "Alarm goes off; walks down the hall to the bathroom to photograph the mirror and dismiss it (sus setup cut: TikTok creator's face visible).",
+ "keep": [
+  [
+   32.5,
+   58.0
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 32.5
+  },
+  {
+   "type": "mid_action",
+   "start": 41.5
+  }
+ ],
+ "dismiss_at": 55.4,
+ "premise": [
+  {
+   "style": "gotta",
+   "text": "Gotta find a mirror to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm makes you go find a mirror 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm won't stop until I find a mirror 😭"
+  }
+ ],
+ "bed": {
+  "category": "alarm"
+ },
+ "moods": [],
+ "unusable": false
+}

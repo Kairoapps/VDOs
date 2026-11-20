@@ -1,0 +1,41 @@
+{
+ "topic": "photo",
+ "format": "pov",
+ "summary": "Alarm goes off; has to walk to the bathroom and snap a photo of the sink to dismiss it (sus setup cut: TikTok creator's face visible).",
+ "keep": [
+  [
+   23.5,
+   48.0
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 23.5
+  },
+  {
+   "type": "mid_action",
+   "start": 36.0
+  }
+ ],
+ "dismiss_at": 45.8,
+ "premise": [
+  {
+   "style": "gotta",
+   "text": "Gotta find the sink to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm won't stop until you photograph a sink 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm sent me to the bathroom at 3am 😭"
+  }
+ ],
+ "bed": {
+  "category": "alarm"
+ },
+ "moods": [],
+ "unusable": false
+}

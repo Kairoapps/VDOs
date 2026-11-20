@@ -1,0 +1,41 @@
+{
+ "topic": "type",
+ "format": "pov",
+ "summary": "Alarm at 2:03; has to type out a whole motivational sentence perfectly to dismiss it.",
+ "keep": [
+  [
+   29.5,
+   64.5
+  ]
+ ],
+ "hooks": [
+  {
+   "type": "mid_action",
+   "start": 29.5
+  },
+  {
+   "type": "mid_action",
+   "start": 37.5
+  }
+ ],
+ "dismiss_at": 62.4,
+ "premise": [
+  {
+   "style": "gotta",
+   "text": "Gotta type a whole sentence to turn off my alarm 😭"
+  },
+  {
+   "style": "pov",
+   "text": "POV: your alarm gives you a typing test at 2am 💀"
+  },
+  {
+   "style": "crashing_out",
+   "text": "crashing out because my alarm wants perfect spelling at 2am 😭"
+  }
+ ],
+ "bed": {
+  "category": "alarm"
+ },
+ "moods": [],
+ "unusable": false
+}
