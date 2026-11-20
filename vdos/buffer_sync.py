@@ -76,6 +76,10 @@ def sync(payload: dict) -> dict:
             status = STATUS_MAP.get(str(p.get("status", "")).lower(), row["status"])
             sent_at = p.get("sentAt") or p.get("publishedAt") or p.get("sent_at")
             err = p.get("error") or (p.get("errors") and json.dumps(p["errors"])[:500]) or None
+            if isinstance(err, dict):  # Buffer now returns {"message": ...}
+                err = err.get("message") or json.dumps(err)[:500]
+            elif err is not None and not isinstance(err, str):
+                err = json.dumps(err)[:500]
             link = p.get("externalLink") or p.get("serviceLink") or p.get("link")
             con.execute("""UPDATE posts SET status=?, sent_at=COALESCE(?, sent_at), error=COALESCE(?, error),
                            external_url=COALESCE(?, external_url) WHERE id=?""",
