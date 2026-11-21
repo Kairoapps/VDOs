@@ -1,0 +1,93 @@
+{
+ "date": "2026-11-21",
+ "slots": [
+  {
+   "variant_id": "R20261117-008__v2",
+   "clip_id": "R20261117-008",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-008__v2__f06a41.mp4",
+   "file": "R20261117-008__v2__f06a41.mp4",
+   "scheduled_at": "2026-11-21T08:30:00-05:00",
+   "time_slot": "08:30",
+   "hashtag_set": "tags-1",
+   "hashtags": [
+    "#dayinthelife",
+    "#pov",
+    "#college"
+   ],
+   "topic": "type",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm wants perfect spelling at 2am \ud83d\ude2d",
+   "duration_s": 23.478,
+   "summary": "Alarm at 2:03; has to type out a whole motivational sentence perfectly to dismiss it.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3
+  },
+  {
+   "variant_id": "R20261117-004__v2",
+   "clip_id": "R20261117-004",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-004__v2__b7b8a6.mp4",
+   "file": "R20261117-004__v2__b7b8a6.mp4",
+   "scheduled_at": "2026-11-21T17:00:00-05:00",
+   "time_slot": "17:00",
+   "hashtag_set": "tags-1",
+   "hashtags": [
+    "#dayinthelife",
+    "#pov",
+    "#college"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "POV: your alarm only stops if you shake it 50 times \ud83d\udc80",
+   "duration_s": 22.571,
+   "summary": "Alarm in the lounge; shakes the phone hard until the shake challenge completes.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3
+  },
+  {
+   "variant_id": "R20261117-003__v3",
+   "clip_id": "R20261117-003",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-003__v3__4578fb.mp4",
+   "file": "R20261117-003__v3__4578fb.mp4",
+   "scheduled_at": "2026-11-21T20:30:00-05:00",
+   "time_slot": "20:30",
+   "hashtag_set": "tags-1",
+   "hashtags": [
+    "#dayinthelife",
+    "#pov",
+    "#college"
+   ],
+   "topic": "pushup",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta do pushups to turn off my alarm \ud83d\ude2d",
+   "duration_s": 36.633333,
+   "summary": "Alarm at 3:33; props the phone on the floor and does pushups in front of the camera to dismiss it.",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 9,
+  "level": "healthy",
+  "remaining_uses": 27,
+  "active_clips": 12,
+  "clips_needed": 0,
+  "covered_through": "2026-11-29",
+  "first_gap": "2026-11-30",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube"
+ ]
+}
