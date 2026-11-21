@@ -20,6 +20,7 @@ You decide the edit; the worker renders it. First read `references/style.md` and
     {"style": "crashing_out", "text": "crashing out because my alarm won't stop until I walk 200 steps 😭"}
   ],
   "bed": {"category": "alarm"},
+  "angle": "challenge",
   "moods": [],
   "unusable": false
 }
@@ -40,21 +41,29 @@ Overlay text: ≤ 6 words, no hashtags, no clickbait the clip doesn't pay off.
 
 **The sound**: the original clip audio is always muted. The soundtrack is the **bed**: a sound from `sounds/<category>/` (default `alarm`) that loops from the first frame (short sounds repeat with a smooth crossfade) and cuts off exactly at **`dismiss_at`** — the source second the challenge completes (the "Good morning/evening" screen appears). Find it frame by frame. End `keep` ~2 s after it so the video ends on the dismissed screen in silence. Variants rotate the alarm sound. Optional `sfx`: extra one-shot effects, `[{"category": "whoosh", "at": 1.5, "dur": 1.0}]` (seconds into the edited video).
 
+**angle** — the content angle, ranked weekly (which angles to record more of):
+- `challenge`: the plain challenge (alarm → do the challenge → dismissed).
+- `sus`: a sus setup before the alarm (see below).
+- `multi_challenge`: one alarm with several challenges back to back (e.g. memory game, then pushups, then a photo). Keep every challenge (trim each to its clearest seconds), set `dismiss_at` to the moment the **last** one completes, and play on the stacking in the titles: "my alarm made me do 3 challenges just to turn off 😭", "POV: your alarm has a whole obstacle course 💀".
+A clip can only have one angle; sus beats multi_challenge if it's both. New angles are fine (short snake_case).
+
 **Sus setups (on purpose)**: some clips open with Chika scrolling something that looks suspicious (e.g. feet pics) *before* the alarm goes off; the alarm interrupting is the joke. Recognize these from the frames (a few seconds of browsing/watching the phone before the alarm screen appears). For them:
 - This is intentional comedy, not private content: don't mark it `unusable` and don't cut the setup. Keep it short (2–5 s, the clearest glimpse), then the alarm.
 - Set **`alarm_at`**: the source second the alarm screen first appears. The video stays silent before it and the alarm bed starts there (until `dismiss_at` as usual).
 - Every hook must start at or before the setup (`start` ≤ first setup second); use `mid_action` from the setup, not a later point.
 - Titles play on getting caught, e.g. `caught`: "my alarm caught me in 4k 💀", `pov`: "POV: your alarm goes off at the worst possible moment 😭", plus one `crashing_out`. Keep it innuendo-level; never describe what's on screen explicitly.
-- Note `"sus": true` in edit.json so the weekly review can compare these against normal clips.
+- Set `"angle": "sus"` in edit.json so the weekly review can compare these against normal clips.
 - If the screen is actually explicit (nudity, sexual acts) or shows a real stranger identifiably, cut that part; if nothing usable is left, `unusable: true`.
 
-**speed** (optional): leave it out and long cuts are sped up automatically (over 30 s → 1.25–1.3x; see README "Speed guidelines"). Set e.g. `"speed": 1.3` only to force it.
+**speed** (optional): leave it out. Longer cuts are sped up more (up to 1.5x) and each version tests a speed level for its length (see README "Speed guidelines"). Set e.g. `"speed": 1.3` only to force it (that turns the speed test off for this clip).
 
 **premise**: the title shown at the top for the whole video: white bold text with a thick black outline, emojis allowed and encouraged (😭💀🧠🎈). Write one per **title style** so variants test styles against each other; the weekly review learns which style wins:
 - `gotta`: "Gotta <challenge> to turn off my alarm 😭"
 - `pov`: "POV: your alarm makes you <challenge> 💀"
 - `crashing_out`: "crashing out because my alarm <situation> 😭"
 - (new styles are fine — `me_when`, `nobody_warned_me`, … — give each a short snake_case name)
+
+**Emojis are tested too:** for each style write the same title three ways — no emoji, one emoji, and 2–3 emojis (e.g. "Gotta do pushups to turn off my alarm", "… 😭", "… 😭😭😭"). Variants pick the style first, then the emoji count, both weighted by results.
 
 Keep titles short (≤ 12 words, ≤ 2 lines on screen) so they don't cover the video; only state numbers/times that are visible in the clip (e.g. 3am only if the lock screen shows it). Leave `premise` out when the clip has speech you want captioned word by word.
 

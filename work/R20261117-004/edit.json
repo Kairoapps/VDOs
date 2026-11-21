@@ -1,41 +1,72 @@
 {
- "topic": "shake",
- "keep": [
-  [
-   33.5,
-   63.7
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 33.5
+  "topic": "shake",
+  "keep": [
+    [
+      33.5,
+      63.7
+    ]
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 33.5
+    },
+    {
+      "type": "mid_action",
+      "start": 40.0
+    }
+  ],
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 50 times to turn off my alarm 😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm only stops if you shake it 50 times 💀"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I have to shake my phone 50 times at 3am 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 50 times to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 50 times to turn off my alarm 😭😭😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm only stops if you shake it 50 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm only stops if you shake it 50 times 💀💀💀",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I have to shake my phone 50 times at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I have to shake my phone 50 times at 3am 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "summary": "Alarm in the lounge; shakes the phone hard until the shake challenge completes.",
+  "format": "pov",
+  "moods": [],
+  "unusable": false,
+  "dismiss_at": 61.7,
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 40.0
-  }
- ],
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta shake my phone 50 times to turn off my alarm 😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm only stops if you shake it 50 times 💀"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because I have to shake my phone 50 times at 3am 😭"
-  }
- ],
- "summary": "Alarm in the lounge; shakes the phone hard until the shake challenge completes.",
- "format": "pov",
- "moods": [],
- "unusable": false,
- "dismiss_at": 61.7,
- "bed": {
-  "category": "alarm"
- }
+  "angle": "challenge"
 }

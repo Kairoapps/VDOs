@@ -13,6 +13,7 @@ edit.json (written by Claude after reading work/<clip>/context.md and frames, or
   ],
   "moods": ["hype", "chill"],           # music subfolders that fit; [] = no music
   "alarm_at": 6.0,                      # optional: source second the alarm starts ringing (silent before it)
+  "angle": "challenge",                 # challenge | sus | multi_challenge (content angle, ranked weekly)
   "unusable": false
 }
 """
@@ -23,7 +24,7 @@ import random
 import secrets
 from datetime import datetime, timedelta, timezone
 
-from . import config, db, media, render, weights
+from . import config, db, labels, media, render, weights
 from .captions import PREMISE_STYLES
 
 FORMATS = ["pov", "tutorial", "storytime", "montage", "reaction", "before_after"]
@@ -74,14 +75,16 @@ def _spans_from(keep: list, start: float, max_len: float) -> list[list[float]]:
     return out
 
 
-def _speed_for(raw_len: float, vcfg: dict, override: float | None, k: int) -> float:
-    """Long cuts get sped up (1.25-1.3x), short ones stay near real time. edit.json "speed" overrides."""
-    lo, hi = vcfg.get("speed_min", 1.0), vcfg.get("speed_max", 1.3)
+def _speed_for(raw_len: float, vcfg: dict, override: float | None, level: str) -> float:
+    """Longer cuts get faster (up to 1.5x); `level` (base/faster/fastest) picks within the cut's length tier.
+    edit.json "speed" overrides."""
+    lo, hi = vcfg.get("speed_min", 1.0), vcfg.get("speed_max", 1.5)
     if override:
         return round(min(hi, max(lo, float(override))), 2)
-    base = next((s for limit, s in vcfg.get("speed_rules", [[9999, 1.0]]) if raw_len <= limit), 1.0)
-    jit = vcfg.get("speed_jitter", [0.0])
-    return round(min(hi, max(lo, base + jit[k % len(jit)])), 2)
+    levels = vcfg.get("speed_levels", ["base", "faster", "fastest"])
+    tier = next((opts for limit, opts in vcfg.get("speed_tiers", [[9999, [1.0]]]) if raw_len <= limit), [1.0])
+    i = min(levels.index(level) if level in levels else 0, len(tier) - 1)
+    return round(min(hi, max(lo, float(tier[i]))), 2)
 
 
 def _out_time(spans: list, speed: float, src_t: float | None) -> float:
@@ -129,8 +132,8 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
         if edit.get("unusable"):
             con.execute("UPDATE clips SET status='unusable' WHERE id=?", (clip_id,))
             return []
-        con.execute("UPDATE clips SET topic=?, format=? WHERE id=?",
-                    (edit.get("topic") or clip["topic"], edit.get("format") or "pov", clip_id))
+        con.execute("UPDATE clips SET topic=?, format=?, angle=? WHERE id=?",
+                    (edit.get("topic") or clip["topic"], edit.get("format") or "pov", labels.angle_of(edit), clip_id))
         existing = con.execute("SELECT COUNT(*) c FROM variants WHERE clip_id=?", (clip_id,)).fetchone()["c"]
         siblings = con.execute("SELECT caption_style, track_id, hook_type FROM variants WHERE clip_id=? AND active=1",
                                (clip_id,)).fetchall()
@@ -155,6 +158,12 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
         bed_rows = con.execute("SELECT * FROM sfx WHERE category=? ORDER BY id", (bed_cat,)).fetchall() if bed_cat else []
         used_beds = {s["sfx_ids"].split(",")[0] for s in con.execute(
             "SELECT sfx_ids FROM variants WHERE clip_id=? AND active=1 AND sfx_ids IS NOT NULL", (clip_id,))}
+        sib_more = con.execute("SELECT speed_level, cta_mode FROM variants WHERE clip_id=? AND active=1", (clip_id,)).fetchall()
+        used_levels = {s["speed_level"] for s in sib_more if s["speed_level"]}
+        used_ctas = {s["cta_mode"] for s in sib_more if s["cta_mode"]}
+        ccfg = cfg.get("cta") or {}
+        cta_modes = ccfg.get("modes", ["none"])
+        speed_levels = vcfg.get("speed_levels", ["base", "faster", "fastest"])
         sfx_plan = edit.get("sfx") or []
         used_sfx: set[str] = set()
         src_path = cfg.clip_path(clip["file_name"])
@@ -177,9 +186,11 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             caption_text, title_style = None, None
             if use_premise:
                 fresh_t = [p for p in premises if p["text"] not in used_texts]
-                if fresh_t:  # weighted by how each title style has performed
+                if fresh_t:  # weighted by how each title style (then emoji count) has performed
                     ts = weights.choose(con, "title_style", sorted({p["style"] for p in fresh_t}), rng=rng)
-                    pick_p = next(p for p in fresh_t if p["style"] == ts)
+                    same = [p for p in fresh_t if p["style"] == ts]
+                    eb = weights.choose(con, "title_emoji", sorted({labels.emoji_bucket(p["text"]) for p in same}), rng=rng)
+                    pick_p = next(p for p in same if labels.emoji_bucket(p["text"]) == eb)
                 else:
                     pick_p = premises[(existing + i) % len(premises)]
                 caption_text, title_style = pick_p["text"], pick_p["style"]
@@ -188,7 +199,11 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             bed = None
             if bed_rows:
                 pool = [x for x in bed_rows if x["id"] not in used_beds] or bed_rows
-                b = rng.choice(pool)
+                # weighted by how each sound type, then each sound, has performed
+                st = weights.choose(con, "sound_type", sorted({labels.sound_type(x["id"]) for x in pool}), rng=rng)
+                pool = [x for x in pool if labels.sound_type(x["id"]) == st]
+                bid = weights.choose(con, "sound", [x["id"] for x in pool], rng=rng)
+                b = next(x for x in pool if x["id"] == bid)
                 used_beds.add(b["id"])
                 sfx_ids.append(b["id"])
                 bed = {"path": str(cfg.path("sfx") / b["id"]), "lufs": b["lufs"], "dur": b["duration_s"],
@@ -208,14 +223,29 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             if tracks:
                 pool = [t for t in tracks if t["id"] not in used_tracks] or tracks
                 mood = weights.choose(con, "music_mood", sorted({t["mood"] for t in pool}), rng=rng)
-                track = rng.choice([t for t in pool if t["mood"] == mood])
+                tid = weights.choose(con, "track", [t["id"] for t in pool if t["mood"] == mood], rng=rng)
+                track = next(t for t in pool if t["id"] == tid)
                 used_tracks.add(track["id"])
             start = float(hook.get("start", 0))
             raw_len = sum(b - a for a, b in _spans_from(edit["keep"], start, 10_000))  # cut length at 1x
-            speed = _speed_for(raw_len, vcfg, edit.get("speed"), existing + i)
+            level = weights.choose(con, "speed_level", speed_levels, exclude=used_levels, rng=rng)
+            used_levels.add(level)
+            if used_levels >= set(speed_levels):
+                used_levels.clear()
+            speed = _speed_for(raw_len, vcfg, edit.get("speed"), level)
+            if edit.get("speed"):
+                level = "fixed"
+            cta_mode = weights.choose(con, "cta_mode", cta_modes, exclude=used_ctas, rng=rng)
+            used_ctas.add(cta_mode)
+            if used_ctas >= set(cta_modes):
+                used_ctas.clear()
+            cta_text = (weights.choose(con, "cta_text", ccfg.get("texts", []), rng=rng)
+                        if cta_mode != "none" and ccfg.get("texts") else None)
             spans = _spans_from(edit["keep"], start, rcfg["max_len"] * speed)
             length = sum(b - a for a, b in spans) / speed
             if length < min(rcfg["min_len"], clip["duration_s"] * 0.8):
+                raw_len = sum(b - a for a, b in _spans_from(edit["keep"], edit["keep"][0][0], 10_000))
+                speed = _speed_for(raw_len, vcfg, edit.get("speed"), level if level != "fixed" else "base")
                 spans = _spans_from(edit["keep"], edit["keep"][0][0], rcfg["max_len"] * speed)
                 length = sum(b - a for a, b in spans) / speed
             overlay = hook.get("text") if hook["type"] in ("bold_claim", "question", "text_overlay") and not use_premise else None
@@ -232,20 +262,32 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "track_lufs": track["lufs"] if track else None,
                 "track_offset": round(rng.uniform(0, max(0, (track["duration_s"] or 0) - length - 2)), 1) if track else 0,
                 "reframe": rcfg["reframe"],
+                "cta": {"text": cta_text, "mode": cta_mode,
+                        "start": (0.0 if cta_mode == "always" else
+                                  max(0.0, min(_out_time(spans, speed, edit.get("dismiss_at")) if edit.get("dismiss_at") else length,
+                                               length - float(ccfg.get("end_min_seconds", 3.0)))))}
+                if cta_text else None,
             }
             info = {"id": vid, "file": fname, "hook_type": hook["type"], "caption_style": spec["caption_style"],
                     "caption_text": caption_text, "title_style": title_style, "sfx": sfx_ids,
-                    "track": track["id"] if track else None, "speed": speed, "length": round(length, 1), "overlay": overlay}
+                    "track": track["id"] if track else None, "speed": speed, "speed_level": level,
+                    "cta": cta_mode, "cta_text": cta_text, "title_emoji": labels.emoji_bucket(caption_text) if caption_text else None,
+                    "sound_type": labels.sound_type(sfx_ids[0]) if sfx_ids else None,
+                    "length": round(length, 1), "overlay": overlay}
             if not dry_run:
                 render.render(spec, cfg.path("edited") / fname)
                 real = media.probe(cfg.path("edited") / fname)["duration"]
                 con.execute(
                     """INSERT INTO variants(id, clip_id, file_name, hook_type, caption_style, track_id, overlay_text, speed,
-                       start_s, duration_s, spec_json, created_at, sfx_ids, caption_text, title_style)
-                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                       start_s, duration_s, spec_json, created_at, sfx_ids, caption_text, title_style,
+                       sound_id, sound_type, speed_level, cta_mode, cta_text, title_emoji)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (vid, clip_id, fname, hook["type"], spec["caption_style"], info["track"], overlay, speed,
                      spans[0][0], real, json.dumps({k: v for k, v in spec.items() if k != "words"}), db.now_iso(),
-                     ",".join(sfx_ids) or None, caption_text, title_style))
+                     ",".join(sfx_ids) or None, caption_text, title_style,
+                     sfx_ids[0] if sfx_ids else (info["track"] or None),
+                     info["sound_type"] or (labels.sound_type(info["track"]) if info["track"] else None),
+                     level, cta_mode, cta_text, info["title_emoji"]))
                 info["length"] = round(real, 1)
             made.append(info)
         if not dry_run:

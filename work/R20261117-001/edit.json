@@ -1,45 +1,76 @@
 {
- "topic": "memory",
- "keep": [
-  [
-   28.0,
-   50.5
+  "topic": "memory",
+  "keep": [
+    [
+      28.0,
+      50.5
+    ],
+    [
+      53.5,
+      66.8
+    ]
   ],
-  [
-   53.5,
-   66.8
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 28.0
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 28.0
+    },
+    {
+      "type": "mid_action",
+      "start": 34.0
+    }
+  ],
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta beat a memory game to turn off my alarm 😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pass a memory test 🧠"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is quizzing me at 3am 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta beat a memory game to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta beat a memory game to turn off my alarm 😭😭😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pass a memory test",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pass a memory test 🧠🧠🧠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is quizzing me at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is quizzing me at 3am 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "summary": "Alarm goes off at 3:31; has to memorize and tap a color sequence (two rounds) to dismiss it.",
+  "format": "pov",
+  "moods": [],
+  "unusable": false,
+  "dismiss_at": 64.8,
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 34.0
-  }
- ],
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta beat a memory game to turn off my alarm 😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm makes you pass a memory test 🧠"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because my alarm is quizzing me at 3am 😭"
-  }
- ],
- "summary": "Alarm goes off at 3:31; has to memorize and tap a color sequence (two rounds) to dismiss it.",
- "format": "pov",
- "moods": [],
- "unusable": false,
- "dismiss_at": 64.8,
- "bed": {
-  "category": "alarm"
- }
+  "angle": "challenge"
 }

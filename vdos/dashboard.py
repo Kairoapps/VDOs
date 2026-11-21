@@ -14,7 +14,10 @@ LEVEL = {"healthy": ("good", "Healthy"), "heads_up": ("warning", "Heads-up"), "u
          "empty": ("critical", "Empty")}
 DIM_TITLES = {"topic_format": "Video type (topic × format)", "format": "Format", "hook_type": "Hook",
               "caption_style": "Caption style", "title_style": "Title style", "caption_text": "On-screen line", "music_mood": "Music mood", "sfx": "Sound effect", "track": "Track",
-              "length_bucket": "Length", "time_slot": "Time slot", "hashtag_set": "Hashtag set"}
+              "length_bucket": "Length", "time_slot": "Time slot", "hashtag_set": "Hashtag set",
+              "angle": "Content angle", "title_emoji": "Emojis in title", "cta_mode": "Call to action", "cta_text": "CTA wording",
+              "sound": "Sound", "sound_type": "Sound type", "speed_level": "Speed level (for its length)", "speed": "Speed",
+              "hashtag_count": "Hashtag count", "post_caption_style": "Post caption style", "post_emoji": "Emojis in post caption"}
 
 CSS = """
 :root{--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#8a8984;--grid:#e6e5e0;--bar:#2a78d6;--bar-weak:#b7d3f6;
@@ -87,19 +90,23 @@ def build(result: dict | None = None, out: Path | None = None) -> Path:
   <span class="badge"><span class="dot" style="background:var(--{'good' if failed == 0 else 'critical'})"></span>{'None' if failed == 0 else 'Check Buffer'}</span></div>
 </div>"""
     dims = "".join(f'<div class="card"><h2>{_e(DIM_TITLES[d])}</h2>{_bars(r["ranking"].get(d, []), d)}</div>'
-                   for d in ["topic_format", "format", "hook_type", "title_style", "caption_text", "sfx", "music_mood", "length_bucket", "time_slot", "hashtag_set"])
-    e = r["experiment"]
-    exp_rows = "".join(f"<tr><td>{_e(a['arm'])}</td><td>{_e(a['median'])}</td><td>{a['n']}</td></tr>" for a in e.get("arms", []))
-    exp = (f'<div class="card"><h2>Experiment: {_e(e.get("active"))}</h2>'
-           f'<table><thead><tr><th>Arm</th><th>Median score</th><th>Posts</th></tr></thead><tbody>{exp_rows}</tbody></table>'
-           f'<div class="note">{_e(e.get("recommendation", ""))}</div></div>')
+                   for d in ["topic_format", "angle", "title_style", "title_emoji", "caption_text", "cta_mode", "cta_text",
+                             "sound_type", "sound", "speed_level", "speed", "length_bucket", "time_slot", "hashtag_set",
+                             "hashtag_count", "post_caption_style", "post_emoji", "music_mood"])
+    exps = r["experiment"] if isinstance(r["experiment"], list) else [r["experiment"]]
+    exp = ""
+    for e in exps or [{"active": "none"}]:
+        exp_rows = "".join(f"<tr><td>{_e(a['arm'])}</td><td>{_e(a['median'])}</td><td>{a['n']}</td></tr>" for a in e.get("arms", []))
+        exp += (f'<div class="card"><h2>Experiment: {_e(e.get("active"))}</h2>'
+                f'<table><thead><tr><th>Arm</th><th>Median score</th><th>Posts</th></tr></thead><tbody>{exp_rows}</tbody></table>'
+                f'<div class="note">{_e(e.get("recommendation", ""))}</div></div>')
 
     def post_rows(items):
         return "".join(f"<tr><td>{_e(s['variant_id'])}</td><td>{_e(s['topic'])} × {_e(s['format'])}</td><td>{_e(s['hook_type'])}</td>"
-                       f"<td>{_e(s['caption_style'])}</td><td>{_e(s['music_mood'])}</td><td>{s['score']:.0f}</td>"
+                       f"<td>{_e(s.get('title_style'))}</td><td>{_e(s.get('sound_type'))} · {_e(s.get('speed'))} · CTA {_e(s.get('cta_mode'))}</td><td>{s['score']:.0f}</td>"
                        f"<td>{_e(', '.join(PLAT.get(k, k) + ' ' + str(int(v)) for k, v in s['views'].items()))}</td></tr>" for s in items) \
             or '<tr><td colspan="7" class="note">No scored posts this week.</td></tr>'
-    head = "<tr><th>Variant</th><th>Type</th><th>Hook</th><th>Captions</th><th>Music</th><th>Score</th><th>Views</th></tr>"
+    head = "<tr><th>Variant</th><th>Type</th><th>Hook</th><th>Title</th><th>Sound · speed · CTA</th><th>Score</th><th>Views</th></tr>"
     tops = (f'<div class="card"><h2>Top posts (7 days)</h2><table><thead>{head}</thead><tbody>{post_rows(r["top5"])}</tbody></table></div>'
             f'<div class="card"><h2>Bottom posts (7 days)</h2><table><thead>{head}</thead><tbody>{post_rows(r["bottom5"])}</tbody></table></div>')
     clip_rows = "".join(

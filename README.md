@@ -1,6 +1,6 @@
 # VDOs
 
-Turns raw Ray-Ban Meta clips into 3 short videos a day on Instagram Reels, TikTok and YouTube Shorts, posted through Buffer.
+Turns raw Ray-Ban Meta clips into short videos posted through Buffer every day: 4 on TikTok, 4 on Instagram Reels and 2 on YouTube Shorts.
 
 ## How it works
 
@@ -32,16 +32,24 @@ That installs the uploader. Nothing else needs to run on the Mac.
 
 ## Speed guidelines
 
-Long cuts get sped up a little so they feel snappy without looking fake. The original audio is muted, so nothing sounds chipmunked.
+Longer cuts get sped up more. The original audio is muted, so nothing sounds chipmunked. Each version of a clip picks a speed level (base / faster / fastest) for its length, weighted by results, so the weekly review learns how fast each length should go.
 
-| Cut length at normal speed | Speed | Example: 40 s cut becomes |
-|---|---|---|
-| up to 20 s | 1.0x (real time) | — |
-| 20–30 s | ~1.25–1.3x | — |
-| over 30 s | **1.3–1.5x** | ~31–32 s |
+| Cut length at normal speed | base | faster | fastest |
+|---|---|---|---|
+| up to 15 s | 1.0x | 1.05x | 1.1x |
+| 15–25 s | 1.05x | 1.15x | 1.25x |
+| 25–35 s | 1.2x | 1.3x | 1.4x |
+| over 35 s | 1.3x | 1.4x | **1.5x** |
 
-- Never slower than 1.0x or faster than 1.3x; each version of a clip gets a slightly different speed so the weekly review can learn what works.
+- Never slower than 1.0x or faster than 1.5x.
 - Set `"speed": 1.3` in a clip's `work/<clip>/edit.json` to force a speed for that clip.
-- Tunable in `config.toml` under `[variants]` (`speed_rules`, `speed_jitter`, `speed_max`).
+- Tunable in `config.toml` under `[variants]` (`speed_tiers`, `speed_max`).
+
+## What gets tested
+
+- **Every post:** time slot and hashtag set (both rotating evenly; 3–5 relevant tags), post caption style and emoji count.
+- **Every video version:** title style and emoji count, sound (and sound type: siren, ringtone, sci-fi…), speed level, and a green call to action under the title ("comment UNSNOOZE for the app": none / whole video / at the end) plus its wording.
+- **Every clip:** topic and content angle (`challenge`, `sus`, `multi_challenge`).
+The weekly review ranks all of these and shifts future choices toward winners (70%) while still exploring (30%).
 
 File names follow [docs/naming.md](docs/naming.md). Full details: [docs/how-it-works.md](docs/how-it-works.md). Keep this repo private.

@@ -6,10 +6,15 @@ import statistics
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-from . import config, db, reuse
+from . import config, db, labels, reuse
+from .scheduler import active_experiments
 
-DIMENSIONS = ["topic_format", "topic", "format", "hook_type", "caption_style", "title_style", "caption_text", "music_mood", "track",
-              "sfx", "length_bucket", "time_slot", "hashtag_set"]
+DIMENSIONS = ["topic_format", "topic", "format", "angle", "hook_type", "caption_style", "title_style", "title_emoji", "caption_text",
+              "cta_mode", "cta_text", "music_mood", "track", "sound", "sound_type", "speed_level", "speed", "length_bucket",
+              "time_slot", "hashtag_set", "hashtag_count", "post_caption_style", "post_emoji"]
+# What the weekly report / push summary lead with.
+REPORT_DIMS = ["topic_format", "angle", "title_style", "title_emoji", "cta_mode", "sound_type", "sound", "speed_level", "speed",
+               "length_bucket", "time_slot", "hashtag_set", "hashtag_count", "post_caption_style", "post_emoji", "music_mood"]
 
 
 def _pct(values: list[float], v: float) -> float:
@@ -33,6 +38,8 @@ def scored_slots(con, days: int = 30) -> list[dict]:
     since = (datetime.now(timezone.utc) - timedelta(days=days + target)).isoformat()
     posts = con.execute(
         """SELECT p.id, p.platform, p.slot_id, s.time_slot, s.hashtag_set, s.scheduled_at, s.variant_id,
+                  s.post_caption_style, s.post_emoji, v.sound_id, v.sound_type, v.speed, v.speed_level, v.cta_mode, v.cta_text,
+                  v.title_emoji, c.angle,
                   v.clip_id, v.hook_type, v.caption_style, v.title_style, v.caption_text, v.sfx_ids, v.track_id, v.duration_s, c.topic, c.format, t.mood
            FROM posts p JOIN slots s ON s.id=p.slot_id JOIN variants v ON v.id=s.variant_id
            JOIN clips c ON c.id=v.clip_id LEFT JOIN tracks t ON t.id=v.track_id
@@ -72,6 +79,12 @@ def scored_slots(con, days: int = 30) -> list[dict]:
             "caption_text": r0["caption_text"] or "none", "title_style": r0["title_style"] or "none", "sfx": r0["sfx_ids"] or "none",
             "music_mood": r0["mood"] or "none", "track": r0["track_id"] or "none",
             "length_bucket": _length_bucket(r0["duration_s"]), "time_slot": r0["time_slot"], "hashtag_set": r0["hashtag_set"],
+            "hashtag_count": str(len(cfg["experiments"]["hashtag_set"]["arms"].get(r0["hashtag_set"] or "", []))) + " tags",
+            "angle": r0["angle"] or "challenge", "title_emoji": r0["title_emoji"] or "none",
+            "cta_mode": r0["cta_mode"] or "none", "cta_text": r0["cta_text"] or "none",
+            "sound": r0["sound_id"] or "none", "sound_type": r0["sound_type"] or labels.sound_type(r0["sound_id"]),
+            "speed_level": r0["speed_level"] or "legacy", "speed": labels.speed_bucket(r0["speed"]),
+            "post_caption_style": r0["post_caption_style"] or "legacy", "post_emoji": r0["post_emoji"] or "legacy",
         })
     return out
 
@@ -134,12 +147,14 @@ def mark_evergreen(con, slots: list[dict]) -> list[str]:
     return out
 
 
-def experiment_status(slots: list[dict]) -> dict:
+def experiment_status(slots: list[dict]) -> list[dict]:
+    """Status of every rotating experiment (several can run at once)."""
+    return [_one_experiment(slots, v) for v in active_experiments() if v in ("time_slot", "hashtag_set")]
+
+
+def _one_experiment(slots: list[dict], var: str) -> dict:
     cfg = config.load()
     exp = cfg["experiments"]
-    var = exp["active"]
-    if var not in ("time_slot", "hashtag_set"):
-        return {"active": "none"}
     arms = exp[var]["arms"]
     arms = list(arms) if isinstance(arms, dict) else arms
     groups = defaultdict(list)
@@ -151,7 +166,7 @@ def experiment_status(slots: list[dict]) -> dict:
     ready = all(r["n"] >= min_n for r in rows)
     leader = max((r for r in rows if r["median"] is not None), key=lambda r: r["median"], default=None)
     return {"active": var, "arms": rows, "ready": ready, "leader": leader["arm"] if leader else None,
-            "recommendation": (f"Enough data: lock in {leader['arm']} and switch the experiment to the next variable."
+            "recommendation": (f"Enough data: lock in the winner(s) (leader {leader['arm']}) and take {var} out of experiments.active."
                                if ready and leader else "Keep rotating; not every arm has enough posts yet.")}
 
 
@@ -199,17 +214,18 @@ def report_md(r: dict) -> str:
         L += ["## Record more like this", *[f"- {s}" for s in r["shot_list"]],
               f"- Need about {inv['clips_needed']} new clips" if inv["clips_needed"] else "", ""]
     L += ["## What's working (median score 0–100; * = not enough data yet)"]
-    for dim in ["topic_format", "format", "hook_type", "caption_style", "music_mood", "length_bucket", "time_slot", "hashtag_set"]:
+    for dim in REPORT_DIMS:
         rows = r["ranking"].get(dim, [])
         if rows:
             L.append(f"- **{dim}:** " + ", ".join(f"{x['value']} {x['median']}{'' if x['enough'] else '*'} (n={x['n']})" for x in rows[:6]))
-    e = r["experiment"]
-    L += ["", "## Experiment", f"- Testing **{e.get('active')}**. {e.get('recommendation', '')}"]
-    for a in e.get("arms", []):
-        L.append(f"  - {a['arm']}: median {a['median']} (n={a['n']})")
+    L += ["", "## Experiments"]
+    for e in r["experiment"] or [{"active": "none"}]:
+        L.append(f"- Testing **{e.get('active')}**. {e.get('recommendation', '')}")
+        for a in e.get("arms", []):
+            L.append(f"  - {a['arm']}: median {a['median']} (n={a['n']})")
     L += ["", "## Top posts this week"]
     for s in r["top5"]:
-        L.append(f"- {s['variant_id']} ({s['topic']} × {s['format']}, {s['hook_type']}, {s['caption_style']}, {s['music_mood']}) — score {s['score']:.0f}, views {s['views']}")
+        L.append(f"- {s['variant_id']} ({s['topic']} × {s['angle']}, {s['title_style']}, {s['sound_type']}, {s['speed']}, cta {s['cta_mode']}) — score {s['score']:.0f}, views {s['views']}")
     if r["evergreen_new"]:
         L += ["", "## Promoted to evergreen", *[f"- {c}" for c in r["evergreen_new"]]]
     if r["retired_this_week"]:

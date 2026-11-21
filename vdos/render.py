@@ -24,11 +24,20 @@ def render(spec: dict, out_path: Path) -> Path:
 
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
-        title_png = None
-        if premise:
+        title_png, title_h = None, 0
+        cta = spec.get("cta") or None
+        cta_png = None
+        if premise or (cta and cta.get("text")):
             from . import title  # Pillow; only needed for titles
+        if premise:
             title_png = td / "title.png"
-            title.render_png(spec.get("caption_text") or "", title_png, W, size=r.get("title_size", 54))
+            _, title_h = title.render_png(spec.get("caption_text") or "", title_png, W, size=r.get("title_size", 64))
+        if cta and cta.get("text"):
+            ccfg = cfg.get("cta") or {}
+            cta_png = td / "cta.png"
+            title.render_png(cta["text"], cta_png, W, size=int(ccfg.get("size", 46)), stroke=6, max_lines=2,
+                             fill=title.hex_rgba(ccfg.get("color", "#2BFF4F")))
+        if premise:
             ass = captions.build_ass([], W, H, "minimal")  # empty: the title is an image overlay
         else:
             ass = captions.build_ass(words_out, W, H, style or "minimal", spec.get("hook_text"))
@@ -45,10 +54,14 @@ def render(spec: dict, out_path: Path) -> Path:
             inputs += ["-f", "lavfi", "-t", f"{dur + 1:.2f}", "-i", "anullsrc=r=48000:cl=stereo"]
             null_idx = idx
             idx += 1
-        title_idx = None
+        title_idx = cta_idx = None
         if title_png:
             inputs += ["-i", str(title_png)]
             title_idx = idx
+            idx += 1
+        if cta_png:
+            inputs += ["-i", str(cta_png)]
+            cta_idx = idx
             idx += 1
         bed = spec.get("bed")  # looping sound (the alarm) from bed["start"] (default 0) until bed["end"] (output seconds)
         bed_idx, bed_n, bed_xf = [], 1, 0.0
@@ -91,11 +104,18 @@ def render(spec: dict, out_path: Path) -> Path:
             f.append(f"[bgs]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=40:2,eq=brightness=-0.08[bg]")
             f.append(f"[fgs]scale={W}:{H}:force_original_aspect_ratio=decrease[fg]")
             f.append("[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1[vr]")
+        ty = int(H * r.get("title_top", 0.17))
         if title_idx is not None:
-            ty = int(H * r.get("title_top", 0.10))
-            f.append(f"[vr][{title_idx}:v]overlay=(W-w)/2:{ty},format=yuv420p[vout]")
+            f.append(f"[vr][{title_idx}:v]overlay=(W-w)/2:{ty}[vt]")
         else:
-            f.append("[vr]ass=subs.ass,format=yuv420p[vout]")
+            f.append("[vr]ass=subs.ass[vt]")
+        if cta_idx is not None:  # green call to action right under the title (or where the title would be)
+            cy = ty + title_h + 6 if title_h else ty
+            st = float(cta.get("start") or 0)
+            en = f":enable='gte(t,{st:.2f})'" if st > 0.05 else ""
+            f.append(f"[vt][{cta_idx}:v]overlay=(W-w)/2:{cy}{en},format=yuv420p[vout]")
+        else:
+            f.append("[vt]format=yuv420p[vout]")
 
         speechy = bool(words_out) or (bool(spec.get("words")) and not premise)
         if has_audio:

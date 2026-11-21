@@ -1,41 +1,72 @@
 {
- "topic": "walk",
- "keep": [
-  [
-   7.0,
-   50.2
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 7.0
+  "topic": "walk",
+  "keep": [
+    [
+      7.0,
+      50.2
+    ]
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 7.0
+    },
+    {
+      "type": "mid_action",
+      "start": 16.0
+    }
+  ],
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta walk 200 steps to turn off my alarm 😭😭😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk 200 steps 💀"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk 200 steps 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta walk 200 steps to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta walk 200 steps to turn off my alarm 😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk 200 steps",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk 200 steps 💀💀💀",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk 200 steps",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk 200 steps 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",
+  "format": "pov",
+  "moods": [],
+  "unusable": false,
+  "dismiss_at": 48.2,
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 16.0
-  }
- ],
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta walk 200 steps to turn off my alarm 😭😭😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm makes you walk 200 steps 💀"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because my alarm won't stop until I walk 200 steps 😭"
-  }
- ],
- "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",
- "format": "pov",
- "moods": [],
- "unusable": false,
- "dismiss_at": 48.2,
- "bed": {
-  "category": "alarm"
- }
+  "angle": "challenge"
 }

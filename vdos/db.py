@@ -110,7 +110,30 @@ def connect() -> sqlite3.Connection:
         con.execute("ALTER TABLE variants ADD COLUMN caption_text TEXT")
     if "title_style" not in cols:
         con.execute("ALTER TABLE variants ADD COLUMN title_style TEXT")
+    _add_cols(con, "variants", {"sound_id": "TEXT", "sound_type": "TEXT", "speed_level": "TEXT", "cta_mode": "TEXT",
+                                "cta_text": "TEXT", "title_emoji": "TEXT"})
+    _add_cols(con, "clips", {"angle": "TEXT"})
+    _add_cols(con, "slots", {"post_caption_style": "TEXT", "post_emoji": "TEXT", "platforms": "TEXT"})
+    _backfill(con)
     return con
+
+
+def _backfill(con: sqlite3.Connection) -> None:
+    """Fill the tracked labels for variants rendered before they existed (no CTA was shown back then)."""
+    from . import labels
+    rows = con.execute("SELECT id, sfx_ids, track_id, caption_text FROM variants WHERE cta_mode IS NULL").fetchall()
+    for r in rows:
+        sound = (r["sfx_ids"] or "").split(",")[0] or r["track_id"]
+        con.execute("""UPDATE variants SET sound_id=?, sound_type=?, speed_level=COALESCE(speed_level, 'legacy'), cta_mode='none',
+                       title_emoji=? WHERE id=?""",
+                    (sound, labels.sound_type(sound), labels.emoji_bucket(r["caption_text"]) if r["caption_text"] else None, r["id"]))
+
+
+def _add_cols(con: sqlite3.Connection, table: str, cols: dict[str, str]) -> None:
+    have = {r["name"] for r in con.execute(f"PRAGMA table_info({table})")}
+    for name, typ in cols.items():
+        if name not in have:
+            con.execute(f"ALTER TABLE {table} ADD COLUMN {name} {typ}")
 
 
 @contextmanager

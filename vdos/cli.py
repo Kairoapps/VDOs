@@ -93,6 +93,9 @@ def cmd_alerts(a):
         weekly = analysis.scored_slots(con, days=14)
         ranking = analysis.rank(weekly)
         shot = [r["value"].replace("|", " × ") for r in ranking["topic_format"][:3]]
+        angles = [r["value"] for r in ranking.get("angle", [])[:2]]
+        if angles:  # e.g. "angles that work: sus, multi_challenge"
+            shot.append("angles that work: " + ", ".join(angles))
         if a.ack:
             db.log_event(con, "alerts_sent", {})
     out({"inventory": inv, "retired": [e for e in ev if e["kind"] == "retired"],

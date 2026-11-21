@@ -1,41 +1,72 @@
 {
- "topic": "pushup",
- "keep": [
-  [
-   43.5,
-   78.3
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 43.5
+  "topic": "pushup",
+  "keep": [
+    [
+      43.5,
+      78.3
+    ]
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 43.5
+    },
+    {
+      "type": "mid_action",
+      "start": 56.0
+    }
+  ],
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta do pushups to turn off my alarm 😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do pushups 💀"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is making me do pushups at 3am 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta do pushups to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta do pushups to turn off my alarm 😭😭😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do pushups",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do pushups 💀💀💀",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is making me do pushups at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is making me do pushups at 3am 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "summary": "Alarm at 3:33; props the phone on the floor and does pushups in front of the camera to dismiss it.",
+  "format": "pov",
+  "moods": [],
+  "unusable": false,
+  "dismiss_at": 76.3,
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 56.0
-  }
- ],
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta do pushups to turn off my alarm 😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm makes you do pushups 💀"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because my alarm is making me do pushups at 3am 😭"
-  }
- ],
- "summary": "Alarm at 3:33; props the phone on the floor and does pushups in front of the camera to dismiss it.",
- "format": "pov",
- "moods": [],
- "unusable": false,
- "dismiss_at": 76.3,
- "bed": {
-  "category": "alarm"
- }
+  "angle": "challenge"
 }

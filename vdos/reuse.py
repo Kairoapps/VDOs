@@ -42,7 +42,8 @@ def clip_table(con) -> list[dict]:
             status = "needs_edit"
         else:
             status = "available"
-        rows.append({"id": c["id"], "topic": c["topic"], "format": c["format"], "uses": uses, "committed": committed,
+        rows.append({"id": c["id"], "topic": c["topic"], "format": c["format"],
+                     "angle": (c["angle"] if "angle" in c.keys() else None) or "challenge", "uses": uses, "committed": committed,
                      "cap": cap, "evergreen": bool(c["evergreen"]), "last_used": last.isoformat() if last else None,
                      "next_eligible": next_ok.isoformat() if status not in ("exhausted", "retired", "unusable") else None,
                      "status": status, "variants": variants, "db_status": c["status"]})

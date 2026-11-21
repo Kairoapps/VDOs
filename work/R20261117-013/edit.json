@@ -1,41 +1,72 @@
 {
- "topic": "walk",
- "format": "pov",
- "summary": "Alarm goes off; walks the long hallways until the step ring fills and the alarm dismisses (scroll setup cut: creator's face visible).",
- "keep": [
-  [
-   35.0,
-   79.5
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 35.0
+  "topic": "walk",
+  "format": "pov",
+  "summary": "Alarm goes off; walks the long hallways until the step ring fills and the alarm dismisses (scroll setup cut: creator's face visible).",
+  "keep": [
+    [
+      35.0,
+      79.5
+    ]
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 35.0
+    },
+    {
+      "type": "mid_action",
+      "start": 48.0
+    }
+  ],
+  "dismiss_at": 76.6,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta walk laps to turn off my alarm 😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk the whole building 💀"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta walk laps to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta walk laps to turn off my alarm 😭😭😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk the whole building",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk the whole building 💀💀💀",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop until I walk 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 48.0
-  }
- ],
- "dismiss_at": 76.6,
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta walk laps to turn off my alarm 😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm makes you walk the whole building 💀"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because my alarm won't stop until I walk 😭"
-  }
- ],
- "bed": {
-  "category": "alarm"
- },
- "moods": [],
- "unusable": false
+  "moods": [],
+  "unusable": false,
+  "angle": "challenge"
 }

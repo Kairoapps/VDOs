@@ -66,7 +66,8 @@ def _word_width(word: str, size: int, gap: int) -> int:
 
 
 def render_png(text: str, out: Path, video_width: int, size: int = 58, stroke: int = 7,
-               max_width_frac: float = 0.86, max_lines: int = 3) -> tuple[int, int]:
+               max_width_frac: float = 0.86, max_lines: int = 3,
+               fill: tuple[int, int, int, int] = (255, 255, 255, 255)) -> tuple[int, int]:
     """Draw `text` centred and wrapped; returns (width, height) of the PNG."""
     font = _text_font(size)
     space = round(font.getlength(" "))
@@ -109,10 +110,15 @@ def render_png(text: str, out: Path, video_width: int, size: int = 58, stroke: i
                     img.alpha_composite(em, (x, y + (line_h - em.height) // 2 + desc // 3))
                     x += em.width + space // 2
                 else:
-                    draw.text((x, y), run, font=font, fill=(255, 255, 255, 255),
+                    draw.text((x, y), run, font=font, fill=fill,
                               stroke_width=stroke, stroke_fill=(0, 0, 0, 255))
                     x += round(font.getlength(run))
         y += line_h
     out.parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     return W, H
+
+
+def hex_rgba(color: str) -> tuple[int, int, int, int]:
+    c = color.lstrip("#")
+    return int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16), 255

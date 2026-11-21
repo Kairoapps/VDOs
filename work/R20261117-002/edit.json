@@ -1,41 +1,72 @@
 {
- "topic": "memory",
- "keep": [
-  [
-   19.5,
-   50.3
-  ]
- ],
- "hooks": [
-  {
-   "type": "mid_action",
-   "start": 19.5
+  "topic": "memory",
+  "keep": [
+    [
+      19.5,
+      50.3
+    ]
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 19.5
+    },
+    {
+      "type": "mid_action",
+      "start": 25.0
+    }
+  ],
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta remember the pattern to turn off my alarm 😭"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm won't stop until you beat a memory game 🧠"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is testing my memory at midnight 😭"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta remember the pattern to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta remember the pattern to turn off my alarm 😭😭😭",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm won't stop until you beat a memory game",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm won't stop until you beat a memory game 🧠🧠🧠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is testing my memory at midnight",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is testing my memory at midnight 😭😭😭",
+      "emoji_test": true
+    }
+  ],
+  "summary": "In bed at 12:20; memorize-the-sequence then tap-in-order challenge before the alarm stops.",
+  "format": "pov",
+  "moods": [],
+  "unusable": false,
+  "dismiss_at": 48.3,
+  "bed": {
+    "category": "alarm"
   },
-  {
-   "type": "mid_action",
-   "start": 25.0
-  }
- ],
- "premise": [
-  {
-   "style": "gotta",
-   "text": "Gotta remember the pattern to turn off my alarm 😭"
-  },
-  {
-   "style": "pov",
-   "text": "POV: your alarm won't stop until you beat a memory game 🧠"
-  },
-  {
-   "style": "crashing_out",
-   "text": "crashing out because my alarm is testing my memory at midnight 😭"
-  }
- ],
- "summary": "In bed at 12:20; memorize-the-sequence then tap-in-order challenge before the alarm stops.",
- "format": "pov",
- "moods": [],
- "unusable": false,
- "dismiss_at": 48.3,
- "bed": {
-  "category": "alarm"
- }
+  "angle": "challenge"
 }

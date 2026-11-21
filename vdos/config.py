@@ -30,6 +30,9 @@ class Config:
     def __getitem__(self, k):
         return self.raw[k]
 
+    def get(self, k, default=None):
+        return self.raw.get(k, default)
+
     def path(self, key: str) -> Path:
         if key in ("music", "sfx"):  # one folder for all audio
             key = "sounds"

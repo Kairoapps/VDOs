@@ -22,7 +22,8 @@ git lfs pull -I "<the media/raw paths, comma-separated>"   # skip if only media/
 python3 -m vdos ingest --no-git
 python3 -m vdos prep --skip-transcribe
 ```
-For each newly prepped clip (oldest first, at most 8): read `work/<clip>/context.md`, look at 6–10 frames spread across `work/<clip>/frames/` (Read them), find the frame where the challenge completes, and write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (cuts, `dismiss_at`, three titles: `gotta` / `pov` / `crashing_out`, `bed` alarm). Also read `references/` first.
+For each newly prepped clip (oldest first, at most 8): read `work/<clip>/context.md`, look at 6–10 frames spread across `work/<clip>/frames/` (Read them), find the frame where the challenge completes, and write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (cuts, `dismiss_at`, `angle`, titles for `gotta` / `pov` / `crashing_out` with different emoji counts, `bed` alarm). Also read `references/` first.
+`variants` picks each version's sound, speed level and call to action (green "comment UNSNOOZE…" text: none / whole video / end) weighted by what has performed; don't override them.
 Then pull what rendering needs and render:
 ```
 git lfs pull -I "media/raw/<clip files you edited>"
@@ -48,16 +49,21 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). Buffer's plan allows 10 scheduled posts at once: schedule only today and skip if today is already scheduled. Respect `posting.platform_daily_max`: YouTube takes at most 2 posts a day (Buffer refuses a 3rd), so post YouTube in the first and last slots only — 8 posts a day in total. Don't retry YouTube posts that failed with "daily posting limit".
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). The plan has **4 slots: 4 TikTok + 4 Instagram + 2 YouTube Shorts = 10 posts a day.** Post each slot only to the platforms in its `platforms` list (YouTube is on 2 of the 4; which 2 rotates daily; Buffer refuses a 3rd YouTube post in a day, so never add one and don't retry YouTube posts that failed with "daily posting limit"). Buffer's free plan allows 10 scheduled posts per channel at once, so schedule only today and skip if today is already scheduled.
 
-Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `caption_text` (the on-screen title; echo it, don't just repeat it):
-- **Instagram:** a hook line, a short line with a soft CTA ("unsnooze makes you actually get up. link in bio"), then the slot's hashtags.
-- **TikTok:** one punchy line + hashtags; `metadata.tiktok.title` short.
-- **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars with an emoji, `categoryId` "22"; description mentions Unsnooze + hashtags.
+Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
+- `post_caption_style`: `hook_cta` / `relatable` / `question` / `comment_cta` (definitions in `prompts/voice.md`).
+- `post_emoji`: exactly that many emojis in the caption text (`0`, `1`, or `2-3`), hashtags not counted.
+- Hashtags: use the slot's `hashtags` exactly (3–5 tags, already chosen) — don't add, drop or swap any, so the hashtag test stays clean.
+- If the slot's `cta` is not `none`, the video already shows a green "comment UNSNOOZE…" line; the caption may echo it but never contradict it.
+Per platform:
+- **Instagram:** the caption in the slot's style, then the hashtags. `hook_cta` uses the soft CTA ("unsnooze makes you actually get up. link in bio").
+- **TikTok:** one punchy line in the slot's style + hashtags; `metadata.tiktok.title` short.
+- **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description mentions Unsnooze + the hashtags.
 
 `create_post` per platform: `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`. Retry a failed create once, then record it as `"status": "error"`.
 
-Write `work/buffer/created-<date>.json` (`{"slots": [{"variant_id", "scheduled_at", "time_slot", "hashtag_set", "posts": [{"platform", "channel_id", "buffer_post_id", "caption", "status"}]}]}`) and run `python3 -m vdos record work/buffer/created-<date>.json`.
+Write `work/buffer/created-<date>.json` (`{"slots": [{"variant_id", "scheduled_at", "time_slot", "hashtag_set", "post_caption_style", "post_emoji", "posts": [{"platform", "channel_id", "buffer_post_id", "caption", "status"}]}]}`) and run `python3 -m vdos record work/buffer/created-<date>.json`.
 
 ## 5. Notify + dashboard
 
@@ -77,4 +83,4 @@ python3 -m vdos cloud-save -m "daily run <date>"
 
 ## 7. Summary
 
-3–5 lines: posts scheduled (times, clips, title styles), clips edited/rendered, failures, inventory level. Send it as a push notification too.
+3–5 lines: posts scheduled (times, clips, which slots went to YouTube, CTA modes), clips edited/rendered, failures, inventory level. Send it as a push notification too.

@@ -21,16 +21,17 @@ organization_id = "6acd0dec0ee270b5947c74de"
 channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2fe9157f", youtube = "6ad5c498778b240e2f557a0c" }
 
 [posting]
-posts_per_day = 3
+# 4 TikTok / 4 Instagram / 2 YouTube Shorts a day: 4 slots, every slot goes to TikTok + Instagram,
+# 2 of the 4 also go to YouTube (Buffer refuses a 3rd YouTube post in a day). Which 2 rotates daily.
+posts_per_day = 4
 timezone = "America/New_York"
-min_gap_hours = 3.5
+min_gap_hours = 3.0
 platforms = ["instagram", "tiktok", "youtube"]
-# Buffer lets YouTube take only 2 posts a day; YouTube skips the middle slot.
 platform_daily_max = { youtube = 2 }
-# Same variant goes to all three platforms in a slot (one "use").
+# Same variant goes to every platform in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
-default_slots = ["08:30", "12:30", "16:30"]   # posting window: 8:30am-8:30pm Eastern
+default_slots = ["08:30", "12:00", "16:00", "19:30"]   # posting window: 8:30am-8:30pm Eastern
 
 [compress]
 # The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).
@@ -61,8 +62,8 @@ music_bed_lufs = -26      # music level under speech (then ducked further while 
 music_solo_lufs = -16     # music level for clips with no speech
 sfx_lufs = -14            # level of the alarm bed and sound effects
 mute_original = true      # always drop the camera audio; the soundtrack is the alarm/sfx (+ music)
-title_size = 54           # on-screen title font size (px at 1080 wide); shrinks to fit 3 lines
-title_top = 0.10          # title top edge, as a fraction of the height (clear of the platforms' top UI)
+title_size = 64           # on-screen title font size (px at 1080 wide); shrinks to fit 3 lines
+title_top = 0.17          # title top edge, as a fraction of the height (below the TikTok/IG/Shorts search bar + tabs)
 max_voice_boost_db = 10   # clips with no speech: raise quiet camera audio by at most this much
 reframe = "blurpad"       # "crop" (fill) or "blurpad" (fit + blurred background)
 min_len = 12
@@ -72,12 +73,21 @@ max_len = 45
 per_clip = 3
 caption_styles = ["pop", "minimal", "karaoke"]   # word-by-word styles, used when the clip has speech
 hook_types = ["question", "bold_claim", "mid_action", "text_overlay"]
-# Speed by how long the cut is at normal speed (see README "Speed guidelines").
-# [up_to_seconds, speed]: the first row whose limit the cut fits under wins.
-speed_rules = [[20, 1.0], [30, 1.12], [9999, 1.27]]
-speed_jitter = [0.0, 0.03, -0.02]   # small per-variant nudge so versions differ (long cuts: 1.25-1.3x)
+# Speed by how long the cut is at normal speed (see README "Speed guidelines"). Longer cut = faster.
+# [up_to_seconds, [base, faster, fastest]]: the first row whose limit the cut fits under wins; each
+# variant picks a level (weighted by how each level has performed), so speed is tested per length.
+speed_tiers = [[15, [1.0, 1.05, 1.1]], [25, [1.05, 1.15, 1.25]], [35, [1.2, 1.3, 1.4]], [9999, [1.3, 1.4, 1.5]]]
+speed_levels = ["base", "faster", "fastest"]
 speed_min = 1.0                      # never slow a clip down
-speed_max = 1.3
+speed_max = 1.5                      # never faster than 1.5x
+
+# Call to action: green text under the title. Each variant picks a mode (weighted by results).
+[cta]
+modes = ["none", "always", "end"]    # end = from the moment the challenge completes (at least the last 3 s)
+end_min_seconds = 3.0
+texts = ["comment UNSNOOZE for the app 👇", "comment \"UNSNOOZE\" and I'll send it", "comment UNSNOOZE for the link 🔗"]
+color = "#2BFF4F"
+size = 46
 
 [analysis]
 min_posts_per_value = 6
@@ -85,15 +95,26 @@ exploit_share = 0.7
 score_age_days = 7      # compare posts at this age
 early_age_days = 3
 
-# Experiments: one variable at a time. "active" picks which one is rotating.
+# Experiments that rotate arms evenly (least-exposed first). Several can run at once: each slot's time
+# and hashtag set are assigned independently, so their effects don't mix. Remove one from "active" once
+# its winner is locked in (`default_slots` / `hashtag_set.default`).
 [experiments]
-active = "time_slot"     # "time_slot" | "hashtag_set" | "none"
+active = ["time_slot", "hashtag_set"]
 
 [experiments.time_slot]
-# Candidate local times; 3 are used per day, rotated for equal exposure.
-arms = ["08:30", "09:30", "12:30", "13:00", "16:30", "17:00", "19:00", "20:30"]   # kept between 8:30am and 8:30pm
+# Candidate local times; 4 are used per day (>= min_gap_hours apart), rotated for equal exposure.
+arms = ["08:30", "09:30", "11:00", "12:00", "13:00", "14:30", "16:00", "17:00", "18:30", "19:30", "20:30"]   # 8:30am-8:30pm
 
 [experiments.hashtag_set]
-# Keep IG to 3-5 tags. TikTok/YouTube can take the same set.
-arms = { "tags-1" = ["#dayinthelife", "#pov", "#college"], "tags-2" = ["#raybanmeta", "#pov", "#studentlife"], "tags-3" = ["#vlog", "#college", "#productivity"] }
-default = "tags-1"
+# Always 3-5 tags, all matching the content. The same set goes to every platform in a slot.
+arms = { "alarm-core" = ["#alarm", "#snooze", "#morningroutine", "#alarmclock"], "wake-up" = ["#wakeup", "#morningroutine", "#heavysleeper", "#alarm"], "snooze-pov" = ["#pov", "#snooze", "#alarm", "#relatable"], "student" = ["#college", "#studentlife", "#morningroutine", "#alarm"], "discipline" = ["#productivity", "#discipline", "#wakeupearly", "#5amclub", "#morningroutine"], "minimal-3" = ["#alarm", "#snooze", "#wakeup"], "heavy-sleeper-5" = ["#heavysleeper", "#cantwakeup", "#alarmclock", "#snoozebutton", "#morningroutine"] }
+default = "alarm-core"
+
+# Per-post caption tests (weighted by results, like the variant choices).
+[post_captions]
+styles = ["hook_cta", "relatable", "question", "comment_cta"]
+emojis = ["0", "1", "2-3"]
+
+# Content angles (set per clip in edit.json "angle"); ranked weekly and used to weight which clips post.
+[angles]
+values = ["challenge", "sus", "multi_challenge"]
