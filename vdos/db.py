@@ -111,7 +111,7 @@ def connect() -> sqlite3.Connection:
     if "title_style" not in cols:
         con.execute("ALTER TABLE variants ADD COLUMN title_style TEXT")
     _add_cols(con, "variants", {"sound_id": "TEXT", "sound_type": "TEXT", "speed_level": "TEXT", "cta_mode": "TEXT",
-                                "cta_text": "TEXT", "title_emoji": "TEXT"})
+                                "cta_text": "TEXT", "title_emoji": "TEXT", "cta_color": "TEXT"})
     _add_cols(con, "clips", {"angle": "TEXT"})
     _add_cols(con, "slots", {"post_caption_style": "TEXT", "post_emoji": "TEXT", "platforms": "TEXT"})
     _backfill(con)

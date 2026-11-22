@@ -36,7 +36,7 @@ def render(spec: dict, out_path: Path) -> Path:
             ccfg = cfg.get("cta") or {}
             cta_png = td / "cta.png"
             title.render_png(cta["text"], cta_png, W, size=int(ccfg.get("size", 46)), stroke=6, max_lines=2,
-                             fill=title.hex_rgba(ccfg.get("color", "#2BFF4F")))
+                             fill=title.hex_rgba(cta.get("color") or ccfg.get("color", "#2BFF4F")))
         if premise:
             ass = captions.build_ass([], W, H, "minimal")  # empty: the title is an image overlay
         else:

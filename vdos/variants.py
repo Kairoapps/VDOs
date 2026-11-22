@@ -164,6 +164,8 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
         sib_more = con.execute("SELECT speed_level, cta_mode FROM variants WHERE clip_id=? AND active=1", (clip_id,)).fetchall()
         used_levels = {s["speed_level"] for s in sib_more if s["speed_level"]}
         used_ctas = {s["cta_mode"] for s in sib_more if s["cta_mode"]}
+        used_colors = {s["cta_color"] for s in con.execute("SELECT cta_color FROM variants WHERE clip_id=? AND active=1 AND cta_color IS NOT NULL",
+                                                       (clip_id,))}
         ccfg = cfg.get("cta") or {}
         cta_modes = ccfg.get("modes", ["none"])
         speed_levels = vcfg.get("speed_levels", ["base", "faster", "fastest"])
@@ -244,6 +246,12 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 used_ctas.clear()
             cta_text = (weights.choose(con, "cta_text", ccfg.get("texts", []), rng=rng)
                         if cta_mode != "none" and ccfg.get("texts") else None)
+            cta_colors = ccfg.get("colors") or [ccfg.get("color", "#2BFF4F")]
+            cta_color = weights.choose(con, "cta_color", cta_colors, exclude=used_colors, rng=rng) if cta_text else None
+            if cta_color:
+                used_colors.add(cta_color)
+                if used_colors >= set(cta_colors):
+                    used_colors.clear()
             spans = _spans_from(edit["keep"], start, rcfg["max_len"] * speed)
             length = sum(b - a for a, b in spans) / speed
             if length < min(rcfg["min_len"], clip["duration_s"] * 0.8):
@@ -265,7 +273,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 "track_lufs": track["lufs"] if track else None,
                 "track_offset": round(rng.uniform(0, max(0, (track["duration_s"] or 0) - length - 2)), 1) if track else 0,
                 "reframe": rcfg["reframe"],
-                "cta": {"text": cta_text, "mode": cta_mode,
+                "cta": {"text": cta_text, "mode": cta_mode, "color": cta_color,
                         "start": (0.0 if cta_mode == "always" else
                                   max(0.0, min(_out_time(spans, speed, edit.get("dismiss_at")) if edit.get("dismiss_at") else length,
                                                length - float(ccfg.get("end_min_seconds", 3.0)))))}
@@ -274,7 +282,7 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
             info = {"id": vid, "file": fname, "hook_type": hook["type"], "caption_style": spec["caption_style"],
                     "caption_text": caption_text, "title_style": title_style, "sfx": sfx_ids,
                     "track": track["id"] if track else None, "speed": speed, "speed_level": level,
-                    "cta": cta_mode, "cta_text": cta_text, "title_emoji": labels.emoji_bucket(caption_text) if caption_text else None,
+                    "cta": cta_mode, "cta_text": cta_text, "cta_color": cta_color, "title_emoji": labels.emoji_bucket(caption_text) if caption_text else None,
                     "sound_type": labels.sound_type(sfx_ids[0]) if sfx_ids else None,
                     "length": round(length, 1), "overlay": overlay}
             if not dry_run:
@@ -283,14 +291,14 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
                 con.execute(
                     """INSERT INTO variants(id, clip_id, file_name, hook_type, caption_style, track_id, overlay_text, speed,
                        start_s, duration_s, spec_json, created_at, sfx_ids, caption_text, title_style,
-                       sound_id, sound_type, speed_level, cta_mode, cta_text, title_emoji)
-                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                       sound_id, sound_type, speed_level, cta_mode, cta_text, title_emoji, cta_color)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (vid, clip_id, fname, hook["type"], spec["caption_style"], info["track"], overlay, speed,
                      spans[0][0], real, json.dumps({k: v for k, v in spec.items() if k != "words"}), db.now_iso(),
                      ",".join(sfx_ids) or None, caption_text, title_style,
                      sfx_ids[0] if sfx_ids else (info["track"] or None),
                      info["sound_type"] or (labels.sound_type(info["track"]) if info["track"] else None),
-                     level, cta_mode, cta_text, info["title_emoji"]))
+                     level, cta_mode, cta_text, info["title_emoji"], cta_color))
                 info["length"] = round(real, 1)
             made.append(info)
         if not dry_run:
