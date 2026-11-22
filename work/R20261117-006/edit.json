@@ -2,22 +2,18 @@
   "topic": "walk",
   "keep": [
     [
-      7.0,
+      5.8,
       50.2
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 7.0
-    },
-    {
-      "type": "mid_action",
-      "start": 16.0
+      "start": 5.8
     },
     {
       "type": "question",
-      "start": 7.0,
+      "start": 5.8,
       "text": "Would you walk 200 steps for this?"
     }
   ],
@@ -77,5 +73,6 @@
   "bed": {
     "category": "alarm"
   },
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 6.8
 }

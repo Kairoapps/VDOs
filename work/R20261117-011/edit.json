@@ -4,18 +4,14 @@
   "summary": "Alarm at 2:21; wanders the halls hunting for a TV to photograph so the alarm stops.",
   "keep": [
     [
-      46.5,
+      44.3,
       86.5
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 46.5
-    },
-    {
-      "type": "mid_action",
-      "start": 56.0
+      "start": 44.3
     }
   ],
   "dismiss_at": 84.3,
@@ -68,5 +64,6 @@
   },
   "moods": [],
   "unusable": false,
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 45.3
 }

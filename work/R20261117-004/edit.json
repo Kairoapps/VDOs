@@ -2,22 +2,18 @@
   "topic": "shake",
   "keep": [
     [
-      33.5,
+      31.9,
       63.7
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 33.5
-    },
-    {
-      "type": "mid_action",
-      "start": 40.0
+      "start": 31.9
     },
     {
       "type": "question",
-      "start": 33.5,
+      "start": 31.9,
       "text": "Could you do this at 3am?"
     }
   ],
@@ -77,5 +73,6 @@
   "bed": {
     "category": "alarm"
   },
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 32.9
 }

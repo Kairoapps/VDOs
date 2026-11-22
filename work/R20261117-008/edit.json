@@ -4,18 +4,14 @@
   "summary": "Alarm at 2:03; has to type out a whole motivational sentence perfectly to dismiss it.",
   "keep": [
     [
-      29.5,
+      25.0,
       64.5
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 29.5
-    },
-    {
-      "type": "mid_action",
-      "start": 37.5
+      "start": 25.0
     }
   ],
   "dismiss_at": 62.4,
@@ -68,5 +64,6 @@
   },
   "moods": [],
   "unusable": false,
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 26.0
 }

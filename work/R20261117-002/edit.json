@@ -2,18 +2,14 @@
   "topic": "memory",
   "keep": [
     [
-      19.5,
+      16.7,
       50.3
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 19.5
-    },
-    {
-      "type": "mid_action",
-      "start": 25.0
+      "start": 16.7
     }
   ],
   "premise": [
@@ -68,5 +64,6 @@
   "bed": {
     "category": "alarm"
   },
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 17.7
 }

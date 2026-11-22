@@ -4,18 +4,14 @@
   "summary": "Alarm at 2:05; has to shake the phone like crazy until the challenge fills up to dismiss it.",
   "keep": [
     [
-      29.5,
+      26.1,
       54.5
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 29.5
-    },
-    {
-      "type": "mid_action",
-      "start": 42.0
+      "start": 26.1
     }
   ],
   "dismiss_at": 52.3,
@@ -68,5 +64,6 @@
   },
   "moods": [],
   "unusable": false,
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 27.1
 }

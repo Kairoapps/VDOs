@@ -2,22 +2,18 @@
   "topic": "tap",
   "keep": [
     [
-      28.5,
+      24.7,
       51.0
     ]
   ],
   "hooks": [
     {
       "type": "mid_action",
-      "start": 28.5
-    },
-    {
-      "type": "mid_action",
-      "start": 34.0
+      "start": 24.7
     },
     {
       "type": "question",
-      "start": 28.5,
+      "start": 24.7,
       "text": "Could you tap 60 times half asleep?"
     }
   ],
@@ -77,5 +73,6 @@
   "bed": {
     "category": "alarm"
   },
-  "angle": "challenge"
+  "angle": "challenge",
+  "alarm_at": 25.7
 }
