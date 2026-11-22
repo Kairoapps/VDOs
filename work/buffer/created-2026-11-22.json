@@ -1,0 +1,114 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-008__v4",
+   "scheduled_at": "2026-11-22T08:30:00-05:00",
+   "time_slot": "08:30",
+   "hashtag_set": "student",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b027942846b0ee9075fc453",
+     "caption": "what's the longest sentence you could type perfectly at 2am? 😭⌨️\n#college #studentlife #morningroutine #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b027942d5eabfb8cc83a35e",
+     "caption": "could you type this without a typo at 2am? 😭⌨️ #college #studentlife #morningroutine #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b027943cc364169c12c0f83",
+     "caption": "Could you type this whole sentence at 2am to stop your alarm? 😭⌨️ | Had to type a whole motivational sentence perfectly before my alarm would stop. That's Unsnooze, the alarm app that makes you actually get up.\n#college #studentlife #morningroutine #alarm",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-013__v4",
+   "scheduled_at": "2026-11-22T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "heavy-sleeper-5",
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b027944024796909225efc8",
+     "caption": "how many steps would it take before you're actually awake?\nmy alarm won't stop until i walk the hallway\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b027944d864a011059ae474",
+     "caption": "how far would you have to walk before you stop wanting to snooze? #heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-002__v4",
+   "scheduled_at": "2026-11-22T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "comment_cta",
+   "post_emoji": "0",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b027945cc364169c12c1056",
+     "caption": "my alarm won't stop until i repeat the pattern from memory. half asleep.\ncomment UNSNOOZE and i'll send you the app\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b027946cc364169c12c108e",
+     "caption": "memory test before my alarm will stop. comment UNSNOOZE and i'll send you the app #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-007__v4",
+   "scheduled_at": "2026-11-22T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "alarm-core",
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b027946024796909225f015",
+     "caption": "nothing wakes you up like a forced trip to the bathroom sink 🚰\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b027947d864a011059ae519",
+     "caption": "the walk to the sink is the real alarm 🚰 #alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b027947cc364169c12c1116",
+     "caption": "When your alarm won't stop until you find the sink 🚰 | Had to walk to the bathroom and snap a photo of the sink before my alarm would stop. That's Unsnooze, the alarm app that makes you actually get up.\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

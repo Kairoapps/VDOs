@@ -1,0 +1,160 @@
+{
+ "date": "2026-11-22",
+ "slots": [
+  {
+   "variant_id": "R20261117-008__v4",
+   "clip_id": "R20261117-008",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-008__v4__bd6ad7.mp4",
+   "file": "R20261117-008__v4__bd6ad7.mp4",
+   "scheduled_at": "2026-11-22T08:30:00-05:00",
+   "time_slot": "08:30",
+   "hashtag_set": "student",
+   "hashtags": [
+    "#college",
+    "#studentlife",
+    "#morningroutine",
+    "#alarm"
+   ],
+   "topic": "type",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta type a whole sentence to turn off my alarm \ud83d\ude2d",
+   "duration_s": 26.933333,
+   "summary": "Alarm at 2:03; has to type out a whole motivational sentence perfectly to dismiss it.",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "end",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-013__v4",
+   "clip_id": "R20261117-013",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-013__v4__8c3496.mp4",
+   "file": "R20261117-013__v4__8c3496.mp4",
+   "scheduled_at": "2026-11-22T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "heavy-sleeper-5",
+   "hashtags": [
+    "#heavysleeper",
+    "#cantwakeup",
+    "#alarmclock",
+    "#snoozebutton",
+    "#morningroutine"
+   ],
+   "topic": "walk",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm won't stop until I walk \ud83d\ude2d",
+   "duration_s": 34.233333,
+   "summary": "Alarm goes off; walks the long hallways until the step ring fills and the alarm dismisses (scroll setup cut: creator's face visible).",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "cta": "always",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-002__v4",
+   "clip_id": "R20261117-002",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-002__v4__d223ea.mp4",
+   "file": "R20261117-002__v4__d223ea.mp4",
+   "scheduled_at": "2026-11-22T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "wake-up",
+   "hashtags": [
+    "#wakeup",
+    "#morningroutine",
+    "#heavysleeper",
+    "#alarm"
+   ],
+   "topic": "memory",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta remember the pattern to turn off my alarm \ud83d\ude2d",
+   "duration_s": 22.0,
+   "summary": "In bed at 12:20; memorize-the-sequence then tap-in-order challenge before the alarm stops.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "comment_cta",
+   "post_emoji": "0",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261117-007__v4",
+   "clip_id": "R20261117-007",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-007__v4__5f7838.mp4",
+   "file": "R20261117-007__v4__5f7838.mp4",
+   "scheduled_at": "2026-11-22T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "alarm-core",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#morningroutine",
+    "#alarmclock"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta find the sink to turn off my alarm",
+   "duration_s": 21.304,
+   "summary": "Alarm goes off; has to walk to the bathroom and snap a photo of the sink to dismiss it (sus setup cut: TikTok creator's face visible).",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "cta": "end",
+   "cta_text": "comment UNSNOOZE for the app \ud83d\udc47"
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 6,
+  "level": "heads_up",
+  "remaining_uses": 24,
+  "active_clips": 11,
+  "clips_needed": 2,
+  "covered_through": "2026-11-27",
+  "first_gap": "2026-11-28",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube"
+ ]
+}
