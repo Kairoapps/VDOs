@@ -106,8 +106,9 @@ active = ["time_slot", "hashtag_set"]
 arms = ["08:30", "09:30", "11:00", "12:00", "13:00", "14:30", "16:00", "17:00", "18:30", "19:30", "20:30"]   # 8:30am-8:30pm
 
 [experiments.hashtag_set]
-# Always 3-5 tags, all matching the content. The same set goes to every platform in a slot.
-arms = { "alarm-core" = ["#alarm", "#snooze", "#morningroutine", "#alarmclock"], "wake-up" = ["#wakeup", "#morningroutine", "#heavysleeper", "#alarm"], "snooze-pov" = ["#pov", "#snooze", "#alarm", "#relatable"], "student" = ["#college", "#studentlife", "#morningroutine", "#alarm"], "discipline" = ["#productivity", "#discipline", "#wakeupearly", "#5amclub", "#morningroutine"], "minimal-3" = ["#alarm", "#snooze", "#wakeup"], "heavy-sleeper-5" = ["#heavysleeper", "#cantwakeup", "#alarmclock", "#snoozebutton", "#morningroutine"] }
+# Always 3-5 tags, all matching the content. 2026-11-22: swapped "student" and "discipline" for #alarmapp sets
+# (#college/#pov/#5amclub were weakest or off-niche in 40 days of history; #alarmapp/#alarm/#morningroutine strongest). The same set goes to every platform in a slot.
+arms = { "alarm-core" = ["#alarm", "#snooze", "#morningroutine", "#alarmclock"], "wake-up" = ["#wakeup", "#morningroutine", "#heavysleeper", "#alarm"], "snooze-pov" = ["#pov", "#snooze", "#alarm", "#relatable"], "alarm-app" = ["#alarmapp", "#alarm", "#morningroutine", "#snooze"], "app-challenge" = ["#alarmapp", "#wakeupchallenge", "#alarm", "#morningroutine"], "minimal-3" = ["#alarm", "#snooze", "#wakeup"], "heavy-sleeper-5" = ["#heavysleeper", "#cantwakeup", "#alarmclock", "#snoozebutton", "#morningroutine"] }
 default = "alarm-core"
 
 # Per-post caption tests (weighted by results, like the variant choices).

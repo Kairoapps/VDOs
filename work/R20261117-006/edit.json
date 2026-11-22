@@ -14,6 +14,11 @@
     {
       "type": "mid_action",
       "start": 16.0
+    },
+    {
+      "type": "question",
+      "start": 7.0,
+      "text": "Would you walk 200 steps for this?"
     }
   ],
   "premise": [
@@ -58,6 +63,10 @@
       "style": "crashing_out",
       "text": "crashing out because my alarm won't stop until I walk 200 steps 😭😭😭",
       "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta walk laps in my hallway to turn off my alarm 😭"
     }
   ],
   "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",

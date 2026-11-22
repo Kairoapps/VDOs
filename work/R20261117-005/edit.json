@@ -14,6 +14,11 @@
     {
       "type": "mid_action",
       "start": 34.0
+    },
+    {
+      "type": "question",
+      "start": 28.5,
+      "text": "Could you tap 60 times half asleep?"
     }
   ],
   "premise": [
@@ -58,6 +63,10 @@
       "style": "crashing_out",
       "text": "crashing out because my alarm wants 60 taps at midnight 😭😭😭",
       "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta pop a balloon with 60 taps before my alarm stops 🎈"
     }
   ],
   "summary": "In bed at 12:18; taps 60 times to inflate a balloon until it pops and the alarm stops.",

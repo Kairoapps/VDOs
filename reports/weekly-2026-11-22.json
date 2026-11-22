@@ -1,0 +1,899 @@
+{
+ "generated_at": "2026-11-22T05:07:41+00:00",
+ "n_scored_slots": 5,
+ "ranking": {
+  "topic_format": [
+   {
+    "value": "shake|pov",
+    "n": 1,
+    "median": 72.9,
+    "enough": false
+   },
+   {
+    "value": "tap|pov",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "walk|pov",
+    "n": 2,
+    "median": 41.1,
+    "enough": false
+   },
+   {
+    "value": "pushup|pov",
+    "n": 1,
+    "median": 24.2,
+    "enough": false
+   }
+  ],
+  "topic": [
+   {
+    "value": "shake",
+    "n": 1,
+    "median": 72.9,
+    "enough": false
+   },
+   {
+    "value": "tap",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "walk",
+    "n": 2,
+    "median": 41.1,
+    "enough": false
+   },
+   {
+    "value": "pushup",
+    "n": 1,
+    "median": 24.2,
+    "enough": false
+   }
+  ],
+  "format": [
+   {
+    "value": "pov",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "angle": [
+   {
+    "value": "challenge",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "hook_type": [
+   {
+    "value": "mid_action",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "caption_style": [
+   {
+    "value": "premise",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "title_style": [
+   {
+    "value": "gotta",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "crashing_out",
+    "n": 3,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "pov",
+    "n": 1,
+    "median": 34.8,
+    "enough": false
+   }
+  ],
+  "title_emoji": [
+   {
+    "value": "1",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "caption_text": [
+   {
+    "value": "crashing out because I have to shake my phone 50 times at 3am \ud83d\ude2d",
+    "n": 1,
+    "median": 72.9,
+    "enough": false
+   },
+   {
+    "value": "Gotta tap 60 times to turn off my alarm \ud83d\ude2d",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "crashing out because my alarm won't stop until I walk 200 steps \ud83d\ude2d",
+    "n": 1,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "POV: your alarm makes you walk 200 steps \ud83d\udc80",
+    "n": 1,
+    "median": 34.8,
+    "enough": false
+   },
+   {
+    "value": "crashing out because my alarm is making me do pushups at 3am \ud83d\ude2d",
+    "n": 1,
+    "median": 24.2,
+    "enough": false
+   }
+  ],
+  "cta_mode": [
+   {
+    "value": "none",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "cta_text": [
+   {
+    "value": "none",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "music_mood": [
+   {
+    "value": "none",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "track": [
+   {
+    "value": "none",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "sound": [
+   {
+    "value": "alarm/scifi-alarm-03__epidemic.mp3",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "alarm/alarm-loop-01__epidemic.mp3",
+    "n": 3,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "alarm/firefighter-siren-deep__epidemic.mp3",
+    "n": 1,
+    "median": 34.8,
+    "enough": false
+   }
+  ],
+  "sound_type": [
+   {
+    "value": "sci-fi",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "alarm-loop",
+    "n": 3,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "siren",
+    "n": 1,
+    "median": 34.8,
+    "enough": false
+   }
+  ],
+  "speed_level": [
+   {
+    "value": "legacy",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "speed": [
+   {
+    "value": "1.0x",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "length_bucket": [
+   {
+    "value": "15-25s",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "35s+",
+    "n": 1,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "25-35s",
+    "n": 3,
+    "median": 34.8,
+    "enough": false
+   }
+  ],
+  "time_slot": [
+   {
+    "value": "13:00",
+    "n": 1,
+    "median": 72.9,
+    "enough": false
+   },
+   {
+    "value": "08:30",
+    "n": 1,
+    "median": 69.8,
+    "enough": false
+   },
+   {
+    "value": "09:30",
+    "n": 1,
+    "median": 47.5,
+    "enough": false
+   },
+   {
+    "value": "12:30",
+    "n": 1,
+    "median": 34.8,
+    "enough": false
+   },
+   {
+    "value": "16:30",
+    "n": 1,
+    "median": 24.2,
+    "enough": false
+   }
+  ],
+  "hashtag_set": [
+   {
+    "value": "tags-1",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "hashtag_count": [
+   {
+    "value": "0 tags",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "post_caption_style": [
+   {
+    "value": "legacy",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ],
+  "post_emoji": [
+   {
+    "value": "legacy",
+    "n": 5,
+    "median": 47.5,
+    "enough": false
+   }
+  ]
+ },
+ "experiment": [
+  {
+   "active": "time_slot",
+   "arms": [
+    {
+     "arm": "08:30",
+     "n": 1,
+     "median": 69.8
+    },
+    {
+     "arm": "09:30",
+     "n": 1,
+     "median": 47.5
+    },
+    {
+     "arm": "11:00",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "12:00",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "13:00",
+     "n": 1,
+     "median": 72.9
+    },
+    {
+     "arm": "14:30",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "16:00",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "17:00",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "18:30",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "19:30",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "20:30",
+     "n": 0,
+     "median": null
+    }
+   ],
+   "ready": false,
+   "leader": "13:00",
+   "recommendation": "Keep rotating; not every arm has enough posts yet."
+  },
+  {
+   "active": "hashtag_set",
+   "arms": [
+    {
+     "arm": "alarm-core",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "wake-up",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "snooze-pov",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "alarm-app",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "app-challenge",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "minimal-3",
+     "n": 0,
+     "median": null
+    },
+    {
+     "arm": "heavy-sleeper-5",
+     "n": 0,
+     "median": null
+    }
+   ],
+   "ready": false,
+   "leader": null,
+   "recommendation": "Keep rotating; not every arm has enough posts yet."
+  }
+ ],
+ "evergreen_new": [],
+ "retired_now": [],
+ "retired_this_week": [
+  {
+   "clip": "R20261117-003",
+   "topic": "pushup",
+   "format": "pov"
+  }
+ ],
+ "inventory": {
+  "days": 6,
+  "level": "heads_up",
+  "remaining_uses": 24,
+  "active_clips": 11,
+  "clips_needed": 2,
+  "covered_through": "2026-11-27",
+  "first_gap": "2026-11-28",
+  "available_now": 0
+ },
+ "clips": [
+  {
+   "id": "R20261117-001",
+   "topic": "memory",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 1,
+   "committed": 1,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-19",
+   "next_eligible": "2026-11-20",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-002",
+   "topic": "memory",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-003",
+   "topic": "pushup",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 3,
+   "committed": 3,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-21",
+   "next_eligible": null,
+   "status": "retired",
+   "variants": 0,
+   "db_status": "retired"
+  },
+  {
+   "id": "R20261117-004",
+   "topic": "shake",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 2,
+   "committed": 2,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-21",
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-005",
+   "topic": "tap",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 2,
+   "committed": 2,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-20",
+   "next_eligible": "2026-11-21",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-006",
+   "topic": "walk",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 2,
+   "committed": 2,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-19",
+   "next_eligible": "2026-11-20",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-007",
+   "topic": "photo",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-008",
+   "topic": "type",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 2,
+   "committed": 2,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": "2026-11-21",
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-009",
+   "topic": "photo",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-010",
+   "topic": "shake",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-011",
+   "topic": "photo",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-012",
+   "topic": "misc",
+   "format": null,
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": null,
+   "status": "unusable",
+   "variants": 0,
+   "db_status": "unusable"
+  },
+  {
+   "id": "R20261117-013",
+   "topic": "walk",
+   "format": "pov",
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": "2026-11-22",
+   "status": "available",
+   "variants": 3,
+   "db_status": "edited"
+  },
+  {
+   "id": "R20261117-014",
+   "topic": "misc",
+   "format": null,
+   "angle": "challenge",
+   "uses": 0,
+   "committed": 0,
+   "cap": 3,
+   "evergreen": false,
+   "last_used": null,
+   "next_eligible": null,
+   "status": "unusable",
+   "variants": 0,
+   "db_status": "unusable"
+  }
+ ],
+ "top5": [
+  {
+   "slot_id": 5,
+   "variant_id": "R20261117-004__v1",
+   "clip_id": "R20261117-004",
+   "scheduled_at": "2026-11-19T13:00:00-05:00",
+   "score": 72.91666666666667,
+   "platform_scores": {
+    "instagram": 70.0,
+    "tiktok": 90.0,
+    "youtube": 58.8
+   },
+   "views": {
+    "instagram": 1506.0,
+    "tiktok": 669.0,
+    "youtube": 1614.0
+   },
+   "topic": "shake",
+   "format": "pov",
+   "topic_format": "shake|pov",
+   "hook_type": "mid_action",
+   "caption_style": "premise",
+   "caption_text": "crashing out because I have to shake my phone 50 times at 3am \ud83d\ude2d",
+   "title_style": "crashing_out",
+   "sfx": "alarm/alarm-loop-01__epidemic.mp3",
+   "music_mood": "none",
+   "track": "none",
+   "length_bucket": "25-35s",
+   "time_slot": "13:00",
+   "hashtag_set": "tags-1",
+   "hashtag_count": "0 tags",
+   "angle": "challenge",
+   "title_emoji": "1",
+   "cta_mode": "none",
+   "cta_text": "none",
+   "sound": "alarm/alarm-loop-01__epidemic.mp3",
+   "sound_type": "alarm-loop",
+   "speed_level": "legacy",
+   "speed": "1.0x",
+   "post_caption_style": "legacy",
+   "post_emoji": "legacy"
+  },
+  {
+   "slot_id": 1,
+   "variant_id": "R20261117-005__v1",
+   "clip_id": "R20261117-005",
+   "scheduled_at": "2026-11-18T08:30:00-05:00",
+   "score": 69.75,
+   "platform_scores": {
+    "instagram": 72.0,
+    "tiktok": 61.0,
+    "youtube": 76.2
+   },
+   "views": {
+    "instagram": 1744.0,
+    "tiktok": 411.0,
+    "youtube": 1647.0
+   },
+   "topic": "tap",
+   "format": "pov",
+   "topic_format": "tap|pov",
+   "hook_type": "mid_action",
+   "caption_style": "premise",
+   "caption_text": "Gotta tap 60 times to turn off my alarm \ud83d\ude2d",
+   "title_style": "gotta",
+   "sfx": "alarm/scifi-alarm-03__epidemic.mp3",
+   "music_mood": "none",
+   "track": "none",
+   "length_bucket": "15-25s",
+   "time_slot": "08:30",
+   "hashtag_set": "tags-1",
+   "hashtag_count": "0 tags",
+   "angle": "challenge",
+   "title_emoji": "1",
+   "cta_mode": "none",
+   "cta_text": "none",
+   "sound": "alarm/scifi-alarm-03__epidemic.mp3",
+   "sound_type": "sci-fi",
+   "speed_level": "legacy",
+   "speed": "1.0x",
+   "post_caption_style": "legacy",
+   "post_emoji": "legacy"
+  },
+  {
+   "slot_id": 4,
+   "variant_id": "R20261117-006__v1",
+   "clip_id": "R20261117-006",
+   "scheduled_at": "2026-11-19T09:30:00-05:00",
+   "score": 47.5,
+   "platform_scores": {
+    "instagram": 48.0,
+    "tiktok": 47.0
+   },
+   "views": {
+    "instagram": 419.0,
+    "tiktok": 216.0
+   },
+   "topic": "walk",
+   "format": "pov",
+   "topic_format": "walk|pov",
+   "hook_type": "mid_action",
+   "caption_style": "premise",
+   "caption_text": "crashing out because my alarm won't stop until I walk 200 steps \ud83d\ude2d",
+   "title_style": "crashing_out",
+   "sfx": "alarm/alarm-loop-01__epidemic.mp3",
+   "music_mood": "none",
+   "track": "none",
+   "length_bucket": "35s+",
+   "time_slot": "09:30",
+   "hashtag_set": "tags-1",
+   "hashtag_count": "0 tags",
+   "angle": "challenge",
+   "title_emoji": "1",
+   "cta_mode": "none",
+   "cta_text": "none",
+   "sound": "alarm/alarm-loop-01__epidemic.mp3",
+   "sound_type": "alarm-loop",
+   "speed_level": "legacy",
+   "speed": "1.0x",
+   "post_caption_style": "legacy",
+   "post_emoji": "legacy"
+  },
+  {
+   "slot_id": 2,
+   "variant_id": "R20261117-006__v2",
+   "clip_id": "R20261117-006",
+   "scheduled_at": "2026-11-18T12:30:00-05:00",
+   "score": 34.75,
+   "platform_scores": {
+    "instagram": 44.0,
+    "tiktok": 19.0,
+    "youtube": 41.2
+   },
+   "views": {
+    "instagram": 635.0,
+    "tiktok": 112.0,
+    "youtube": 1471.0
+   },
+   "topic": "walk",
+   "format": "pov",
+   "topic_format": "walk|pov",
+   "hook_type": "mid_action",
+   "caption_style": "premise",
+   "caption_text": "POV: your alarm makes you walk 200 steps \ud83d\udc80",
+   "title_style": "pov",
+   "sfx": "alarm/firefighter-siren-deep__epidemic.mp3",
+   "music_mood": "none",
+   "track": "none",
+   "length_bucket": "25-35s",
+   "time_slot": "12:30",
+   "hashtag_set": "tags-1",
+   "hashtag_count": "0 tags",
+   "angle": "challenge",
+   "title_emoji": "1",
+   "cta_mode": "none",
+   "cta_text": "none",
+   "sound": "alarm/firefighter-siren-deep__epidemic.mp3",
+   "sound_type": "siren",
+   "speed_level": "legacy",
+   "speed": "1.0x",
+   "post_caption_style": "legacy",
+   "post_emoji": "legacy"
+  },
+  {
+   "slot_id": 3,
+   "variant_id": "R20261117-003__v1",
+   "clip_id": "R20261117-003",
+   "scheduled_at": "2026-11-18T16:30:00-05:00",
+   "score": 24.25,
+   "platform_scores": {
+    "instagram": 16.0,
+    "tiktok": 33.0,
+    "youtube": 23.8
+   },
+   "views": {
+    "instagram": 122.0,
+    "tiktok": 143.0,
+    "youtube": 1246.0
+   },
+   "topic": "pushup",
+   "format": "pov",
+   "topic_format": "pushup|pov",
+   "hook_type": "mid_action",
+   "caption_style": "premise",
+   "caption_text": "crashing out because my alarm is making me do pushups at 3am \ud83d\ude2d",
+   "title_style": "crashing_out",
+   "sfx": "alarm/alarm-loop-01__epidemic.mp3",
+   "music_mood": "none",
+   "track": "none",
+   "length_bucket": "25-35s",
+   "time_slot": "16:30",
+   "hashtag_set": "tags-1",
+   "hashtag_count": "0 tags",
+   "angle": "challenge",
+   "title_emoji": "1",
+   "cta_mode": "none",
+   "cta_text": "none",
+   "sound": "alarm/alarm-loop-01__epidemic.mp3",
+   "sound_type": "alarm-loop",
+   "speed_level": "legacy",
+   "speed": "1.0x",
+   "post_caption_style": "legacy",
+   "post_emoji": "legacy"
+  }
+ ],
+ "bottom5": [],
+ "week_posts": [
+  {
+   "platform": "instagram",
+   "status": "error",
+   "n": 1
+  },
+  {
+   "platform": "instagram",
+   "status": "sent",
+   "n": 11
+  },
+  {
+   "platform": "tiktok",
+   "status": "sent",
+   "n": 12
+  },
+  {
+   "platform": "youtube",
+   "status": "error",
+   "n": 2
+  },
+  {
+   "platform": "youtube",
+   "status": "sent",
+   "n": 8
+  }
+ ],
+ "shot_list": [
+  "shake \u00d7 pov",
+  "tap \u00d7 pov",
+  "walk \u00d7 pov"
+ ]
+}
