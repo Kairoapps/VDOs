@@ -86,7 +86,9 @@ speed_max = 1.5                      # never faster than 1.5x
 modes = ["none", "always", "end"]    # end = from the moment the challenge completes (at least the last 3 s)
 end_min_seconds = 3.0
 texts = ["comment UNSNOOZE for the app 👇", "comment \"UNSNOOZE\" and I'll send it", "comment UNSNOOZE for the link 🔗"]
-color = "#2BFF4F"
+color = "#2BFF4F"     # fallback
+# A/B tested per version (weighted by results like everything else): green, yellow, white, pink
+colors = ["#2BFF4F", "#FFE135", "#FFFFFF", "#FF4FA3"]
 size = 46
 
 [analysis]
