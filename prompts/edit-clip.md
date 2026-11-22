@@ -32,7 +32,9 @@ You decide the edit; the worker renders it. First read `references/style.md` and
 
 **keep**: the spans worth showing, in order, in source seconds. Remove dead air, fumbled starts, shaky or blank stretches, and anything private (faces of people who didn't agree, screens with personal info, addresses, license plates). Aim for 15–45 s total. Cut at word boundaries (use the transcript timestamps).
 
-**hooks**: 2–4 different openings. The variant starts at `start` (everything before it in `keep` is dropped), so each hook is also a different start point.
+**Never cut the alarm going off (Chika's rule).** Every video must show the moment the alarm starts ringing: Chika still lying there / looking at the ceiling, then the alarm hits and she grabs the phone. Set **`alarm_at`** on every clip = the source second the alarm starts (usually where the long silence in `context.md` ends, confirmed in the frames: the first movement toward the phone), and start `keep` **1 s before `alarm_at`**. Every hook's `start` must equal the first `keep` second; vary openings with hook *type* and on-screen text, never by starting later. The video is silent until `alarm_at`, then the alarm bed starts. `vdos variants` enforces this: a hook that starts after `alarm_at` is moved back to the start of `keep`. Only exception: if the moment shows something that must be cut (a stranger's face on screen), start at the first frame after it and note why in `summary`.
+
+**hooks**: 2–4 different openings (all starting at the first `keep` second, see above). The variant starts at `start` (everything before it in `keep` is dropped), so each hook is also a different start point.
 - `mid_action`: start on the most visually interesting moment, no text
 - `bold_claim`: a strong statement shown as on-screen text for the first ~2 s, true to the clip
 - `question`: a question the viewer will want to answer in the comments

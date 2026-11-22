@@ -140,6 +140,9 @@ def generate(clip_id: str, n: int | None = None, seed: int | None = None, dry_ru
         used_styles = {s["caption_style"] for s in siblings}
         used_tracks = {s["track_id"] for s in siblings}
         hooks = edit.get("hooks") or [{"type": "mid_action", "start": edit["keep"][0][0]}]
+        if edit.get("alarm_at") is not None:  # never cut the alarm going off: no opening may start after it
+            k0 = edit["keep"][0][0]
+            hooks = [dict(h, start=k0) if float(h.get("start", k0)) > float(edit["alarm_at"]) else h for h in hooks]
         moods = edit.get("moods", ["any"])
         tracks = _eligible_tracks(con, moods, cfg["reuse"]["music_min_days_between"]) if moods else []
         used_hooks = {(v["hook_type"], v["start_s"]) for v in con.execute(
