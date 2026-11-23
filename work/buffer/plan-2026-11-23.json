@@ -1,0 +1,158 @@
+{
+ "date": "2026-11-23",
+ "slots": [
+  {
+   "variant_id": "R20261117-013__v5",
+   "clip_id": "R20261117-013",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-013__v5__7c524a.mp4",
+   "file": "R20261117-013__v5__7c524a.mp4",
+   "scheduled_at": "2026-11-23T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "minimal-3",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#wakeup"
+   ],
+   "topic": "walk",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm won't stop until I walk",
+   "duration_s": 24.233333,
+   "summary": "Alarm goes off; walks the long hallways until the step ring fills and the alarm dismisses (scroll setup cut: creator's face visible).",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "comment_cta",
+   "post_emoji": "2-3",
+   "cta": "end",
+   "cta_text": "comment UNSNOOZE for the app \ud83d\udc47"
+  },
+  {
+   "variant_id": "R20261117-009__v4",
+   "clip_id": "R20261117-009",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-009__v4__b23df0.mp4",
+   "file": "R20261117-009__v4__b23df0.mp4",
+   "scheduled_at": "2026-11-23T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "snooze-pov",
+   "hashtags": [
+    "#pov",
+    "#snooze",
+    "#alarm",
+    "#relatable"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta find a mirror to turn off my alarm \ud83d\ude2d",
+   "duration_s": 14.348,
+   "summary": "Alarm goes off; walks down the hall to the bathroom to photograph the mirror and dismiss it (sus setup cut: TikTok creator's face visible).",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "cta": "end",
+   "cta_text": "comment UNSNOOZE for the app \ud83d\udc47"
+  },
+  {
+   "variant_id": "R20261117-010__v13",
+   "clip_id": "R20261117-010",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-010__v13__b75a5a.mp4",
+   "file": "R20261117-010__v13__b75a5a.mp4",
+   "scheduled_at": "2026-11-23T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "alarm-app",
+   "hashtags": [
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine",
+    "#snooze"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "POV: your alarm only stops if you shake it like crazy \ud83d\udc80",
+   "duration_s": 23.667,
+   "summary": "Alarm at 2:05; has to shake the phone like crazy until the challenge fills up to dismiss it.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "comment_cta",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261117-004__v13",
+   "clip_id": "R20261117-004",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-004__v13__acff68.mp4",
+   "file": "R20261117-004__v13__acff68.mp4",
+   "scheduled_at": "2026-11-23T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "app-challenge",
+   "hashtags": [
+    "#alarmapp",
+    "#wakeupchallenge",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "question",
+   "overlay_text": null,
+   "caption_text": "crashing out because I have to shake my phone 50 times at 3am",
+   "duration_s": 22.714,
+   "summary": "Alarm in the lounge; shakes the phone hard until the shake challenge completes.",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "cta": "end",
+   "cta_text": "comment UNSNOOZE for the link \ud83d\udd17"
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 5,
+  "level": "heads_up",
+  "remaining_uses": 20,
+  "active_clips": 10,
+  "clips_needed": 3,
+  "covered_through": "2026-11-27",
+  "first_gap": "2026-11-28",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube"
+ ]
+}

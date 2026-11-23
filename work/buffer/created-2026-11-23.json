@@ -1,0 +1,114 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-013__v5",
+   "scheduled_at": "2026-11-23T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "minimal-3",
+   "post_caption_style": "comment_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b03cad2a6de38de9ebe823c",
+     "caption": "my alarm won't shut up until i walk the whole hallway 😭🚶\ncomment UNSNOOZE and i'll send you the app\n\n#alarm #snooze #wakeup",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b03cad3a6de38de9ebe82b0",
+     "caption": "walking laps at dawn because my alarm said so 😭🚶 comment UNSNOOZE and i'll send you the app #alarm #snooze #wakeup",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-009__v4",
+   "scheduled_at": "2026-11-23T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "snooze-pov",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b03cad3cc364169c1b1406b",
+     "caption": "had to go find a mirror just to turn off my alarm 🪞\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b03cad4846b0ee907e59202",
+     "caption": "hunting down a mirror at 7am just to shut my alarm off 🪞 unsnooze makes you actually get up. link in bio #pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b03cad4cc364169c1b140df",
+     "caption": "My alarm only stops if I find a mirror 🪞 | had to go find a mirror just to turn off my alarm. unsnooze makes you actually get up: the alarm won't stop until you finish the challenge. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-010__v13",
+   "scheduled_at": "2026-11-23T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "alarm-app",
+   "post_caption_style": "comment_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b03cad5d864a0110521df1f",
+     "caption": "shaking my phone like it owes me money just to stop the alarm 💀📱\ncomment UNSNOOZE and i'll send you the app\n\n#alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b03cad6d5eabfb8cc08de65",
+     "caption": "the alarm only stops if i shake it like crazy 💀📱 comment UNSNOOZE and i'll send you the app #alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-004__v13",
+   "scheduled_at": "2026-11-23T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "app-challenge",
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b03cad7a6de38de9ebe835f",
+     "caption": "50 shakes at 3am just to make it stop. what's the worst challenge you'd put on your alarm?\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b03cad7c72676f5e989a792",
+     "caption": "what's the worst challenge you'd put on your alarm? #alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b03cad8d5eabfb8cc08deac",
+     "caption": "What's the worst challenge you'd put on your alarm? | shaking my phone 50 times at 3am because unsnooze won't let the alarm stop until the challenge is done. what's the worst challenge you'd put on yours?\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
