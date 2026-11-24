@@ -1,0 +1,159 @@
+{
+ "date": "2026-11-24",
+ "slots": [
+  {
+   "variant_id": "R20261117-009__v5",
+   "clip_id": "R20261117-009",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-009__v5__9653de.mp4",
+   "file": "R20261117-009__v5__9653de.mp4",
+   "scheduled_at": "2026-11-24T08:30:00-05:00",
+   "time_slot": "08:30",
+   "hashtag_set": "heavy-sleeper-5",
+   "hashtags": [
+    "#heavysleeper",
+    "#cantwakeup",
+    "#alarmclock",
+    "#snoozebutton",
+    "#morningroutine"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta find a mirror to turn off my alarm",
+   "duration_s": 21.266667,
+   "summary": "Alarm goes off; walks down the hall to the bathroom to photograph the mirror and dismiss it (sus setup cut: TikTok creator's face visible).",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "cta": "always",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-011__v13",
+   "clip_id": "R20261117-011",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-011__v13__88d016.mp4",
+   "file": "R20261117-011__v13__88d016.mp4",
+   "scheduled_at": "2026-11-24T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "minimal-3",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#wakeup"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm made me search the whole building for a TV \ud83d\ude2d",
+   "duration_s": 32.466667,
+   "summary": "Alarm at 2:21; wanders the halls hunting for a TV to photograph so the alarm stops.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "end",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-007__v5",
+   "clip_id": "R20261117-007",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-007__v5__588d72.mp4",
+   "file": "R20261117-007__v5__588d72.mp4",
+   "scheduled_at": "2026-11-24T17:00:00-05:00",
+   "time_slot": "17:00",
+   "hashtag_set": "wake-up",
+   "hashtags": [
+    "#wakeup",
+    "#morningroutine",
+    "#heavysleeper",
+    "#alarm"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "POV: your alarm won't stop until you photograph a sink \ud83d\udc80",
+   "duration_s": 12.0,
+   "summary": "Alarm goes off; has to walk to the bathroom and snap a photo of the sink to dismiss it (sus setup cut: TikTok creator's face visible).",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261117-006__v13",
+   "clip_id": "R20261117-006",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-006__v13__750de8.mp4",
+   "file": "R20261117-006__v13__750de8.mp4",
+   "scheduled_at": "2026-11-24T20:30:00-05:00",
+   "time_slot": "20:30",
+   "hashtag_set": "alarm-app",
+   "hashtags": [
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine",
+    "#snooze"
+   ],
+   "topic": "walk",
+   "format": "pov",
+   "hook_type": "question",
+   "overlay_text": null,
+   "caption_text": "POV: your alarm makes you walk 200 steps \ud83d\udc80\ud83d\udc80\ud83d\udc80",
+   "duration_s": 31.714,
+   "summary": "Alarm at 3:39; walks the hallway counting steps until the step challenge dismisses it.",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "always",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 4,
+  "level": "heads_up",
+  "remaining_uses": 16,
+  "active_clips": 9,
+  "clips_needed": 4,
+  "covered_through": "2026-11-27",
+  "first_gap": "2026-11-28",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube"
+ ]
+}

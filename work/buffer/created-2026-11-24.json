@@ -1,0 +1,114 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-009__v5",
+   "scheduled_at": "2026-11-24T08:30:00-05:00",
+   "time_slot": "08:30",
+   "hashtag_set": "heavy-sleeper-5",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b051c5e6734c08a26b3c221",
+     "caption": "my alarm won't stop until i take a picture of a mirror 🪞\nunsnooze makes you actually get up. link in bio\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b051c5fc43c1f2f5c8db98a",
+     "caption": "dragging myself down the hall to find a mirror so my alarm shuts up 🪞 unsnooze makes you actually get up. link in bio #heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b051c5fc43c1f2f5c8db9c4",
+     "caption": "Gotta photograph a mirror to turn off my alarm 🪞 | my alarm won't stop until i snap a photo of the mirror. unsnooze makes you actually get up: the alarm keeps going until you finish the challenge. link in bio\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-011__v13",
+   "scheduled_at": "2026-11-24T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "minimal-3",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b051c60bc151fa8ad26061f",
+     "caption": "searched the whole building for a TV just to stop my alarm 😭📺\nwhat's the weirdest thing you'd make yourself photograph in the morning?\n\n#alarm #snooze #wakeup",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b051c61c43c1f2f5c8dba06",
+     "caption": "what would you make your alarm ask for? mine wanted a TV 😭📺 #alarm #snooze #wakeup",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-007__v5",
+   "scheduled_at": "2026-11-24T17:00:00-05:00",
+   "time_slot": "17:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "question",
+   "post_emoji": "0",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b051c61f0d7b1e0deb34969",
+     "caption": "my alarm only stops when i photograph the sink\nwould this actually get you out of bed?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b051c62bc151fa8ad260680",
+     "caption": "would a sink photo alarm get you out of bed? #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b051c62f0d7b1e0deb349c9",
+     "caption": "Would you get up if your alarm needed a sink photo? | my alarm won't stop until i snap a photo of the sink. that's unsnooze, the alarm app that makes you actually get up.\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-006__v13",
+   "scheduled_at": "2026-11-24T20:30:00-05:00",
+   "time_slot": "20:30",
+   "hashtag_set": "alarm-app",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b051c63bc151fa8ad260702",
+     "caption": "200 steps before my alarm lets me go 💀🚶\nhow many steps would it take to actually wake you up?\n\n#alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b051c649a4bd32ca3f66603",
+     "caption": "how many steps would it take to wake you up? mine's 200 💀🚶 #alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
