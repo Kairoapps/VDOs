@@ -25,6 +25,8 @@ That installs the uploader. Nothing else needs to run on the Mac.
 |---|---|
 | `media/raw/` | your raw clips (optional topic prefix: `gym__anything.mov`) |
 | `sounds/` | all audio, one subfolder per category: `alarm/`, `whoosh/`, … and background music in `music-<mood>/` |
+| `media/slides/` | built photo-carousel slideshows, one folder each (see [tools/slides/README.md](tools/slides/README.md)) |
+| `assets/slides/` | slideshow art and the fixed "Download Unsnooze Today" last slide |
 | `references/` | examples and notes on the style you want |
 | `prompts/` | instructions for Claude's daily and weekly runs |
 | `reports/` | weekly reports and the dashboard |
@@ -48,7 +50,7 @@ Longer cuts get sped up more. The original audio is muted, so nothing sounds chi
 ## What gets tested
 
 - **Every post:** time slot and hashtag set (both rotating evenly; 3–5 relevant tags), post caption style and emoji count.
-- **Every video version:** title style and emoji count, sound (and sound type: siren, ringtone, sci-fi…), speed level, and (turned off 2026-11-25, `[cta] modes = ["none"]`) a green call to action under the title. Every post caption/description now opens with "Download the Unsnooze app".
+- **Every video version:** title style and emoji count, sound (and sound type: siren, ringtone, sci-fi…), speed level, and a green call to action under the title ("comment UNSNOOZE for the app": none / whole video / at the end) plus its wording.
 - **Every clip:** topic and content angle (`challenge`, `sus`, `multi_challenge`).
 The weekly review ranks all of these and shifts future choices toward winners (70%) while still exploring (30%).
 
