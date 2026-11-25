@@ -1,0 +1,159 @@
+{
+ "date": "2026-11-25",
+ "slots": [
+  {
+   "variant_id": "R20261117-001__v13",
+   "clip_id": "R20261117-001",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-001__v13__47dfa7.mp4",
+   "file": "R20261117-001__v13__47dfa7.mp4",
+   "scheduled_at": "2026-11-25T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "app-challenge",
+   "hashtags": [
+    "#alarmapp",
+    "#wakeupchallenge",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "memory",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm is quizzing me at 3am 😭😭😭",
+   "duration_s": 25.2,
+   "summary": "Alarm goes off at 3:31; has to memorize and tap a color sequence (two rounds) to dismiss it.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "1",
+   "cta": "end",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-010__v14",
+   "clip_id": "R20261117-010",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-010__v14__978a19.mp4",
+   "file": "R20261117-010__v14__978a19.mp4",
+   "scheduled_at": "2026-11-25T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "alarm-core",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#morningroutine",
+    "#alarmclock"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta shake my phone to turn off my alarm 😭",
+   "duration_s": 20.3,
+   "summary": "Alarm at 2:05; has to shake the phone like crazy until the challenge fills up to dismiss it.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "relatable",
+   "post_emoji": "2-3",
+   "cta": "always",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  },
+  {
+   "variant_id": "R20261117-005__v13",
+   "clip_id": "R20261117-005",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-005__v13__889212.mp4",
+   "file": "R20261117-005__v13__889212.mp4",
+   "scheduled_at": "2026-11-25T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "snooze-pov",
+   "hashtags": [
+    "#pov",
+    "#snooze",
+    "#alarm",
+    "#relatable"
+   ],
+   "topic": "tap",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "Gotta tap 60 times to turn off my alarm",
+   "duration_s": 20.233333,
+   "summary": "In bed at 12:18; taps 60 times to inflate a balloon until it pops and the alarm stops.",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "cta": "end",
+   "cta_text": "comment UNSNOOZE for the app 👇"
+  },
+  {
+   "variant_id": "R20261117-007__v6",
+   "clip_id": "R20261117-007",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261117-007__v6__605b7b.mp4",
+   "file": "R20261117-007__v6__605b7b.mp4",
+   "scheduled_at": "2026-11-25T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "alarm-app",
+   "hashtags": [
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine",
+    "#snooze"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm sent me to the bathroom at 3am",
+   "duration_s": 22.273,
+   "summary": "Alarm goes off; has to walk to the bathroom and snap a photo of the sink to dismiss it (sus setup cut: TikTok creator's face visible).",
+   "transcript": "",
+   "use_number": 3,
+   "cap": 3,
+   "angle": "challenge",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "cta": "always",
+   "cta_text": "comment \"UNSNOOZE\" and I'll send it"
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 3,
+  "level": "heads_up",
+  "remaining_uses": 12,
+  "active_clips": 8,
+  "clips_needed": 6,
+  "covered_through": "2026-11-27",
+  "first_gap": "2026-11-28",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube"
+ ]
+}

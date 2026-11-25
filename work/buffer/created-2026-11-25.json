@@ -1,0 +1,114 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261117-001__v13",
+   "scheduled_at": "2026-11-25T09:30:00-05:00",
+   "time_slot": "09:30",
+   "hashtag_set": "app-challenge",
+   "post_caption_style": "question",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b066df9608549ccf263a2c7",
+     "caption": "my alarm made me memorize a color sequence at 3:31am. two rounds.\ncould you pass this half asleep? 🧠\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b066df99cddd8483aae8216",
+     "caption": "could you memorize this color sequence at 3am? 🧠 #alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b066dfa22dfb7833a805e24",
+     "caption": "Could you beat this memory alarm at 3am? 🧠 | my alarm won't stop until i memorize and tap a color sequence, two rounds, at 3:31am. that's unsnooze, the alarm app that makes you actually get up.\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-010__v14",
+   "scheduled_at": "2026-11-25T13:00:00-05:00",
+   "time_slot": "13:00",
+   "hashtag_set": "alarm-core",
+   "post_caption_style": "relatable",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b066dfb22dfb7833a805e68",
+     "caption": "shaking my phone like it owes me money at 2am just so it'll be quiet 😭📱\n\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b066dfc22dfb7833a805ea1",
+     "caption": "me at 2am shaking my phone like it owes me money 😭📱 #alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-005__v13",
+   "scheduled_at": "2026-11-25T16:00:00-05:00",
+   "time_slot": "16:00",
+   "hashtag_set": "snooze-pov",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b066dfc608549ccf263a371",
+     "caption": "60 taps to pop the balloon before my alarm shuts up 🎈💥\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b066dfdd8874a038cf3cdf5",
+     "caption": "tapping 60 times at midnight to pop a balloon so my alarm stops 🎈💥 unsnooze makes you actually get up. link in bio #pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261117-007__v6",
+   "scheduled_at": "2026-11-25T19:30:00-05:00",
+   "time_slot": "19:30",
+   "hashtag_set": "alarm-app",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b066dfeb6204bca46ca5f30",
+     "caption": "my alarm won't stop until i walk to the bathroom and photograph the sink 🚰📸\nunsnooze makes you actually get up. link in bio\n\n#alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b066dfe608549ccf263a3e3",
+     "caption": "dragged out of bed at 3am to go take a picture of my sink 🚰📸 unsnooze makes you actually get up. link in bio #alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b066dff9cddd8483aae8380",
+     "caption": "My alarm made me photograph the sink at 3am 🚰📸 | my alarm sent me to the bathroom at 3am and won't stop until i snap a photo of the sink. unsnooze makes you actually get up: the alarm keeps going until you finish the challenge. link in bio\n\n#alarmapp #alarm #morningroutine #snooze",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
