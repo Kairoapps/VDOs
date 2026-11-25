@@ -84,8 +84,10 @@ speed_min = 1.0                      # never slow a clip down
 speed_max = 1.5                      # never faster than 1.5x
 
 # Call to action: green text under the title. Each variant picks a mode (weighted by results).
+# 2026-11-25: on-screen CTA turned OFF ("comment UNSNOOZE" can't be auto-answered on TikTok/YouTube).
+# To bring it back, set modes = ["none", "always", "end"].
 [cta]
-modes = ["none", "always", "end"]    # end = from the moment the challenge completes (at least the last 3 s)
+modes = ["none"]                     # was ["none", "always", "end"]; end = from the moment the challenge completes
 end_min_seconds = 3.0
 texts = ["comment UNSNOOZE for the app 👇", "comment \"UNSNOOZE\" and I'll send it", "comment UNSNOOZE for the link 🔗"]
 color = "#2BFF4F"     # fallback
@@ -118,7 +120,7 @@ default = "alarm-core"
 
 # Per-post caption tests (weighted by results, like the variant choices).
 [post_captions]
-styles = ["hook_cta", "relatable", "question", "comment_cta"]
+styles = ["hook_cta", "relatable", "question"]   # 2026-11-25: dropped "comment_cta" (no comment CTAs)
 emojis = ["0", "1", "2-3"]
 
 # Content angles (set per clip in edit.json "angle"); ranked weekly and used to weight which clips post.

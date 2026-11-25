@@ -48,7 +48,7 @@ Longer cuts get sped up more. The original audio is muted, so nothing sounds chi
 ## What gets tested
 
 - **Every post:** time slot and hashtag set (both rotating evenly; 3–5 relevant tags), post caption style and emoji count.
-- **Every video version:** title style and emoji count, sound (and sound type: siren, ringtone, sci-fi…), speed level, and a green call to action under the title ("comment UNSNOOZE for the app": none / whole video / at the end) plus its wording.
+- **Every video version:** title style and emoji count, sound (and sound type: siren, ringtone, sci-fi…), speed level, and (turned off 2026-11-25, `[cta] modes = ["none"]`) a green call to action under the title. Every post caption/description now opens with "Download the Unsnooze app".
 - **Every clip:** topic and content angle (`challenge`, `sus`, `multi_challenge`).
 The weekly review ranks all of these and shifts future choices toward winners (70%) while still exploring (30%).
 
