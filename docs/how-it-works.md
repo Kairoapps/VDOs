@@ -1,6 +1,6 @@
 # How VDOs works (details)
 
-Turns raw Ray-Ban Meta clips into short-form posts every day (4 TikTok, 4 Instagram Reels, 2 YouTube Shorts) through Buffer. Claude edits the clips and runs the daily and weekly jobs; this repo is the machinery.
+Turns raw Ray-Ban Meta clips into short-form posts every day (3 each on TikTok, Instagram Reels, Facebook Page Reels and YouTube Shorts; YouTube max 2 per rolling 24 h on Buffer's free plan) through Buffer. Claude edits the clips and runs the daily and weekly jobs; this repo is the machinery.
 
 **Edit style (current):** original audio muted; an alarm sound from `sounds/alarm/` loops from the first frame and cuts off the moment the challenge completes; a title at the top (white bold text, thick black outline, emojis) in one of several styles (`gotta`, `pov`, `crashing_out`) that the weekly review A/B tests.
 
@@ -68,7 +68,7 @@ See [naming.md](naming.md).
 ## Rules (config.toml)
 
 - **Reuse:** a use = one daily slot (the same variant goes to all 3 platforms). Max 3 uses per clip, never twice on the same day; top performers become *evergreen* (cap 5). A use counts once Buffer reports a post sent.
-- **Inventory:** days of posting the library covers. Under 7 days → heads-up; under 3 → urgent push + calendar event; 0 → posting skipped. Each clip gives 3 uses, and 4 slots a day use up about 1.3 clips a day (~9–10 new clips a week).
+- **Inventory:** days of posting the library covers. Under 7 days → heads-up; under 3 → urgent push + calendar event; 0 → posting skipped. Each clip gives 3 uses, and 3 slots a day use up about 1 clip a day (~7 new clips a week).
 - **Experiments:** one variable at a time (`time_slot` first, then `hashtag_set`), rotated for equal exposure; an arm needs ≥6 posts before it can win.
 - **Scoring:** each post's 7-day views percentile within its platform (70%) + shares/saves rate percentile (30%). Weights: 70% to winners with enough data, 30% exploration.
 

@@ -45,3 +45,34 @@ def test_youtube_slots_two_of_four_rotate():
         assert len(s) == 2
         seen |= s
     assert seen == set(times)
+
+
+def test_capped_slots_respect_rolling_24h():
+    from datetime import date, datetime, timedelta
+    from zoneinfo import ZoneInfo
+    from vdos.scheduler import _capped_slots, _rolling_ok
+    tz = ZoneInfo("America/New_York")
+    times = ["09:30", "14:30", "19:30"]
+    prior: list = []
+    total = 0
+    for k in range(10):
+        d = date(2026, 11, 25) + timedelta(days=k)
+        s = _capped_slots(d, times, 2, prior, tz)
+        assert 1 <= len(s) <= 2
+        new = [datetime.combine(d, datetime.strptime(t, "%H:%M").time(), tzinfo=tz) for t in s]
+        assert _rolling_ok(new, prior, 2)
+        prior += new
+        total += len(s)
+    # never 3 YouTube posts inside any 24 h window
+    prior.sort()
+    for i, t in enumerate(prior):
+        assert sum(1 for x in prior if t - timedelta(hours=24) < x <= t) <= 2
+    assert total >= 12
+
+
+def test_capped_slots_uncapped_when_cap_covers_all():
+    from datetime import date
+    from zoneinfo import ZoneInfo
+    from vdos.scheduler import _capped_slots
+    times = ["09:30", "14:30", "19:30"]
+    assert _capped_slots(date(2026, 11, 25), times, 3, [], ZoneInfo("America/New_York")) == set(times)

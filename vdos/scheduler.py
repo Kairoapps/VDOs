@@ -70,13 +70,56 @@ def _pick_hashtags(con, rng, today: dict[str, int] | None = None) -> str:
 
 
 def _youtube_slots(d: date, times: list[str], cap: int) -> set[str]:
-    """Which of the day's slots also go to YouTube (Buffer allows 2/day). Rotates daily so every
-    time of day gets YouTube posts."""
+    """Which of the day's slots go to a capped platform (YouTube: Buffer free plan allows 2 per 24 h).
+    Rotates daily so every time of day gets posts."""
     if cap >= len(times):
         return set(times)
+    if cap <= 0:
+        return set()
     patterns = [p for p in itertools.combinations(range(len(times)), cap)]
     spread = [p for p in patterns if all(b - a >= 2 for a, b in zip(p, p[1:]))] or patterns
     return {times[i] for i in spread[d.toordinal() % len(spread)]}
+
+
+ROLLING_WINDOW = timedelta(hours=24, minutes=45)   # Buffer counts a rolling 24 h; 45 min of margin
+
+
+def _rolling_ok(chosen: list[datetime], prior: list[datetime], cap: int, window: timedelta = ROLLING_WINDOW) -> bool:
+    """True if no post in `chosen` would have `cap` or more other posts in the `window` before it."""
+    allp = sorted(prior + chosen)
+    for t in chosen:
+        if sum(1 for x in allp if t - window < x < t) >= cap:
+            return False
+    return True
+
+
+def _capped_slots(d: date, times: list[str], cap: int, prior: list[datetime], tz) -> set[str]:
+    """Slots for a platform with a Buffer rolling-24h limit: the most slots (up to `cap`) whose posts,
+    together with the platform's recent posts (`prior`), never exceed `cap` in any rolling window.
+    Patterns rotate daily so every time of day gets its share."""
+    when = {t: datetime.combine(d, time(int(t[:2]), int(t[3:])), tzinfo=tz) for t in times}
+    for k in range(min(cap, len(times)), 0, -1):
+        patterns = list(itertools.combinations(times, k))
+        off = d.toordinal() % len(patterns)
+        for p in patterns[off:] + patterns[:off]:
+            if _rolling_ok([when[t] for t in p], prior, cap):
+                return set(p)
+    return set()
+
+
+def _recent_platform_posts(con, platform: str, d: date) -> list[datetime]:
+    """Scheduled/sent posts on `platform` from the two days before `d` through `d` (errors and deletions don't count)."""
+    lo, hi = (d - timedelta(days=2)).isoformat(), (d + timedelta(days=1)).isoformat()
+    rows = con.execute("""SELECT s.scheduled_at FROM posts p JOIN slots s ON s.id=p.slot_id
+                          WHERE p.platform=? AND p.status NOT IN ('error','deleted')
+                            AND substr(s.scheduled_at,1,10) BETWEEN ? AND ?""", (platform, lo, hi)).fetchall()
+    out = []
+    for r in rows:
+        try:
+            out.append(datetime.fromisoformat(r["scheduled_at"].replace("Z", "+00:00")))
+        except (TypeError, ValueError):
+            pass
+    return out
 
 
 def plan(day: str | None = None, seed: int | None = None) -> dict:
@@ -95,9 +138,9 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
         picks, used = [], set()
         pl = cfg["posting"]["platforms"]
         cap = cfg["posting"].get("platform_daily_max", {})
-        yt_today = con.execute("""SELECT COUNT(*) c FROM posts p JOIN slots s ON s.id=p.slot_id
-                                  WHERE p.platform='youtube' AND substr(s.scheduled_at,1,10)=?""", (d.isoformat(),)).fetchone()["c"]
-        yt_times = _youtube_slots(d, times, max(0, cap.get("youtube", 99) - yt_today)) if "youtube" in pl else set()
+        # Platforms with a Buffer rolling-24h cap (YouTube on the free plan) only get the slots that fit.
+        capped = {p: _capped_slots(d, times, int(cap[p]), _recent_platform_posts(con, p, d), tz)
+                  for p in pl if p in cap and int(cap[p]) < len(times)}
         tags_today: dict[str, int] = {}
         pcfg = cfg.get("post_captions") or {}
         for t in times:
@@ -140,14 +183,15 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                 "summary": edit.get("summary", ""), "transcript": transcript,
                 "use_number": clip["committed"] + 1, "cap": clip["cap"],
                 "angle": clip.get("angle") or "challenge",
-                "platforms": [p for p in pl if p != "youtube" or t in yt_times],
+                "platforms": [p for p in pl if p not in capped or t in capped[p]],
                 "post_caption_style": weights.choose(con, "post_caption_style", pcfg.get("styles", ["hook_cta"]), rng=rng),
                 "post_emoji": weights.choose(con, "post_emoji", pcfg.get("emojis", ["1"]), rng=rng),
                 "cta": v["cta_mode"], "cta_text": v["cta_text"],
             })
         inv = reuse.inventory(con)
     return {"date": d.isoformat(), "slots": picks, "shortfall": n - len(picks), "inventory": inv,
-            "platforms": cfg["posting"]["platforms"]}
+            "platforms": cfg["posting"]["platforms"],
+            "limits": {p: sorted(ts) for p, ts in capped.items()} if n else {}}
 
 
 def record(payload: dict) -> int:

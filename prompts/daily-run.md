@@ -49,7 +49,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). The plan has **4 slots: 4 TikTok + 4 Instagram + 2 YouTube Shorts = 10 posts a day.** Post each slot only to the platforms in its `platforms` list (YouTube is on 2 of the 4; which 2 rotates daily; Buffer refuses a 3rd YouTube post in a day, so never add one and don't retry YouTube posts that failed with "daily posting limit"). Buffer's free plan allows 10 scheduled posts per channel at once, so schedule only today and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). The plan has **3 slots, and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 3 posts a day per platform** — except YouTube, which Buffer's free plan caps at 2 per rolling 24 h. Post each slot only to the platforms in its `platforms` list: `plan` already left YouTube off any slot that would break the rolling limit (the plan's `limits` field shows which slots YouTube got), so never add YouTube to another slot and don't retry YouTube posts that failed with "daily posting limit". Buffer's free plan allows 10 scheduled posts per channel at once, so schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
 - `post_caption_style`: `hook_cta` / `relatable` / `question` / `comment_cta` (definitions in `prompts/voice.md`).
@@ -60,8 +60,9 @@ Per platform:
 - **Instagram:** the caption in the slot's style, then the hashtags. `hook_cta` uses the soft CTA ("unsnooze makes you actually get up. link in bio").
 - **TikTok:** one punchy line in the slot's style + hashtags; `metadata.tiktok.title` short.
 - **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description mentions Unsnooze + the hashtags.
+- **Facebook Page (Reel):** the same caption as Instagram (slot's style, line breaks, then the hashtags in the same text — Reels have one description field, no title). Buffer channel `facebook` in `config.toml`.
 
-`create_post` per platform: `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`. Retry a failed create once, then record it as `"status": "error"`.
+`create_post` per platform: `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`, Facebook `metadata.facebook = {"type": "reel"}`. Retry a failed create once, then record it as `"status": "error"`.
 
 Write `work/buffer/created-<date>.json` (`{"slots": [{"variant_id", "scheduled_at", "time_slot", "hashtag_set", "post_caption_style", "post_emoji", "posts": [{"platform", "channel_id", "buffer_post_id", "caption", "status"}]}]}`) and run `python3 -m vdos record work/buffer/created-<date>.json`.
 
@@ -83,4 +84,4 @@ python3 -m vdos cloud-save -m "daily run <date>"
 
 ## 7. Summary
 
-3–5 lines: posts scheduled (times, clips, which slots went to YouTube, CTA modes), clips edited/rendered, failures, inventory level. Send it as a push notification too.
+3–5 lines: posts scheduled (times, clips, which slots went to YouTube, CTA modes; Facebook included), clips edited/rendered, failures, inventory level. Send it as a push notification too.

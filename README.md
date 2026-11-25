@@ -1,6 +1,6 @@
 # VDOs
 
-Turns raw Ray-Ban Meta clips into short videos posted through Buffer every day: 4 on TikTok, 4 on Instagram Reels and 2 on YouTube Shorts.
+Turns raw Ray-Ban Meta clips into short videos posted through Buffer every day: 3 each on TikTok, Instagram Reels, Facebook Page Reels and YouTube Shorts (YouTube is held to 2 per rolling 24 h while Buffer is on the free plan).
 
 ## How it works
 

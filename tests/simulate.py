@@ -22,13 +22,13 @@ buffer_posts = []
 pid = 0
 slots_payload = []
 for day in range(21, 0, -1):
-    for k, t in enumerate(["08:30", "12:00", "16:00", "19:30"]):
+    for k, t in enumerate(["09:30", "14:30", "19:30"]):
         v = rng.choice(variants)
         when = (now - timedelta(days=day)).replace(hour=int(t[:2]), minute=int(t[3:]), second=0, microsecond=0)
         posts = []
         pcs = rng.choice(["hook_cta", "relatable", "question", "comment_cta"])
         tags = rng.choice(["alarm-core", "wake-up", "snooze-pov", "minimal-3"])
-        for plat in ["instagram", "tiktok", "youtube"] if k in (0, 3) else ["instagram", "tiktok"]:
+        for plat in ["instagram", "tiktok", "facebook", "youtube"] if k in (0, 2) else ["instagram", "tiktok", "facebook"]:
             pid += 1
             bid = f"{pid:024x}"
             posts.append({"platform": plat, "channel_id": "c" * 24, "buffer_post_id": bid, "caption": "test", "status": "scheduled"})

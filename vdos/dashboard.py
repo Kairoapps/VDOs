@@ -7,7 +7,7 @@ from pathlib import Path
 
 from . import analysis, config
 
-PLAT = {"instagram": "IG", "tiktok": "TikTok", "youtube": "YT"}
+PLAT = {"instagram": "IG", "tiktok": "TikTok", "youtube": "YT", "facebook": "FB"}
 STATUS_LABEL = {"available": "Available", "cooling": "Cooling down", "needs_edit": "Needs edit", "exhausted": "Used up",
                 "retired": "Retired", "unusable": "Unusable"}
 LEVEL = {"healthy": ("good", "Healthy"), "heads_up": ("warning", "Heads-up"), "urgent": ("critical", "Urgent"),
