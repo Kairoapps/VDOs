@@ -23,14 +23,13 @@ channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2
 [posting]
 # 3 slots a day, every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts
 # (Chika, 2026-11-25: 3 posts/day on each platform).
-# YouTube exception: Buffer's FREE plan allows only 2 YouTube Shorts per channel per rolling 24 h, so
-# `platform_daily_max.youtube = 2` keeps YouTube to the slots that fit (usually 1-2 a day) instead of
-# failing. On a paid Buffer plan (5/24 h, 100 with a verified email) raise it to 3 or delete the line.
+# Buffer is on a paid plan (2026-11-25), so no platform is capped below 3/day. Paid-plan YouTube
+# limit is 5 per rolling 24 h (100 with a verified Buffer email); the planner still enforces it.
 posts_per_day = 3
 timezone = "America/New_York"
 min_gap_hours = 3.0
 platforms = ["instagram", "tiktok", "youtube", "facebook"]
-platform_daily_max = { youtube = 2 }
+platform_daily_max = { youtube = 5 }
 # Same variant goes to every platform in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).

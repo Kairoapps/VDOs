@@ -1,6 +1,6 @@
 # How VDOs works (details)
 
-Turns raw Ray-Ban Meta clips into short-form posts every day (3 each on TikTok, Instagram Reels, Facebook Page Reels and YouTube Shorts; YouTube max 2 per rolling 24 h on Buffer's free plan) through Buffer. Claude edits the clips and runs the daily and weekly jobs; this repo is the machinery.
+Turns raw Ray-Ban Meta clips into short-form posts every day (3 each on TikTok, Instagram Reels, Facebook Page Reels and YouTube Shorts) through Buffer. Claude edits the clips and runs the daily and weekly jobs; this repo is the machinery.
 
 **Edit style (current):** original audio muted; an alarm sound from `sounds/alarm/` loops from the first frame and cuts off the moment the challenge completes; a title at the top (white bold text, thick black outline, emojis) in one of several styles (`gotta`, `pov`, `crashing_out`) that the weekly review A/B tests.
 
