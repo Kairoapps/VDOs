@@ -22,44 +22,44 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta find the sink to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm won't stop until you photograph a sink 💀"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because my alarm sent me to the bathroom at 3am 😭"
+      "text": "Gotta walk 1000 steps to take a pic of my sink 🚰"
     },
     {
       "style": "gotta",
-      "text": "Gotta find the sink to turn off my alarm",
+      "text": "Gotta walk 1000 steps to take a pic of my sink",
       "emoji_test": true
     },
     {
       "style": "gotta",
-      "text": "Gotta find the sink to turn off my alarm 😭😭😭",
+      "text": "Gotta walk 1000 steps to take a pic of my sink 🚰📸😩",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm won't stop until you photograph a sink",
+      "text": "POV: your alarm won't stop until you photograph the sink 📸"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm won't stop until you photograph the sink",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm won't stop until you photograph a sink 💀💀💀",
+      "text": "POV: your alarm won't stop until you photograph the sink 📸🚽💀",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm sent me to the bathroom at 3am",
+      "text": "crashing out because my alarm made me walk 500 steps to a sink 🙄"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm made me walk 500 steps to a sink",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm sent me to the bathroom at 3am 😭😭😭",
+      "text": "crashing out because my alarm made me walk 500 steps to a sink 🙄👟🚰",
       "emoji_test": true
     }
   ],

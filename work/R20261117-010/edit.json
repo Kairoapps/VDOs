@@ -18,44 +18,44 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta shake my phone to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm only stops if you shake it like crazy 💀"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because I'm shaking my phone at 2am 😭"
+      "text": "Gotta shake my phone 67 times to turn off my alarm 📱"
     },
     {
       "style": "gotta",
-      "text": "Gotta shake my phone to turn off my alarm",
+      "text": "Gotta shake my phone 67 times to turn off my alarm",
       "emoji_test": true
     },
     {
       "style": "gotta",
-      "text": "Gotta shake my phone to turn off my alarm 😭😭😭",
+      "text": "Gotta shake my phone 67 times to turn off my alarm 📱💀🔥",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm only stops if you shake it like crazy",
+      "text": "POV: your alarm makes you shake your phone 500 times at 2am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake your phone 500 times at 2am",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm only stops if you shake it like crazy 💀💀💀",
+      "text": "POV: your alarm makes you shake your phone 500 times at 2am 😵📱‼️",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because I'm shaking my phone at 2am",
+      "text": "crashing out because I had to shake my phone 100 times at 2am 😤"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I had to shake my phone 100 times at 2am",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because I'm shaking my phone at 2am 😭😭😭",
+      "text": "crashing out because I had to shake my phone 100 times at 2am 😤📱⏰",
       "emoji_test": true
     }
   ],

@@ -65,9 +65,13 @@ A clip can only have one angle; sus beats multi_challenge if it's both. New angl
 - `crashing_out`: "crashing out because my alarm <situation> 😭"
 - (new styles are fine — `me_when`, `nobody_warned_me`, … — give each a short snake_case name)
 
-**Emojis are tested too:** for each style write the same title three ways — no emoji, one emoji, and 2–3 emojis (e.g. "Gotta do pushups to turn off my alarm", "… 😭", "… 😭😭😭"). Variants pick the style first, then the emoji count, both weighted by results.
+**Emojis are tested too:** for each style write the same title three ways — no emoji, one emoji, and a combo of 2–4 **different** emojis (e.g. "Gotta shake my phone 67 times to turn off my alarm", "… 📱", "… 😭📱💀"). Variants pick the style first, then the emoji count, both weighted by results.
 
-Keep titles short (≤ 12 words, ≤ 2 lines on screen) so they don't cover the video; only state numbers/times that are visible in the clip (e.g. 3am only if the lock screen shows it). Leave `premise` out when the clip has speech you want captioned word by word.
+**Vary the emojis (Chika, 2026-11-25).** Don't default to 😭. Pick ones that fit the challenge and the mood and mix them: 💀 😩 😵 🫠 🥲 😤 🙄 🤡 😮‍💨 ⏰ 📱 🧠 🎈 👟 🪞 📺 🚽 📸 🔥 💯 ‼️. Multiple emojis are fine anywhere in the title as long as it stays within 3 lines on screen. Don't repeat the same combo across a clip's titles.
+
+**Lead with the challenge's numbers (Chika, 2026-11-25).** Titles should name the specific challenge parameter: "walk 100 steps", "shake 67 times", "memorize 6 colors", "tap 60 times", "find a TV". Use the frames to get the real number when it's easy to read, but you don't have to be exact: playful exaggeration is encouraged ("walk 1000 steps", "shake my phone 500 times") because it gets people commenting. Mix real and exaggerated numbers across the three styles. Keep exaggeration obviously playful and about the challenge itself; don't invent app features, and only use clock times the clip shows.
+
+Keep titles short (≤ 12 words, max 3 lines on screen) so they don't cover the video. Leave `premise` out when the clip has speech you want captioned word by word.
 
 **moods**: background-music moods (the `<mood>` of `sounds/music-<mood>/`) that fit the energy (`[]` for no music, e.g. a talking clip where music would distract).
 

@@ -15,44 +15,44 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta remember the pattern to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm won't stop until you beat a memory game 🧠"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because my alarm is testing my memory at midnight 😭"
+      "text": "Gotta memorize 8 colors to turn off my alarm 🧠"
     },
     {
       "style": "gotta",
-      "text": "Gotta remember the pattern to turn off my alarm",
+      "text": "Gotta memorize 8 colors to turn off my alarm",
       "emoji_test": true
     },
     {
       "style": "gotta",
-      "text": "Gotta remember the pattern to turn off my alarm 😭😭😭",
+      "text": "Gotta memorize 8 colors to turn off my alarm 🧠🌈😩",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm won't stop until you beat a memory game",
+      "text": "POV: your alarm makes you memorize 50 colors at midnight 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you memorize 50 colors at midnight",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm won't stop until you beat a memory game 🧠🧠🧠",
+      "text": "POV: your alarm makes you memorize 50 colors at midnight 💀🧠⏰",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm is testing my memory at midnight",
+      "text": "crashing out because I have to remember 8 colors at 12am 🥲"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I have to remember 8 colors at 12am",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm is testing my memory at midnight 😭😭😭",
+      "text": "crashing out because I have to remember 8 colors at 12am 🥲🧠🫠",
       "emoji_test": true
     }
   ],

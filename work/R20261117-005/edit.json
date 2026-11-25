@@ -20,15 +20,7 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta tap 60 times to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm makes you pump a balloon until it pops 🎈"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because my alarm wants 60 taps at midnight 😭"
+      "text": "Gotta tap 60 times to turn off my alarm 👆"
     },
     {
       "style": "gotta",
@@ -37,18 +29,26 @@
     },
     {
       "style": "gotta",
-      "text": "Gotta tap 60 times to turn off my alarm 😭😭😭",
+      "text": "Gotta tap 60 times to turn off my alarm 👆🎈💥",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm makes you pump a balloon until it pops",
+      "text": "POV: your alarm makes you tap 500 times to pop a balloon 🎈"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you tap 500 times to pop a balloon",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm makes you pump a balloon until it pops 🎈🎈🎈",
+      "text": "POV: your alarm makes you tap 500 times to pop a balloon 🎈💀👆",
       "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants 60 taps at midnight 😤"
     },
     {
       "style": "crashing_out",
@@ -57,12 +57,8 @@
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm wants 60 taps at midnight 😭😭😭",
+      "text": "crashing out because my alarm wants 60 taps at midnight 😤👆🔥",
       "emoji_test": true
-    },
-    {
-      "style": "gotta",
-      "text": "Gotta pop a balloon with 60 taps before my alarm stops 🎈"
     }
   ],
   "summary": "In bed at 12:18; taps 60 times to inflate a balloon until it pops and the alarm stops.",

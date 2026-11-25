@@ -22,44 +22,44 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta walk laps to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm makes you walk the whole building 💀"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because my alarm won't stop until I walk 😭"
+      "text": "Gotta walk 100 steps to turn off my alarm 👟"
     },
     {
       "style": "gotta",
-      "text": "Gotta walk laps to turn off my alarm",
+      "text": "Gotta walk 100 steps to turn off my alarm",
       "emoji_test": true
     },
     {
       "style": "gotta",
-      "text": "Gotta walk laps to turn off my alarm 😭😭😭",
+      "text": "Gotta walk 100 steps to turn off my alarm 👟💯😩",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm makes you walk the whole building",
+      "text": "POV: your alarm makes you walk 1000 steps 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk 1000 steps",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm makes you walk the whole building 💀💀💀",
+      "text": "POV: your alarm makes you walk 1000 steps 💀👟⏰",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm won't stop until I walk",
+      "text": "crashing out because my alarm wants 500 steps before I can sleep 😮‍💨"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants 500 steps before I can sleep",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm won't stop until I walk 😭😭😭",
+      "text": "crashing out because my alarm wants 500 steps before I can sleep 😮‍💨👟🤡",
       "emoji_test": true
     }
   ],

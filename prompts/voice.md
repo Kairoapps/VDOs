@@ -4,10 +4,10 @@ Edit this file to tune how captions sound. The daily run reads it before writing
 
 - First person, casual, like texting a friend. Lowercase is fine.
 - Lead with the most interesting thing; no "Hey guys" or "In this video".
-- Short lines. One emoji max, and only if it adds something.
+- Short lines.
 - No engagement bait ("comment YES if…"); questions should be real. The one exception is the Unsnooze keyword CTA ("comment UNSNOOZE for the app") — Chika answers those.
-- Emojis: use exactly the number the slot asks for (`post_emoji`: 0, 1, or 2–3), hashtags not counted.
-- Never claim something the clip doesn't show.
+- Emojis: use exactly the number the slot asks for (`post_emoji`: 0, 1, or 2–3), hashtags not counted. Vary them: don't default to 😭; pick ones that fit the challenge and mood (💀 😩 🫠 🥲 😤 🙄 🤡 ⏰ 📱 🧠 👟 📸 🔥…) and use different ones from post to post. For `2-3`, use different emojis rather than one repeated.
+- Name the challenge's numbers: "walk 100 steps", "shake 67 times", "memorize 6 colors", "tap 60 times". Use the on-screen title's numbers or your own; playful exaggeration ("1000 steps") is good because people comment to call it out. Don't invent app features or claim clock times the clip doesn't show.
 - Context: computer engineering student who builds apps; clips are first-person (Ray-Ban Meta glasses).
 
 ## Caption styles (the daily plan assigns one per slot; the weekly review learns which wins)

@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import re
 
-_EMOJI = re.compile(r"[\U0001F000-\U0001FAFF☀-➿⬀-⯿⌀-⏿]")
+_EMOJI_CH = r"[\U0001F000-\U0001FAFF☀-➿⬀-⯿⌀-⏿‼⁉]"
+# one emoji = one cluster (ZWJ sequences like 😮‍💨, skin tones and variation selectors count once)
+_EMOJI = re.compile(rf"{_EMOJI_CH}(?:[\uFE0F\U0001F3FB-\U0001F3FF]|\u200D{_EMOJI_CH})*")
 
 # Keyword -> sound type, checked in order against the sound's file name (sounds/<category>/<description>__<source>.mp3).
 SOUND_TYPES = [("siren", "siren"), ("beep", "beeping"), ("scifi", "sci-fi"), ("samsung", "ringtone"),

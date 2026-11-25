@@ -18,44 +18,44 @@
   "premise": [
     {
       "style": "gotta",
-      "text": "Gotta find a TV to turn off my alarm 😭"
-    },
-    {
-      "style": "pov",
-      "text": "POV: your alarm sends you on a TV hunt at 2am 💀"
-    },
-    {
-      "style": "crashing_out",
-      "text": "crashing out because my alarm made me search the whole building for a TV 😭"
+      "text": "Gotta walk 2000 steps to find a TV to turn off my alarm 📺"
     },
     {
       "style": "gotta",
-      "text": "Gotta find a TV to turn off my alarm",
+      "text": "Gotta walk 2000 steps to find a TV to turn off my alarm",
       "emoji_test": true
     },
     {
       "style": "gotta",
-      "text": "Gotta find a TV to turn off my alarm 😭😭😭",
+      "text": "Gotta walk 2000 steps to find a TV to turn off my alarm 📺👟😩",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm sends you on a TV hunt at 2am",
+      "text": "POV: your alarm makes you hunt for a TV at 2am 🔍"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you hunt for a TV at 2am",
       "emoji_test": true
     },
     {
       "style": "pov",
-      "text": "POV: your alarm sends you on a TV hunt at 2am 💀💀💀",
+      "text": "POV: your alarm makes you hunt for a TV at 2am 🔍📺💀",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm made me search the whole building for a TV",
+      "text": "crashing out because I walked 1000 steps looking for a TV at 2am 🥲"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because I walked 1000 steps looking for a TV at 2am",
       "emoji_test": true
     },
     {
       "style": "crashing_out",
-      "text": "crashing out because my alarm made me search the whole building for a TV 😭😭😭",
+      "text": "crashing out because I walked 1000 steps looking for a TV at 2am 🥲📺🫠",
       "emoji_test": true
     }
   ],

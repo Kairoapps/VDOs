@@ -76,3 +76,10 @@ def test_capped_slots_uncapped_when_cap_covers_all():
     from vdos.scheduler import _capped_slots
     times = ["09:30", "14:30", "19:30"]
     assert _capped_slots(date(2026, 11, 25), times, 3, [], ZoneInfo("America/New_York")) == set(times)
+
+
+def test_emoji_clusters_count_once():
+    from vdos import labels
+    assert labels.emoji_count("a 😮‍💨") == 1
+    assert labels.emoji_count("b ‼️📱😵") == 3
+    assert labels.emoji_bucket("c 🧠😵⏰") == "3+"

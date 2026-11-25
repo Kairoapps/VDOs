@@ -19,7 +19,7 @@ EMOJI_FONT = FONT_DIR / "NotoColorEmoji.ttf"
 EMOJI_NATIVE = 109  # Noto Color Emoji is a bitmap font with one size
 
 # An emoji cluster: a pictograph plus any variation selectors / skin tones / ZWJ-joined parts.
-_EMOJI = r"[\U0001F000-\U0001FAFF☀-➿⬀-⯿⌀-⏿]"
+_EMOJI = r"[\U0001F000-\U0001FAFF☀-➿⬀-⯿⌀-⏿‼⁉]"
 _CLUSTER = re.compile(rf"{_EMOJI}(?:[️\U0001F3FB-\U0001F3FF]|‍{_EMOJI})*")
 
 
