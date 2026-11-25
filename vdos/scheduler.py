@@ -143,6 +143,7 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                   for p in pl if p in cap and int(cap[p]) < len(times)}
         tags_today: dict[str, int] = {}
         pcfg = cfg.get("post_captions") or {}
+        cta_ok = list((cfg.get("cta") or {}).get("modes", ["none"])) or ["none"]  # prefer versions with an allowed CTA
         for t in times:
             pool = [r for r in avail if r["id"] not in used]
             if not pool:
@@ -159,7 +160,9 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
             used.add(clip["id"])
             v = con.execute(
                 """SELECT v.*, (SELECT COUNT(*) FROM slots s WHERE s.variant_id=v.id) n FROM variants v
-                   WHERE v.clip_id=? AND v.active=1 ORDER BY n, v.id""", (clip["id"],)).fetchone()
+                   WHERE v.clip_id=? AND v.active=1
+                   ORDER BY (COALESCE(v.cta_mode, 'none') NOT IN ({','.join('?' * len(cta_ok))})), n, v.id""",
+                (clip["id"], *cta_ok)).fetchone()
             hs = _pick_hashtags(con, rng, tags_today)
             tags_today[hs] = tags_today.get(hs, 0) + 1
             local = datetime.combine(d, time(int(t[:2]), int(t[3:])), tzinfo=tz)

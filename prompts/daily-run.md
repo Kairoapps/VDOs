@@ -23,7 +23,7 @@ python3 -m vdos ingest --no-git
 python3 -m vdos prep --skip-transcribe
 ```
 For each newly prepped clip (oldest first, at most 8): read `work/<clip>/context.md`, look at 6–10 frames spread across `work/<clip>/frames/` (Read them), find the frame where the challenge completes, and write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (cuts, `dismiss_at`, `angle`, titles for `gotta` / `pov` / `crashing_out` with different emoji counts, `bed` alarm). Also read `references/` first.
-`variants` picks each version's sound, speed level and call to action (green "comment UNSNOOZE…" text: none / whole video / end) weighted by what has performed; don't override them.
+`variants` picks each version's sound and speed level weighted by what has performed; don't override them. The on-screen CTA is off (`[cta] modes = ["none"]` since 2026-11-25), so new versions have no green "comment UNSNOOZE" text.
 Then pull what rendering needs and render:
 ```
 git lfs pull -I "media/raw/<clip files you edited>"
@@ -52,15 +52,16 @@ python3 -m vdos plan
 Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:30am and 8:30pm Eastern (config). The plan has **3 slots, and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 3 posts a day per platform.** Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
-- `post_caption_style`: `hook_cta` / `relatable` / `question` / `comment_cta` (definitions in `prompts/voice.md`).
+- **First line on every platform: "Download the Unsnooze app"** (its own line, at the very start of the caption/description; not counted in `post_emoji`). Then the caption.
+- `post_caption_style`: `hook_cta` / `relatable` / `question` (definitions in `prompts/voice.md`).
 - `post_emoji`: exactly that many emojis in the caption text (`0`, `1`, or `2-3`), hashtags not counted.
 - Hashtags: use the slot's `hashtags` exactly (3–5 tags, already chosen) — don't add, drop or swap any, so the hashtag test stays clean.
-- If the slot's `cta` is not `none`, the video already shows a green "comment UNSNOOZE…" line; the caption may echo it but never contradict it.
+- Never ask people to comment "UNSNOOZE" (or any keyword) in a caption — dropped 2026-11-25. If a slot's `cta` is ever not `none` (an old version), say so in the summary.
 Per platform:
-- **Instagram:** the caption in the slot's style, then the hashtags. `hook_cta` uses the soft CTA ("unsnooze makes you actually get up. link in bio").
-- **TikTok:** one punchy line in the slot's style + hashtags; `metadata.tiktok.title` short.
-- **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description mentions Unsnooze + the hashtags.
-- **Facebook Page (Reel):** the same caption as Instagram (slot's style, line breaks, then the hashtags in the same text — Reels have one description field, no title). Buffer channel `facebook` in `config.toml`.
+- **Instagram:** "Download the Unsnooze app", then the caption in the slot's style, then the hashtags. `hook_cta` uses the soft CTA ("unsnooze makes you actually get up. link in bio").
+- **TikTok:** "Download the Unsnooze app", then one punchy line in the slot's style + hashtags; `metadata.tiktok.title` short.
+- **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description starts with "Download the Unsnooze app", then a line in the slot's style + the hashtags.
+- **Facebook Page (Reel):** the same caption as Instagram ("Download the Unsnooze app" first, slot's style, line breaks, then the hashtags in the same text — Reels have one description field, no title). Buffer channel `facebook` in `config.toml`.
 
 `create_post` per platform: `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`, Facebook `metadata.facebook = {"type": "reel"}`. Retry a failed create once, then record it as `"status": "error"`.
 
@@ -84,4 +85,4 @@ python3 -m vdos cloud-save -m "daily run <date>"
 
 ## 7. Summary
 
-3–5 lines: posts scheduled (times, clips, which slots went to YouTube, CTA modes; Facebook included), clips edited/rendered, failures, inventory level. Send it as a push notification too.
+3–5 lines: posts scheduled (times, clips, which slots went to YouTube; Facebook included), clips edited/rendered, failures, inventory level. Send it as a push notification too.
