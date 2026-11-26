@@ -27,3 +27,11 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
 Posting an animation slot (`"kind": "animation"` in the plan) works like any other slot: same caption rules, hashtags and tests.
 Write the caption from the slot's `summary` and `caption_text` (the hook). If Buffer's `create_post` offers an AI-generated-content
 flag for a platform, set it on animation slots.
+
+## App UI reference (optional)
+
+When a video needs an app screen that isn't already in `anim/assets/`, you may look at Chika's Figma file through the Figma
+connector (file key `3Ug3mROsgOOhGXoCAOpZvX`, starting node `80410:74`,
+https://www.figma.com/design/3Ug3mROsgOOhGXoCAOpZvX/Unsnooze?node-id=80410-74) to match real screens, colours and wording.
+It is a reference, not a requirement (Chika, 2026-11-25: "don't ALWAYS rely on this"): most videos should keep using the
+overlays the builder already draws. Read only; never edit the Figma file. If the connector isn't available, carry on without it.
