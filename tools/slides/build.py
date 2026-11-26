@@ -26,10 +26,11 @@ W, H = 1080, 1920
 ART = ROOT / "assets" / "slides" / "art"
 CTA = ROOT / "assets" / "slides" / "cta-download.png"
 OUT = ROOT / "media" / "slides"
-MIN_SLIDES, MAX_SLIDES = 6, 10
+MIN_SLIDES, MAX_SLIDES = 6, 8  # Chika: 6-8 slides (hard platform max is 10)
 
 # Each entry: (scene, on-slide text). Scene = art file stem before "__". The CTA slide is appended automatically.
 SLIDESHOWS: dict[str, list[tuple[str, str]]] = {
+    # ---------------- one challenge each
     "shake": [
         ("ring", "my alarm won't stop until i shake my phone 67 times 😭"),
         ("reach", "6:30am. i just wanted 5 more minutes 😴"),
@@ -47,6 +48,120 @@ SLIDESHOWS: dict[str, list[tuple[str, str]]] = {
         ("solved", "wait… 296!! 💡"),
         ("relief", "correct. alarm off. 😮‍💨"),
         ("morning", "brain: fully on ☀️"),
+    ],
+    "walk": [
+        ("ring", "my alarm won't stop until i walk 100 steps 🚶"),
+        ("reach", "6:30am. snooze? not an option 😴"),
+        ("shock", "it actually counts my steps?? 😭"),
+        ("hallway", "speedwalking my hallway half asleep 👣"),
+        ("tired", "87 of 100… why is this so hard 😩"),
+        ("relief", "100. it finally stopped 😮‍💨"),
+        ("morning", "and i'm already up and moving ☀️"),
+    ],
+    "pushups": [
+        ("ring", "my alarm won't turn off until i do 10 push-ups 💀"),
+        ("shock", "the camera literally counts every rep 📸"),
+        ("pushup", "push-ups at 6am hit different 😭"),
+        ("collapse", "rep 7… i'm on the floor 🫠"),
+        ("relief", "10/10. alarm off 😮‍💨"),
+        ("morning", "no way i'm getting back in bed now 💪"),
+    ],
+    "squats": [
+        ("ring", "my alarm won't stop until i do 15 squats 🦵"),
+        ("reach", "6:30am. trying to hit snooze anyway 😴"),
+        ("shock", "and it watches through the camera?? 👀"),
+        ("squat", "squatting with my eyes still closed 😭"),
+        ("tired", "legs: gone. 15/15 though 😩"),
+        ("morning", "leg day done before sunrise ☀️"),
+    ],
+    "memory": [
+        ("ring", "my alarm makes me memorize a color pattern to turn it off 🧠"),
+        ("reach", "6:30am. i can't even see straight 😴"),
+        ("memory", "red, blue, yellow… wait what was next 😵"),
+        ("shock", "WRONG. it starts over 💀"),
+        ("solved", "round 3… got it!! 🎉"),
+        ("relief", "silence. finally 😮‍💨"),
+        ("morning", "my brain had no choice but to wake up ☀️"),
+    ],
+    "matching": [
+        ("ring", "my alarm is a card matching game now 🃏"),
+        ("reach", "6:30am. just let me sleep 😴"),
+        ("matching", "flipping cards with one eye open 👁️"),
+        ("shock", "where was the other heart??? 😭"),
+        ("solved", "last pair!! 🎉"),
+        ("morning", "awake before i even noticed ☀️"),
+    ],
+    "type": [
+        ("ring", "my alarm won't stop until i type a whole sentence ⌨️"),
+        ("reach", "6:30am. thumbs not working yet 😴"),
+        ("shock", "it wants PERFECT spelling?? 😭"),
+        ("typing", "typing like my life depends on it 🫠"),
+        ("solved", "no typos. let's gooo 🙌"),
+        ("relief", "alarm off. finally 😮‍💨"),
+        ("morning", "wide awake now ☀️"),
+    ],
+    "house_hunt": [
+        ("ring", "my alarm won't stop until i take a pic of my sink 🚰"),
+        ("reach", "6:30am. not getting up. (i thought) 😴"),
+        ("shock", "it makes me go FIND it 📸"),
+        ("hallway", "walking to the bathroom half asleep 🚶"),
+        ("sink", "photo of the sink. take it. 📷"),
+        ("relief", "match found. alarm off 😮‍💨"),
+        ("morning", "and i'm already out of bed ☀️"),
+    ],
+    "affirmation": [
+        ("ring", "my alarm makes me say a morning affirmation ✨"),
+        ("reach", "6:30am. not in the mood 😴"),
+        ("shock", "i have to say it OUT LOUD?? 😭"),
+        ("affirmation", "\"i am awake. i am ready.\" 🙏"),
+        ("relief", "lowkey… it works 😌"),
+        ("morning", "different person before 7am ☀️"),
+    ],
+    "tap": [
+        ("ring", "my alarm makes me tap 60 times to turn it off 👆"),
+        ("reach", "6:30am. still asleep honestly 😴"),
+        ("shock", "60 TIMES?? 😭"),
+        ("tapping", "tap tap tap tap tap 💥"),
+        ("tired", "58… 59… my finger hurts 😩"),
+        ("relief", "60. silence 😮‍💨"),
+        ("morning", "fully awake now ☀️"),
+    ],
+    # ---------------- several challenges in a row
+    "three_in_a_row": [
+        ("ring", "my alarm made me do 3 challenges before it stopped 💀"),
+        ("reach", "6:30am. i thought one was enough 😴"),
+        ("counting", "1. solve a math problem 🧮"),
+        ("hallway", "2. walk 100 steps 🚶"),
+        ("memory", "3. memorize the colors 🧠"),
+        ("relief", "only THEN did it stop 😮‍💨"),
+        ("morning", "no falling back asleep after that ☀️"),
+    ],
+    "every_way": [
+        ("ring", "every way my alarm can make me get out of bed 👇"),
+        ("shake", "shake your phone 67 times 📱"),
+        ("hallway", "walk 100 steps 🚶"),
+        ("pushup", "10 push-ups (the camera counts) 💪"),
+        ("counting", "solve math half asleep 🧮"),
+        ("sink", "go find your sink + take a pic 🚰"),
+        ("memory", "memorize a color pattern 🧠"),
+    ],
+    "random_week": [
+        ("ring", "POV: my alarm picks a random challenge every morning 🎲"),
+        ("squat", "monday: squats 🦵"),
+        ("counting", "tuesday: math 🧮"),
+        ("sink", "wednesday: find the sink 🚰"),
+        ("tapping", "thursday: tap 60 times 👆"),
+        ("hallway", "friday: walk 100 steps 🚶"),
+        ("morning", "never the same morning twice ☀️"),
+    ],
+    "rate_them": [
+        ("ring", "rate these alarm challenges 1-10 👇"),
+        ("shake", "shake your phone 67 times… ?/10"),
+        ("pushup", "10 push-ups… ?/10"),
+        ("counting", "math at 6am… ?/10"),
+        ("sink", "photo of your sink… ?/10"),
+        ("memory", "memorize the colors… ?/10"),
+        ("morning", "comment your ratings 👇"),
     ],
 }
 

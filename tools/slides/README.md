@@ -12,7 +12,7 @@ python tools/slides/build.py shake math   # only these
 - **Art:** hand-drawn 2D webcomic look: ink lines, flat muted colours (dusty navy, terracotta, cream), light paper grain. Not glossy 3D, no talking mascot. Same recurring character: young man, short curly dark hair, brown skin, light blue tee, plaid pajama pants.
 - **Size:** 1080×1920 (9:16). Art keeps its top third empty for text.
 - **Text:** white Poppins Bold, thick black outline, colour emojis (`vdos/title.py`).
-- **Length:** 6–8 slides, never more than 10.
+- **Length:** 6–8 slides (builder enforces it; platform max is 10).
 - **Last slide:** always `assets/slides/cta-download.png`: "Download Unsnooze Today", app icon, App Store listing card, App Store badge, "link in bio".
 - No "free" claims (Unsnooze needs a subscription after the trial).
 
@@ -28,7 +28,9 @@ python tools/slides/build.py shake math   # only these
 
 ## Scenes available
 
-`ring` (asleep, alarm ringing) · `reach` (reaching for snooze) · `shock` (staring at phone in disbelief) · `shake` (shaking phone) · `tired` (exhausted on bed edge) · `relief` (sigh, phone down) · `morning` (awake, coffee, sun) · `counting` (counting on fingers) · `solved` (eureka, pointing at phone)
+`ring` (asleep, alarm ringing) · `reach` (reaching for snooze) · `shock` (staring at phone in disbelief) · `shake` (shaking phone) · `tired` (exhausted on bed edge) · `relief` (sigh, phone down) · `morning` (awake, coffee, sun) · `counting` (counting on fingers) · `solved` (eureka, pointing at phone) · `hallway` (walking the hall at night) · `pushup` · `collapse` (face down after push-ups) · `squat` · `memory` (colored tiles glowing) · `matching` (cards popping from phone) · `typing` · `sink` (photographing the sink) · `affirmation` (reading aloud, calm) · `tapping` (furious tapping)
+
+Slideshows (15): shake, math, walk, pushups, squats, memory, matching, type, house_hunt, affirmation, tap, three_in_a_row, every_way, random_week, rate_them.
 
 Shared scenes (`ring`, `reach`, `shock`, `tired`, `relief`, `morning`) fit any challenge; a new challenge usually needs 2–3 new scenes.
 
