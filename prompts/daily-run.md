@@ -22,7 +22,7 @@ git lfs pull -I "<the media/raw paths, comma-separated>"   # skip if only media/
 python3 -m vdos ingest --no-git
 python3 -m vdos prep --skip-transcribe
 ```
-For each newly prepped clip (oldest first, at most 8): read `work/<clip>/context.md`, look at 6–10 frames spread across `work/<clip>/frames/` (Read them), find the frame where the challenge completes, and write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (cuts, `dismiss_at`, `angle`, titles for `gotta` / `pov` / `crashing_out` with different emoji counts, `bed` alarm). Also read `references/` first.
+For each newly prepped clip (oldest first, at most 12 — edit every new upload in the same night when you can): read `work/<clip>/context.md`, look at 6–10 frames spread across `work/<clip>/frames/` (Read them), find the frame where the challenge completes, and write `work/<clip>/edit.json` following `prompts/edit-clip.md` exactly (cuts, `dismiss_at`, `angle`, titles for `gotta` / `pov` / `crashing_out` with different emoji counts, `bed` alarm). Also read `references/` first.
 `variants` picks each version's sound and speed level weighted by what has performed; don't override them. The on-screen CTA is off (`[cta] modes = ["none"]` since 2026-11-25), so new versions have no green "comment UNSNOOZE" text.
 Then pull what rendering needs and render:
 ```
@@ -49,7 +49,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots (since 2026-11-25), and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 4 posts a day per platform.** No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **3 slots, and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 3 posts a day per platform.** No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
 - **First line on every platform: "Download the Unsnooze app"** (its own line, at the very start of the caption/description; not counted in `post_emoji`). Then the caption.
