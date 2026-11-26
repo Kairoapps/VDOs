@@ -21,9 +21,8 @@ organization_id = "6acd0dec0ee270b5947c74de"
 channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2fe9157f", youtube = "6ad5c498778b240e2f557a0c", facebook = "6b0698338541f09ecb99dbf0" }
 
 [posting]
-# 4 slots a day (Chika, 2026-11-25): 3 video slots -> TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts,
-# and 1 slideshow slot -> TikTok photo post + Instagram carousel + Facebook multi-photo post (no YouTube: Buffer
-# can't post YouTube image posts). Which of the day's times gets the slideshow rotates randomly.
+# 4 slots a day (Chika, 2026-11-25), every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts.
+# (A daily slideshow slot was tried on 2026-11-25 and dropped the same night; all 4 slots are videos.)
 # Buffer is on a paid plan (2026-11-25). Paid-plan YouTube limit is 5 per rolling 24 h; the planner still enforces it.
 posts_per_day = 4
 timezone = "America/New_York"
@@ -34,20 +33,6 @@ platform_daily_max = { youtube = 5 }
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
 default_slots = ["09:30", "13:00", "16:00", "19:30"]   # posting window: 8:00am-9:00pm Eastern (2026-11-25)
-
-[slideshows]
-# One slideshow a day (Chika, 2026-11-25: "one of the posts MUST be a slideshow"). Built by tools/slides/build.py.
-per_day = 1
-platforms = ["tiktok", "instagram", "facebook"]
-dir = "media/slides"                       # <name>/<name>__NN.jpg (9:16, TikTok) and <name>/4x5/<name>__NN.jpg (Instagram/Facebook)
-base_url = "https://raw.githubusercontent.com/Kairoapps/VDOs/main/media/slides"
-min_days_between_uses = 7                  # a slideshow can come back after a week...
-max_uses = 3                               # ...up to 3 times; if nothing is eligible, the least-recently-used one is reused anyway
-# Buffer can't add music to TikTok photo posts or Instagram carousels (API limit). false = post automatically, silent.
-# true = TikTok slideshow posts use Buffer's "notify me" so Chika finishes them in the TikTok app with a trending sound.
-tiktok_notify_for_music = false
-# Slideshows that show several challenges (the rest show one). Used to compare single vs multi in the weekly report.
-multi_challenge = ["three_in_a_row", "every_way", "random_week", "rate_them"]
 
 [compress]
 # The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).

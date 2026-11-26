@@ -151,15 +151,6 @@ def cmd_cloud_save(a):
     out({"git": gitops.sync(a.message, push=True, paths=gitops.CLOUD_PATHS)})
 
 
-def cmd_slides(a):
-    from . import slides
-    with db.tx() as con:
-        out = {"inventory": slides.inventory(con), "usage": {k: {"uses": v["uses"], "last": str(v["last"])}
-                                                            for k, v in slides.usage(con).items()},
-               "catalog": {k: len(v["9x16"]) for k, v in slides.catalog().items()}, "stats": slides.stats(con, a.days)}
-    print(json.dumps(out, indent=2))
-
-
 def cmd_serve(a):
     server.serve(a.port)
 
@@ -197,8 +188,6 @@ def main(argv=None):
     s.add_argument("--remote"); s.set_defaults(f=cmd_publish)
     s = sub.add_parser("cloud-save", help="commit + push the database, edits and reports (cloud run)")
     s.add_argument("-m", "--message", default="cloud run: ledger + edits"); s.set_defaults(f=cmd_cloud_save)
-    s = sub.add_parser("slides", help="slideshow inventory, usage and slideshow-vs-video stats")
-    s.add_argument("--days", type=int, default=28); s.set_defaults(f=cmd_slides)
     s = sub.add_parser("serve"); s.add_argument("--port", type=int); s.set_defaults(f=cmd_serve)
 
     a = p.parse_args(argv)

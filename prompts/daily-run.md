@@ -49,7 +49,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` and image URL must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots a day (since 2026-11-25): 3 video slots (`kind: "video"`) → TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts, and exactly 1 slideshow slot (`kind: "slideshow"`) → TikTok photo post + Instagram carousel + Facebook multi-photo post (never YouTube).** So TikTok/Instagram/Facebook get 4 posts a day and YouTube 3. Post each slot only to the platforms in its `platforms` list. A slideshow every day is required: if the plan has no slideshow slot (and none is already scheduled today), say so loudly in the summary. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots (since 2026-11-25), and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 4 posts a day per platform.** No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
 - **First line on every platform: "Download the Unsnooze app"** (its own line, at the very start of the caption/description; not counted in `post_emoji`). Then the caption.
@@ -63,15 +63,9 @@ Per platform:
 - **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description starts with "Download the Unsnooze app", then a line in the slot's style + the hashtags.
 - **Facebook Page (Reel):** the same caption as Instagram ("Download the Unsnooze app" first, slot's style, line breaks, then the hashtags in the same text — Reels have one description field, no title). Buffer channel `facebook` in `config.toml`.
 
-`create_post` per platform (video slots): `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`, Facebook `metadata.facebook = {"type": "reel"}`. Retry a failed create once, then record it as `"status": "error"`.
+`create_post` per platform: `mode: "customScheduled"`, `dueAt` = slot `scheduled_at`, `schedulingType: "automatic"`, `assets: [{"video": {"url": <video_url>}}]`, Instagram `metadata.instagram = {"type": "reel", "shouldShareToFeed": true}`, Facebook `metadata.facebook = {"type": "reel"}`. Retry a failed create once, then record it as `"status": "error"`.
 
-**Slideshow slot** (`kind: "slideshow"`): an illustrated story about one challenge (`slideshow` = its name, e.g. `shake`, `math`), 6–8 slides, the last one is the "Download Unsnooze Today" slide. Look at slides 1 and 2 (`image_urls.tiktok[0..1]`) so the caption matches the story. Same caption rules as above (first line "Download the Unsnooze app", the slot's `post_caption_style`, `post_emoji`, `hashtags` exactly). Never say the app is free (subscription after a trial).
-- **TikTok photo post:** `assets` = one `{"image": {"url": u, "metadata": {"altText": ""}}}` per URL in `image_urls.tiktok` (9:16, in order), `metadata.tiktok.title` ≤ 90 chars (the hook), each image needs `metadata.altText` (a few words describing the slide), caption = "Download the Unsnooze app" + one punchy line + hashtags. `schedulingType: "automatic"`, unless the slot's `tiktok_notify_for_music` is true → `"notification"` (Chika adds a sound in the TikTok app). Buffer can't attach music, so automatic photo posts go out silent.
-- **Instagram carousel:** `assets` from `image_urls.instagram` (4:5), `metadata.instagram = {"type": "post", "shouldShareToFeed": true, "isAiGenerated": true}` (the art is AI-generated), caption like the Instagram Reel caption + "swipe 👉" fits well.
-- **Facebook multi-photo post:** `assets` from `image_urls.facebook` (4:5), `metadata.facebook = {"type": "post"}`, same caption as Instagram.
-If a slideshow create fails, retry once; if TikTok rejects image posts entirely, record it as `"error"` with the message and say so in the summary (don't fall back to a video).
-
-Write `work/buffer/created-<date>.json` and run `python3 -m vdos record work/buffer/created-<date>.json`. Format: `{"slots": [ ... ]}` with, per video slot, `{"kind": "video", "variant_id", "scheduled_at", "time_slot", "hashtag_set", "post_caption_style", "post_emoji", "posts": [{"platform", "channel_id", "buffer_post_id", "caption", "status"}]}` and, for the slideshow slot, `{"kind": "slideshow", "slideshow", "scheduled_at", "time_slot", "hashtag_set", "post_caption_style", "post_emoji", "posts": [...]}`.
+Write `work/buffer/created-<date>.json` (`{"slots": [{"variant_id", "scheduled_at", "time_slot", "hashtag_set", "post_caption_style", "post_emoji", "posts": [{"platform", "channel_id", "buffer_post_id", "caption", "status"}]}]}`) and run `python3 -m vdos record work/buffer/created-<date>.json`.
 
 ## 5. Notify + dashboard
 
@@ -79,7 +73,6 @@ Write `work/buffer/created-<date>.json` and run `python3 -m vdos record work/buf
 python3 -m vdos alerts --ack
 python3 -m vdos dashboard
 ```
-`python3 -m vdos slides` shows slideshow inventory; if `days_left_fresh` < 7 (or the plan's slideshow `note` says it reused one), include "build more slideshows" in the notification.
 If `notify` is true, one push notification: inventory ("X days of clips left — record ~N, best: <shot_list>") when `heads_up`/`urgent`/`empty`, clips retired / made evergreen, failed posts. If `urgent`/`empty` and no "Record clips (VDOs)" event in the next 3 days, add a 45-min Google Calendar event on the next free evening with the shot list.
 Publish `reports/dashboard.html` to the dashboard artifact with publish_files (as index.html; slug in `reports/dashboard_artifact.txt`, base_version from get_artifact). Always republish to that slug, never create a new one.
 
@@ -92,4 +85,4 @@ python3 -m vdos cloud-save -m "daily run <date>"
 
 ## 7. Summary
 
-3–5 lines: posts scheduled (times, clips, which slots went to YouTube; Facebook included; which slideshow and at what time), clips edited/rendered, failures, inventory level (clips and slideshows). Send it as a push notification too.
+3–5 lines: posts scheduled (times, clips, which slots went to YouTube; Facebook included), clips edited/rendered, failures, inventory level. Send it as a push notification too.

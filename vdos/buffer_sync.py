@@ -71,10 +71,7 @@ def sync(payload: dict) -> dict:
         for p in _iter_posts(payload):
             row = con.execute("SELECT id, status FROM posts WHERE buffer_post_id=?", (str(p["id"]),)).fetchone()
             if not row:
-                if _sync_slide(con, p, now):
-                    updated += 1
-                else:
-                    unknown += 1
+                unknown += 1
                 continue
             status = STATUS_MAP.get(str(p.get("status", "")).lower(), row["status"])
             sent_at = p.get("sentAt") or p.get("publishedAt") or p.get("sent_at")
@@ -101,35 +98,8 @@ def sync(payload: dict) -> dict:
     return {"posts_updated": updated, "metric_snapshots": metrics, "unknown_buffer_posts": unknown}
 
 
-def _sync_slide(con, p: dict, now: datetime) -> bool:
-    """Same as above for slideshow posts (slide_posts keeps only the latest metrics on the row)."""
-    row = con.execute("SELECT id, status FROM slide_posts WHERE buffer_post_id=?", (str(p["id"]),)).fetchone()
-    if not row:
-        return False
-    status = STATUS_MAP.get(str(p.get("status", "")).lower(), row["status"])
-    sent_at = p.get("sentAt") or p.get("publishedAt") or p.get("sent_at")
-    err = p.get("error")
-    if isinstance(err, dict):
-        err = err.get("message") or json.dumps(err)[:500]
-    elif err is not None and not isinstance(err, str):
-        err = json.dumps(err)[:500]
-    link = p.get("externalLink") or p.get("serviceLink") or p.get("link")
-    m = _metric_values(p)
-    con.execute("""UPDATE slide_posts SET status=?, sent_at=COALESCE(?, sent_at), error=?, external_url=COALESCE(?, external_url),
-                   views=COALESCE(?, views), reach=COALESCE(?, reach), likes=COALESCE(?, likes), comments=COALESCE(?, comments),
-                   shares=COALESCE(?, shares), saves=COALESCE(?, saves), metrics_at=CASE WHEN ? THEN ? ELSE metrics_at END
-                   WHERE id=?""",
-                (status, sent_at, err if status == "error" else None, link if isinstance(link, str) else None,
-                 m.get("views"), m.get("reach"), m.get("likes"), m.get("comments"), m.get("shares"), m.get("saves"),
-                 1 if m else 0, now.isoformat(timespec="seconds"), row["id"]))
-    return True
-
-
 def mark_deleted(buffer_post_ids: list[str]) -> int:
     with db.tx() as con:
         cur = con.executemany("UPDATE posts SET status='deleted' WHERE buffer_post_id=? AND status='scheduled'",
                               [(i,) for i in buffer_post_ids])
-        n = cur.rowcount
-        cur = con.executemany("UPDATE slide_posts SET status='deleted' WHERE buffer_post_id=? AND status='scheduled'",
-                              [(i,) for i in buffer_post_ids])
-        return n + cur.rowcount
+        return cur.rowcount

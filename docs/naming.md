@@ -27,8 +27,6 @@ IDs start with an uppercase prefix so they stand out: `R` = raw clip, `REF` = re
 | Rendered variant (automatic) | `<clip-id>__v<n>__<random6>.mp4` | `R20261117-001__v2__k7f3q9.mp4` |
 | Sound (alarm, effect) | `sounds/<category>/<description>__<source>.mp3` | `sounds/alarm/scifi-alarm-02__epidemic.mp3` |
 | Background music | `sounds/music-<mood>/<artist>__<title>__<source>.mp3` | `sounds/music-hype/lumen__drift__artlist.mp3` |
-| Slideshow art | `assets/slides/art/<scene>__<source>.png` | `assets/slides/art/shake__figma-ai.png` |
-| Built slideshow slide | `media/slides/<name>/<name>__<nn>.jpg` | `media/slides/shake/shake__01.jpg` |
 | Reference clip | `references/clips/REF-<YYYYMMDD>-<seq>__<topic>__<description>.<ext>` | `REF-20261116-001__unsnooze__walk-200-steps.mov` |
 
 - `<YYYYMMDD>` is the day the clip was recorded; `<seq>` is a 3-digit counter for that day.

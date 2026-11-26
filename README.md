@@ -5,7 +5,7 @@ Turns raw Ray-Ban Meta clips into short videos posted through Buffer every day: 
 ## How it works
 
 1. **You** upload clips on the [clip upload page](https://claude.ai/artifact/SgcMK984AZ2GY8vmVEhSb4): it compresses them in the browser (~6x smaller), then you drop them into [`media/inbox/` on GitHub](https://github.com/Kairoapps/VDOs/upload/main/media/inbox). No laptop setup needed. (The old Mac folder uploader in `scripts/setup-mac.sh` still works but is optional.) Page source: `tools/upload/index.html`.
-2. **Claude's daily cloud run** (12:00am ET, plans the day that just started; no laptop needed) edits new clips (muted audio, an alarm that stops the moment you finish the challenge, an emoji title), renders 3 versions of each, puts the videos on the `publish` branch, and schedules 4 posts a day in Buffer between 8:00am and 9:00pm ET: 3 videos (Instagram, TikTok, Facebook, YouTube) and 1 illustrated slideshow (TikTok photo post, Instagram carousel, Facebook; built by `tools/slides/build.py`). Each clip is used at most 3 times, never twice in one day.
+2. **Claude's daily cloud run** (12:00am ET, plans the day that just started; no laptop needed) edits new clips (muted audio, an alarm that stops the moment you finish the challenge, an emoji title), renders 3 versions of each, puts the videos on the `publish` branch, and schedules 4 posts a day in Buffer for Instagram, TikTok, Facebook and YouTube, between 8:00am and 9:00pm ET. Each clip is used at most 3 times, never twice in one day.
 3. **Claude's weekly cloud run** (Sunday 12:00am ET) checks what performed best (video type, title style, sound, length, time, hashtags), shifts future posts toward it, updates the dashboard, and reminds you when to record more.
 
 Dashboard https://claude.ai/artifact/LHT3nppU4oZTC9zEWMbrFk
@@ -25,8 +25,6 @@ That installs the uploader. Nothing else needs to run on the Mac.
 |---|---|
 | `media/raw/` | your raw clips (optional topic prefix: `gym__anything.mov`) |
 | `sounds/` | all audio, one subfolder per category: `alarm/`, `whoosh/`, … and background music in `music-<mood>/` |
-| `media/slides/` | built photo-carousel slideshows, one folder each (see [tools/slides/README.md](tools/slides/README.md)) |
-| `assets/slides/` | slideshow art and the fixed "Download Unsnooze Today" last slide |
 | `references/` | examples and notes on the style you want |
 | `prompts/` | instructions for Claude's daily and weekly runs |
 | `reports/` | weekly reports and the dashboard |

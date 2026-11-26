@@ -7,7 +7,7 @@ import statistics
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-from . import config, db, labels, reuse, slides
+from . import config, db, labels, reuse
 from .scheduler import active_experiments
 
 DIMENSIONS = ["topic_format", "topic", "format", "angle", "hook_type", "caption_style", "title_style", "title_emoji", "caption_text",
@@ -290,7 +290,6 @@ def weekly(write: bool = True) -> dict:
                JOIN metrics m ON m.post_id=p.id AND m.pulled_at=(SELECT MAX(pulled_at) FROM metrics WHERE post_id=p.id)
                WHERE p.status='sent' AND s.scheduled_at >= ?""", (week_ago,)).fetchone())
         posts_url = {r["buffer_post_id"]: r["external_url"] for r in con.execute("SELECT buffer_post_id, external_url FROM posts")}
-        slideshow = slides.weekly(con)
     tf = [r for r in ranking["topic_format"] if r["enough"]]
     shot_list = [r["value"].replace("|", " × ") for r in tf[:3]] or [r["value"].replace("|", " × ") for r in ranking["topic_format"][:3]]
     result = {
@@ -300,7 +299,7 @@ def weekly(write: bool = True) -> dict:
         "top5": recent[:5], "top_week": recent[:6], "bottom5": recent[-5:][::-1] if len(recent) > 5 else [],
         "week_posts": [dict(r) for r in week_posts], "shot_list": shot_list,
         "cta_comments": cta_comments_rows, "hashtags": hashtag_stats(), "score_weights": SCORE_WEIGHTS,
-        "week_totals": week_totals, "slideshows": slideshow,
+        "week_totals": week_totals,
     }
     if write:
         out = cfg.path("reports")
@@ -308,35 +307,6 @@ def weekly(write: bool = True) -> dict:
         (out / f"weekly-{stamp}.json").write_text(json.dumps(result, indent=1, default=str))
         (out / f"weekly-{stamp}.md").write_text(report_md(result))
     return result
-
-
-def slides_md(sl: dict | None) -> list[str]:
-    """'Slideshows' section of the weekly report: slideshow vs video per platform, what wins among slideshows, inventory."""
-    if not sl:
-        return []
-    L = ["", "## Slideshows (TikTok photo posts, Instagram carousels, Facebook photos)"]
-    for label, key in (("Last 7 days", "vs_video"), ("Last 30 days", "vs_video_30d")):
-        L.append(f"**Slideshow vs video, {label.lower()}** (posts ≥ 3 days old; median views · engagement per 1k views):")
-        for plat, x in sl[key].items():
-            s, v = x["slideshow"], x["video"]
-            fmt = lambda d: f"{d['median_views']} views · {d['eng_per_1k']}/1k (n={d['posts']})" if d else "no data"
-            L.append(f"- {plat}: slideshows {fmt(s)} vs videos {fmt(v)} → **{x['verdict']}**")
-    L.append(f"**What wins among slideshows** ({sl['n_scored']} scored; median score 0–100, * = fewer than enough posts):")
-    for dim in slides.SLIDE_DIMS:
-        rows = sl["ranking"].get(dim, [])
-        if rows:
-            L.append(f"- **{dim}:** " + ", ".join(f"{x['value']} {x['median']}{'' if x['enough'] else '*'} (n={x['n']})" for x in rows[:6]))
-    if sl["best_week"]:
-        L.append("**Best this week:** " + "; ".join(f"{x['slideshow']} ({x['time_slot']}) score {x['score']:.0f}, views {x['views']}" for x in sl["best_week"]))
-    if sl["worst_week"]:
-        L.append("**Worst this week:** " + "; ".join(f"{x['slideshow']} score {x['score']:.0f}, views {x['views']}" for x in sl["worst_week"]))
-    fails = sum(x["n"] for x in sl["posted_week"] if x["status"] == "error")
-    sent = sum(x["n"] for x in sl["posted_week"] if x["status"] == "sent")
-    inv = sl["inventory"]
-    L.append(f"**Posted this week:** {sent} slideshow posts sent, {fails} failed.")
-    L.append(f"**Inventory:** {inv['slideshows']} slideshows, {inv['never_posted']} never posted (~{inv['days_left_fresh']} days of fresh ones), "
-             f"{inv['uses_left']} uses left." + (" **Build more slideshows.**" if sl["build_more"] else ""))
-    return L
 
 
 def report_md(r: dict) -> str:
@@ -366,7 +336,6 @@ def report_md(r: dict) -> str:
     if cc:
         L += ["", "## CTA comments (30 days)", *[f"- {x['dim']} {x['value']}: {x['comments']} comments on {x['posts']} posts "
                                                  f"({x['per_post']}/post, {x['per_1k_views']}/1k views)" for x in cc]]
-    L += slides_md(r.get("slideshows"))
     L += ["", "## Top posts this week"]
     for s in r["top5"]:
         L.append(f"- {s['variant_id']} ({s['topic']} × {s['angle']}, {s['title_style']}, {s['sound_type']}, {s['speed']}, cta {s['cta_mode']}) — score {s['score']:.0f}, views {s['views']}")
