@@ -11,7 +11,7 @@ import random
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
-from . import config, db, reuse, weights
+from . import config, db, reuse, slides, weights
 
 
 def _exposure(con, column: str) -> dict[str, int]:
@@ -129,22 +129,41 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
     d = date.fromisoformat(day) if day else datetime.now(tz).date()
     n = cfg["posting"]["posts_per_day"]
     base = cfg.public_base_url
+    scfg = cfg.get("slideshows") or {}
     with db.tx() as con:
         already = con.execute("SELECT COUNT(*) c FROM slots WHERE substr(scheduled_at,1,10)=?", (d.isoformat(),)).fetchone()["c"]
-        n = max(0, n - already)
+        already_s = slides.scheduled_on(con, d)
+        n = max(0, n - already - already_s)
         table = {r["id"]: r for r in reuse.clip_table(con)}
         avail = [r for r in table.values() if r["status"] == "available"]
         times = _pick_times(con, cfg["posting"]["posts_per_day"], rng)[-n:] if n else []
+        # One of the day's slots is a slideshow (TikTok/Instagram/Facebook); which time gets it rotates randomly.
+        now_local = datetime.now(tz) + timedelta(minutes=15)
+        future = [t for t in times if datetime.combine(d, time(int(t[:2]), int(t[3:])), tzinfo=tz) >= now_local]
+        need_s = max(0, int(scfg.get("per_day", 0)) - already_s)
+        slide_times = set(rng.sample(future, min(need_s, len(future)))) if need_s and future else set()
+        slide_picks = []
         picks, used = [], set()
         pl = cfg["posting"]["platforms"]
         cap = cfg["posting"].get("platform_daily_max", {})
         # Platforms with a Buffer rolling-24h cap (YouTube on the free plan) only get the slots that fit.
-        capped = {p: _capped_slots(d, times, int(cap[p]), _recent_platform_posts(con, p, d), tz)
-                  for p in pl if p in cap and int(cap[p]) < len(times)}
+        vtimes = [t for t in times if t not in slide_times]  # video slots only (slideshows never go to YouTube)
+        capped = {p: _capped_slots(d, vtimes, int(cap[p]), _recent_platform_posts(con, p, d), tz)
+                  for p in pl if p in cap and int(cap[p]) < len(vtimes)}
         tags_today: dict[str, int] = {}
         pcfg = cfg.get("post_captions") or {}
         cta_ok = list((cfg.get("cta") or {}).get("modes", ["none"])) or ["none"]  # prefer versions with an allowed CTA
         for t in times:
+            if t in slide_times:
+                hs = _pick_hashtags(con, rng, tags_today)
+                tags_today[hs] = tags_today.get(hs, 0) + 1
+                local = datetime.combine(d, time(int(t[:2]), int(t[3:])), tzinfo=tz)
+                e = slides.plan_entry(con, d, local, t, rng, hs, cfg["experiments"]["hashtag_set"]["arms"][hs],
+                                      weights.choose(con, "post_caption_style", pcfg.get("styles", ["hook_cta"]), rng=rng),
+                                      weights.choose(con, "post_emoji", pcfg.get("emojis", ["1"]), rng=rng))
+                if e:
+                    slide_picks.append(e)
+                    continue
             pool = [r for r in avail if r["id"] not in used]
             if not pool:
                 break
@@ -159,7 +178,7 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
             clip = rng.choices(pool, weights=ws, k=1)[0]
             used.add(clip["id"])
             v = con.execute(
-                """SELECT v.*, (SELECT COUNT(*) FROM slots s WHERE s.variant_id=v.id) n FROM variants v
+                f"""SELECT v.*, (SELECT COUNT(*) FROM slots s WHERE s.variant_id=v.id) n FROM variants v
                    WHERE v.clip_id=? AND v.active=1
                    ORDER BY (COALESCE(v.cta_mode, 'none') NOT IN ({','.join('?' * len(cta_ok))})), n, v.id""",
                 (clip["id"], *cta_ok)).fetchone()
@@ -177,7 +196,7 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                 segs = json.loads((wd / "transcript.json").read_text())["segments"]
                 transcript = " ".join(s["text"] for s in segs)[:600]
             picks.append({
-                "variant_id": v["id"], "clip_id": clip["id"],
+                "kind": "video", "variant_id": v["id"], "clip_id": clip["id"],
                 "video_url": f"{base}/{v['file_name']}" if base else None, "file": v["file_name"],
                 "scheduled_at": local.isoformat(), "time_slot": t,
                 "hashtag_set": hs, "hashtags": cfg["experiments"]["hashtag_set"]["arms"][hs],
@@ -192,7 +211,10 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                 "cta": v["cta_mode"], "cta_text": v["cta_text"],
             })
         inv = reuse.inventory(con)
+        sinv = slides.inventory(con, d)
+    picks = sorted(picks + slide_picks, key=lambda p: p["scheduled_at"])
     return {"date": d.isoformat(), "slots": picks, "shortfall": n - len(picks), "inventory": inv,
+            "slideshow_inventory": sinv,
             "platforms": cfg["posting"]["platforms"],
             "limits": {p: sorted(ts) for p, ts in capped.items()} if n else {}}
 
@@ -203,6 +225,9 @@ def record(payload: dict) -> int:
     n = 0
     with db.tx() as con:
         for s in payload["slots"]:
+            if s.get("kind") == "slideshow":
+                n += slides.record_slot(con, s)
+                continue
             v = con.execute("SELECT clip_id FROM variants WHERE id=?", (s["variant_id"],)).fetchone()
             cur = con.execute("""INSERT INTO slots(variant_id, clip_id, scheduled_at, time_slot, hashtag_set, created_at,
                                  post_caption_style, post_emoji, platforms) VALUES (?,?,?,?,?,?,?,?,?)""",

@@ -82,6 +82,17 @@ CREATE TABLE IF NOT EXISTS weights (
     updated_at TEXT NOT NULL,
     PRIMARY KEY (dimension, value)
 );
+CREATE TABLE IF NOT EXISTS slide_posts (  -- photo-carousel posts (vdos/slides.py); one row per platform
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slideshow TEXT NOT NULL,           -- media/slides/<name>
+    scheduled_at TEXT NOT NULL, time_slot TEXT, hashtag_set TEXT,
+    post_caption_style TEXT, post_emoji TEXT,
+    platform TEXT NOT NULL, channel_id TEXT,
+    buffer_post_id TEXT UNIQUE, caption TEXT,
+    status TEXT NOT NULL DEFAULT 'scheduled', sent_at TEXT, error TEXT, external_url TEXT,
+    views REAL, reach REAL, likes REAL, comments REAL, shares REAL, saves REAL, metrics_at TEXT,
+    created_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS events (       -- alerts/notifications log
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     at TEXT NOT NULL, kind TEXT NOT NULL, payload TEXT
