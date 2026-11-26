@@ -323,6 +323,63 @@ TRACKS = {
 TRACK = "sunday"
 
 
+# ------------------------------------------------------------------ looks (a new character + room every video)
+SKINS = [("#f1c6a6", "#d49a7a", "#e89a8a"), ("#e0ac84", "#b88260", "#d8826a"), ("#c68a5e", "#9a6440", "#c86a4a"),
+         ("#a5673f", "#7a4a2c", "#c0603f"), ("#7a4a2e", "#5a321c", "#9a4a32"), ("#5a3520", "#3e2414", "#7a3a26")]
+HAIRS = ["#15100e", "#3a2416", "#6a3e1e", "#c89a50", "#a8442a", "#e8e0d0", "#e05a9a", "#3a6ad0", "#2a2a2a"]
+HAIR_STYLES = ["curly", "buzz", "cap", "long", "bun", "afro", "spiky"]
+OUTFITS = [("#7fe0b4", "#5cc49a", "#5a5d6a"), ("#f2a03a", "#d0802a", "#2e3a5a"), ("#e8556a", "#c03a50", "#3a3a40"),
+           ("#5a8af0", "#3e6ad0", "#d8c8a8"), ("#b07ae8", "#8a58c8", "#2a2a30"), ("#f4f0e6", "#d8d2c4", "#4a6a9a"),
+           ("#2a2a30", "#404048", "#8a8a90"), ("#f2d24a", "#d0b030", "#3a4a3a"), ("#3a9a6a", "#2a7a52", "#c8b89a"),
+           ("#ff8ab0", "#e06a92", "#f4f0e6")]
+ROOMS = [  # name, wall, wallTex, floorKind, floor colours, floorLine, quilt, rug, rugTrim, curtain, poster, wood, frame, sheet, extras
+    ("cozy bedroom", "#b9c8f0", "plain", "wood", ["#9a6a42", "#8a5c38", "#a37046", "#91633c"], "#5a3a22", ["#d9534a", "#3f6fb5", "#e8b23a", "#4fa07a", "#9a5fb0", "#f0e6d0"], "#d9603a", "#f2dcae", "#5568c0", "#f06a39", "#7a4a28", "#e8e2d4", "#eeeae0", {"plant": True}),
+    ("brick loft", "#e0a088", "brick", "wood", ["#5a3a28", "#4e3222", "#62402c"], "#2e1c12", ["#2e3a4a", "#d8d0c0", "#8a2e2a", "#2e3a4a"], "#3a4a5a", "#d8d0c0", "#2e2e34", "#e8c04a", "#3a2a20", "#2a2a2e", "#d8d0c0", {"lights": True, "lightsColor": "#ffd27a"}),
+    ("dorm room", "#d8dce0", "block", "tile", ["#c8c0b0", "#bcb4a4"], "#9a9284", ["#3a5a9a", "#f2f2f2", "#3a5a9a", "#e8b23a"], "#3a5a9a", "#f2f2f2", "#8a9aa8", "#e8556a", "#b89a70", "#9aa4ae", "#f4f4f4", {"art": "#3a5a9a", "plant": False}),
+    ("pastel room", "#f8c8d8", "dots", "carpet", ["#f0e4dc", "#e8dcd4"], "#d8c4b8", ["#ffb0c8", "#b0e0f0", "#fff0b0", "#c8b0f0"], "#b0e0f0", "#ffffff", "#ffffff", "#9a7ae8", "#e8d0b8", "#ffffff", "#ffffff", {"lights": True, "lightsColor": "#ffb0d0", "plant": True}),
+    ("green studio", "#a8d8b0", "stripes", "wood", ["#c89a60", "#b88a54", "#d0a468"], "#8a6238", ["#f2e2b0", "#3a7a5a", "#e07a3a", "#f2e2b0"], "#e8b23a", "#3a7a5a", "#f2e2b0", "#3a7a5a", "#a07040", "#f2e2b0", "#fbf6e8", {"plant": True, "art": "#e07a3a"}),
+    ("night owl den", "#7a6ad0", "plain", "carpet", ["#3a3450", "#342e48"], "#4a4466", ["#2a2a40", "#e8556a", "#2a2a40", "#5ac8e8"], "#5ac8e8", "#2a2a40", "#2a2a40", "#5ac8e8", "#2a2a34", "#1a1a22", "#d8d4f0", {"lights": True, "lightsColor": "#5ac8e8"}),
+    ("sunny apartment", "#fbe6b0", "plain", "tile", ["#e8d8c0", "#dccab0"], "#c0ac90", ["#f2a03a", "#ffffff", "#5a8af0", "#ffffff"], "#5a8af0", "#fbe6b0", "#f2a03a", "#5a8af0", "#d8b080", "#ffffff", "#ffffff", {"plant": True, "art": "#5a8af0"}),
+    ("gamer room", "#3a3a48", "block", "carpet", ["#2a2a32", "#26262e"], "#3a3a46", ["#e8556a", "#1a1a22", "#5af08a", "#1a1a22"], "#1a1a22", "#5af08a", "#e8556a", "#5af08a", "#1a1a22", "#2a2a32", "#c8c8d0", {"lights": True, "lightsColor": "#e8556a", "plant": False}),
+]
+PACKS = ["#f06a39", "#3a5a9a", "#2a2a30", "#e8b23a", "#3a9a6a", "#e8556a"]
+
+
+def pick_look(spec, spec_path, name):
+    """spec["look"] wins. Otherwise pick a character + room that differs from every recent animation, and save it in the spec."""
+    import zlib
+    if spec.get("look"):
+        return spec["look"]
+    used = []
+    for f in sorted((HERE.parent / "work" / "anim").glob("*/spec.json"), key=lambda q: q.stat().st_mtime)[-12:]:
+        try:
+            lk = json.loads(f.read_text()).get("look") or {}
+        except Exception:
+            continue
+        if f.resolve() != spec_path.resolve() and f.parent.name != "queue":
+            used.append(lk or {"room": "cozy bedroom", "hairStyle": "curly", "skin": "#a5673f", "top": "#7fe0b4"})  # the original look
+    import random
+    rng = random.Random(zlib.crc32(name.encode()))
+    rooms_recent = [u.get("room") for u in used[-len(ROOMS) + 1:]]
+    room = next((r for r in rng.sample(ROOMS, len(ROOMS)) if r[0] not in rooms_recent), rng.choice(ROOMS))
+    recent_chars = {(u.get("skin"), u.get("hairStyle"), u.get("top")) for u in used}
+    for _ in range(200):
+        sk, hs, hc, of = rng.choice(SKINS), rng.choice(HAIR_STYLES), rng.choice(HAIRS), rng.choice(OUTFITS)
+        if (sk[0], hs, of[0]) not in recent_chars and not any(u.get("hairStyle") == hs or u.get("top") == of[0] or u.get("skin") == sk[0] for u in used[-3:]):
+            break
+    (rn, wall, wtex, fk, floor, fline, quilt, rug, rtrim, curtain, poster, wood, frame, sheet, extra) = room
+    look = {"name": f"{rn} / {hs} hair", "room": rn, "skin": sk[0], "skinD": sk[1], "cheek": sk[2], "hair": hc, "hairStyle": hs,
+            "glasses": rng.random() < 0.3, "beard": hs in ("buzz", "cap", "curly", "afro") and rng.random() < 0.25, "freckles": rng.random() < 0.25,
+            "top": of[0], "top2": of[1], "pants": of[2], "shoe": rng.choice(["#f2f0ea", "#2a2a30", "#e8556a", "#5a8af0"]), "sole": rng.choice(["#f06a39", "#f2f0ea", "#2a2a30"]),
+            "beardColor": hc if hc in ("#15100e", "#3a2416", "#6a3e1e", "#c89a50", "#a8442a", "#2a2a2a") else "#2a1a12", "pack": rng.choice(PACKS), "capColor": rng.choice(PACKS), "wall": wall, "wallTex": wtex, "floorKind": fk, "floor": floor, "floorLine": fline,
+            "quilt": quilt, "rug": rug, "rugTrim": rtrim, "curtain": curtain, "poster": poster, "wood": wood, "frame": frame, "sheet": sheet,
+            "plant": False, "lights": False, **extra}
+    spec["look"] = look
+    if spec_path.name == "spec.json":
+        spec_path.write_text(json.dumps(spec, indent=1, ensure_ascii=False))
+    return look
+
+
 def pick_track(spec, name):
     import zlib
     t = spec.get("music")
@@ -427,6 +484,8 @@ def main():
     beats = [dict(b, i=i) for i, b in enumerate(spec["beats"])]
     global TRACK
     TRACK = pick_track(spec, name); print("music track:", TRACK)
+    global LOOK
+    LOOK = pick_look(spec, spec_path, name); print("look:", LOOK.get("name", "custom"))
     for b in beats:
         if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
             sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")
@@ -456,7 +515,7 @@ def main():
         else:
             shots.append(dict(name=b["shot"], t0=b["t0"], t1=b["t1"], p=b.get("p", {})))
     (work / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots), indent=1)) if spec_path.name != "spec.json" else None
-    rdir = work / "render"; rdir.mkdir(exist_ok=True); (rdir / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots), indent=1))
+    rdir = work / "render"; rdir.mkdir(exist_ok=True); (rdir / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots, id=name, look=LOOK), indent=1))
     lp = HERE / "lowpoly"
     if not (lp / "node_modules" / "playwright-core").exists():
         subprocess.run(["npm", "install", "--silent", "--no-audit", "--no-fund"], cwd=lp, check=True)

@@ -5,12 +5,23 @@
 </head><body><canvas id="c" width="360" height="640"></canvas>
 <script type="module">
 import * as THREE from "three";
-// Unsnooze low-poly animations: one bedroom, one character, a library of shots (see anim/README.md).
+// Unsnooze low-poly animations: a library of shots; the character and room change every video (spec.look, see anim/README.md).
 // PS1-style technique (360x640 render, vertex snapping, 15-bit dither, pixel textures drawn in code)
 // after the /low-poly skill in artemnovitckii/claude-animation-skills. window.renderAt(t) draws global time t.
 const SPEC = await (await fetch('spec.json?' + Date.now())).json();
 const RW = 360, RH = 640;
-let seed = 2026;
+// LOOK: per-video character + room (chosen in build.py, stored in spec.look). Defaults = the original bedroom.
+const LOOK = Object.assign({
+  skin: 0xa5673f, skinD: 0x7a4a2c, cheek: 0xc0603f, hair: 0x15100e, hairStyle: 'curly', glasses: false, beard: false, freckles: false,
+  top: 0x7fe0b4, top2: 0x5cc49a, pants: 0x5a5d6a, shoe: 0xf2f0ea, sole: 0xf06a39, pack: 0xf06a39,
+  wall: 0xb9c8f0, wallTex: 'plain', floor: [0x9a6a42, 0x8a5c38, 0xa37046, 0x91633c], floorLine: 0x5a3a22,
+  quilt: [0xd9534a, 0x3f6fb5, 0xe8b23a, 0x4fa07a, 0x9a5fb0, 0xf0e6d0, 0xe07a3a, 0x3fa3b5], rug: 0xd9603a, rugTrim: 0xf2dcae,
+  curtain: 0x5568c0, poster: 0xf06a39, wood: 0x7a4a28, frame: 0xe8e2d4, sheet: 0xeeeae0, lamp: 0xc87a5a, plant: true, lights: false, lightsColor: 0xffd27a,
+}, ...['skin', 'skinD', 'cheek', 'hair', 'top', 'top2', 'pants', 'shoe', 'sole', 'pack', 'beardColor', 'wall', 'floorLine', 'rug', 'rugTrim', 'curtain', 'poster', 'wood', 'frame', 'sheet', 'lamp', 'lightsColor']
+  .filter((k) => typeof (SPEC.look || {})[k] === 'string').map((k) => ({ [k]: parseInt(SPEC.look[k].replace('#', ''), 16) })), Object.fromEntries(Object.entries(SPEC.look || {}).filter(([, v]) => typeof v !== 'string' || !/^#?[0-9a-f]{6}$/i.test(v))));
+if (Array.isArray(LOOK.floor)) LOOK.floor = LOOK.floor.map((c) => typeof c === 'string' ? parseInt(c.replace('#', ''), 16) : c);
+if (Array.isArray(LOOK.quilt)) LOOK.quilt = LOOK.quilt.map((c) => typeof c === 'string' ? parseInt(c.replace('#', ''), 16) : c);
+let seed = [...String(SPEC.id || 'x')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 2026);
 const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const sm = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -69,26 +80,33 @@ function bitText(g, str, x, y, s, c) { for (const ch of str) { const gl = GL[ch]
 
 const T = {};
 T.floor = tex(32, 32, (g) => {
-  for (let y = 0; y < 32; y++) { const b = [0x9a6a42, 0x8a5c38, 0xa37046, 0x91633c][(y / 8) | 0]; for (let x = 0; x < 32; x++) px(g, x, y, col(b, .92 + rnd() * .12)); }
-  for (let y = 7; y < 32; y += 8) for (let x = 0; x < 32; x++) px(g, x, y, col(0x5a3a22));
-  for (let k = 0; k < 4; k++) px(g, (k * 9 + 3) % 32, k * 8, col(0x5a3a22), 1, 8);
+  for (let y = 0; y < 32; y++) { const b = LOOK.floor[((y / 8) | 0) % LOOK.floor.length]; for (let x = 0; x < 32; x++) px(g, x, y, col(b, .92 + rnd() * .12)); }
+  if (LOOK.floorKind === 'tile') { for (let y = 0; y < 32; y += 8) px(g, 0, y, col(LOOK.floorLine), 32, 1); for (let x = 0; x < 32; x += 8) px(g, x, 0, col(LOOK.floorLine), 1, 32); }
+  else if (LOOK.floorKind === 'carpet') { for (let k = 0; k < 40; k++) px(g, rnd() * 32 | 0, rnd() * 32 | 0, col(LOOK.floorLine)); }
+  else { for (let y = 7; y < 32; y += 8) for (let x = 0; x < 32; x++) px(g, x, y, col(LOOK.floorLine));
+  for (let k = 0; k < 4; k++) px(g, (k * 9 + 3) % 32, k * 8, col(LOOK.floorLine), 1, 8); }
 });
-T.wall = tex(32, 32, (g) => { noise(g, 0, 0, 32, 32, 0xffffff, .035); for (let k = 0; k < 16; k++) px(g, rnd() * 32 | 0, rnd() * 32 | 0, col(0xe6e6e6)); });
+T.wall = tex(32, 32, (g) => { noise(g, 0, 0, 32, 32, 0xffffff, .035);
+  if (LOOK.wallTex === 'brick') { for (let y = 0; y < 32; y += 4) { px(g, 0, y, col(0xb8b0a8), 32, 1); for (let x = (y / 4) % 2 ? 0 : 4; x < 32; x += 8) px(g, x, y, col(0xb8b0a8), 1, 4); } }
+  else if (LOOK.wallTex === 'block') { for (let y = 0; y < 32; y += 8) { px(g, 0, y, col(0xc8c8c8), 32, 1); for (let x = (y / 8) % 2 ? 0 : 8; x < 32; x += 16) px(g, x, y, col(0xc8c8c8), 1, 8); } }
+  else if (LOOK.wallTex === 'stripes') { for (let x = 0; x < 32; x += 8) px(g, x, 0, col(0xdedede), 3, 32); }
+  else if (LOOK.wallTex === 'dots') { for (let y = 2; y < 32; y += 8) for (let x = (y % 16 === 2 ? 2 : 6); x < 32; x += 8) px(g, x, y, col(0xd4d4d4), 2, 2); }
+  else for (let k = 0; k < 16; k++) px(g, rnd() * 32 | 0, rnd() * 32 | 0, col(0xe6e6e6)); });
 T.quilt = tex(32, 32, (g) => {
-  const cs = [0xd9534a, 0x3f6fb5, 0xe8b23a, 0x4fa07a, 0x9a5fb0, 0xf0e6d0, 0xe07a3a, 0x3fa3b5];
-  for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) { noise(g, i * 8, j * 8, 8, 8, cs[(i * 3 + j * 5 + (i ^ j)) % 8], .06); px(g, i * 8, j * 8, col(0x2a2a3a), 8, 1); px(g, i * 8, j * 8, col(0x2a2a3a), 1, 8); }
+  const cs = LOOK.quilt;
+  for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) { noise(g, i * 8, j * 8, 8, 8, cs[(i * 3 + j * 5 + (i ^ j)) % cs.length], .06); px(g, i * 8, j * 8, col(0x2a2a3a), 8, 1); px(g, i * 8, j * 8, col(0x2a2a3a), 1, 8); }
 });
 T.rug = tex(32, 32, (g) => {
-  noise(g, 0, 0, 32, 32, 0xd9603a, .06); px(g, 2, 2, col(0xf2dcae), 28, 2); px(g, 2, 28, col(0xf2dcae), 28, 2); px(g, 2, 2, col(0xf2dcae), 2, 28); px(g, 28, 2, col(0xf2dcae), 2, 28);
-  for (let k = 0; k < 6; k++) { px(g, 7 + k * 3, 14, col(0xf2dcae), 2, 4); }
+  noise(g, 0, 0, 32, 32, LOOK.rug, .06); const rt = col(LOOK.rugTrim); px(g, 2, 2, rt, 28, 2); px(g, 2, 28, rt, 28, 2); px(g, 2, 2, rt, 2, 28); px(g, 28, 2, rt, 2, 28);
+  for (let k = 0; k < 6; k++) { px(g, 7 + k * 3, 14, rt, 2, 4); }
 });
-T.wood = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, 0x7a4a28, .08); for (let y = 3; y < 16; y += 5) px(g, 0, y, col(0x54321a), 16, 1); });
-T.sheet = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, 0xeeeae0, .03); });
+T.wood = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, LOOK.wood, .08); for (let y = 3; y < 16; y += 5) px(g, 0, y, col(LOOK.wood, .7), 16, 1); });
+T.sheet = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, LOOK.sheet, .03); });
 T.books = tex(32, 16, (g) => {
   px(g, 0, 0, 'rgba(0,0,0,0)', 32, 16); const cs = [0xd9534a, 0x3f6fb5, 0xe8b23a, 0x4fa07a, 0xf0e6d0, 0x9a5fb0, 0xe07a3a];
   let x = 1; for (let k = 0; k < 9 && x < 30; k++) { const w = 2 + (rnd() * 2 | 0), h = 10 + (rnd() * 5 | 0); noise(g, x, 16 - h, w, h, cs[k % 7], .05); px(g, x, 16 - h + 2, col(0xffffff, .9), w, 1); x += w + 1; }
 });
-T.poster = tex(16, 24, (g) => { noise(g, 0, 0, 16, 24, 0xf06a39, .03); px(g, 1, 1, col(0xfff4e0), 14, 1); px(g, 1, 22, col(0xfff4e0), 14, 1); px(g, 5, 7, col(0xfff4e0), 6, 7); px(g, 4, 8, col(0xfff4e0), 8, 5); px(g, 7, 9, col(0xf06a39), 1, 3); px(g, 8, 11, col(0xf06a39), 2, 1); px(g, 4, 5, col(0xfff4e0), 2, 2); px(g, 10, 5, col(0xfff4e0), 2, 2); });
+T.poster = tex(16, 24, (g) => { noise(g, 0, 0, 16, 24, LOOK.poster, .03); px(g, 1, 1, col(0xfff4e0), 14, 1); px(g, 1, 22, col(0xfff4e0), 14, 1); px(g, 5, 7, col(0xfff4e0), 6, 7); px(g, 4, 8, col(0xfff4e0), 8, 5); px(g, 7, 9, col(LOOK.poster), 1, 3); px(g, 8, 11, col(LOOK.poster), 2, 1); px(g, 4, 5, col(0xfff4e0), 2, 2); px(g, 10, 5, col(0xfff4e0), 2, 2); });
 const skyTex = (st) => tex(16, 32, (g) => { for (let y = 0; y < 32; y++) for (let x = 0; x < 16; x++) { const f = y / 31 * (st.length - 1) + (((x + y) & 1) ? .3 : -.3); px(g, x, y, col(st[clamp(Math.round(f), 0, st.length - 1)])); } });
 T.skyNight = tex(16, 32, (g) => { noise(g, 0, 0, 16, 32, 0x1a2a5c, .06); for (let k = 0; k < 9; k++) px(g, rnd() * 16 | 0, rnd() * 18 | 0, col(0xfff2c0)); for (let x = 0; x < 16; x++) { const h = 4 + ((x * 7) % 5) * 2; px(g, x, 32 - h, col(0x0c1230), 1, h); if (x % 3 === 0) px(g, x, 32 - h + 2, col(0xffd27a)); } });
 T.skyDawn = skyTex([0x6a7cc8, 0x9a86c0, 0xd88aa0, 0xf6a070, 0xffc878, 0xffe2a0]);
@@ -99,8 +117,12 @@ T.screenRing = tex(16, 32, (g) => { px(g, 0, 0, col(0xf06a39), 16, 32); px(g, 5,
 const glyphTex = (ch, c) => tex(8, 8, (g) => { g.clearRect(0, 0, 8, 8); bitText(g, ch, 1, 0, 1, col(c)); });
 T.Z = glyphTex('Z', 0xdfe8ff); T.bang = glyphTex('!', 0xffd21a);
 // faces: 16x16, drawn per expression
-const SKIN = 0xa5673f, SKIN_D = 0x7a4a2c;
-function face(fn) { return tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, SKIN, .03); px(g, 2, 10, col(0xc0603f, 1), 2, 2); px(g, 12, 10, col(0xc0603f, 1), 2, 2); px(g, 7, 8, col(SKIN_D), 2, 2); fn(g); }); }
+const SKIN = LOOK.skin, SKIN_D = LOOK.skinD;
+function face(fn) { return tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, SKIN, .03); px(g, 2, 10, col(LOOK.cheek, 1), 2, 2); px(g, 12, 10, col(LOOK.cheek, 1), 2, 2); px(g, 7, 8, col(SKIN_D), 2, 2);
+  if (LOOK.freckles) for (const [x, y] of [[3, 9], [5, 10], [11, 9], [12, 11], [4, 11]]) px(g, x, y, col(SKIN_D));
+  if (LOOK.beard) { const bc = col(LOOK.beardColor || LOOK.hair); px(g, 1, 12, bc, 3, 4); px(g, 12, 12, bc, 3, 4); px(g, 4, 14, bc, 8, 2); }
+  fn(g);
+  if (LOOK.glasses) { const c = col(0x1a1a22); px(g, 2, 4, c, 5, 1); px(g, 2, 8, c, 5, 1); px(g, 2, 4, c, 1, 5); px(g, 6, 4, c, 1, 5); px(g, 9, 4, c, 5, 1); px(g, 9, 8, c, 5, 1); px(g, 9, 4, c, 1, 5); px(g, 13, 4, c, 1, 5); px(g, 7, 5, c, 2, 1); } }); }
 const eye = (g, x, open) => { if (open === 0) px(g, x, 7, col(0x1a100a), 3, 1); else if (open === 2) { px(g, x, 4, col(0xffffff), 3, 4); px(g, x + 1, 5, col(0x1a100a), 1, 2); } else { px(g, x, 5, col(0xffffff), 3, 3); px(g, x + 1, 6, col(0x1a100a), 1, 2); } };
 const brow = (g, x, kind, s) => { const c = col(0x1a100a); if (kind === 'flat') px(g, x, 3, c, 3, 1); if (kind === 'up') px(g, x, 2, c, 3, 1); if (kind === 'worry') { px(g, x + (s > 0 ? 0 : 2), 2, c, 1, 1); px(g, x + 1, 3, c, 1, 1); px(g, x + (s > 0 ? 2 : 0), 3, c, 1, 1); } if (kind === 'angry') { px(g, x + (s > 0 ? 2 : 0), 2, c, 1, 1); px(g, x + 1, 3, c, 1, 1); px(g, x + (s > 0 ? 0 : 2), 3, c, 1, 1); } };
 const F = {
@@ -134,8 +156,8 @@ const phoneGlow = new THREE.PointLight(0xff8040, 0, 0, 2); scene.add(phoneGlow);
 const M = {
   floor: lam({ map: T.floor }), wall: lam({ map: T.wall, color: 0x3a4a9a }), wall2: lam({ map: T.wall, color: 0x33428c }), ceil: lam({ color: 0x4a5490 }),
   wood: lam({ map: T.wood }), woodD: lam({ map: T.wood, color: 0x9a8070 }), sheet: lam({ map: T.sheet }), quilt: lam({ map: T.quilt }), rug: lam({ map: T.rug }),
-  pillow: lam({ color: 0xf4efe6 }), frame: lam({ color: 0xe8e2d4 }), sky: basic({ map: T.skyNight }), curtain: lam({ color: 0x5568c0 }),
-  shade: basic({ color: 0xffd9a0 }), lampBase: lam({ color: 0xc87a5a }), clockBody: lam({ color: 0x1a1a1e }), clockFace: basic({ map: clockFor('6:00') }),
+  pillow: lam({ color: 0xf4efe6 }), frame: lam({ color: LOOK.frame }), sky: basic({ map: T.skyNight }), curtain: lam({ color: LOOK.curtain }),
+  shade: basic({ color: 0xffd9a0 }), lampBase: lam({ color: LOOK.lamp }), clockBody: lam({ color: 0x1a1a1e }), clockFace: basic({ map: clockFor('6:00') }),
   alarm: lam({ color: 0xeeeeea }), led: basic({ color: 0x551010 }), books: basic({ map: T.books, transparent: true, alphaTest: 0.5 }), poster: lam({ map: T.poster }),
   pot: lam({ color: 0xd8805a }), leaf: lam({ color: 0x3f9a5a }), door: lam({ map: T.wood, color: 0xd0b090 }), knob: lam({ color: 0xe8c040 }),
   phone: lam({ color: 0x18181a }), screen: basic({ map: T.screenRing }), screenUI: basic({ map: T.screen }),
@@ -165,7 +187,9 @@ const clock = grp(stand, 0.02, 0.55, 0.14); box(clock, 0.3, 0.16, 0.12, M.clockB
 const phone = grp(scene, -2.0, 0.565, -1.22); box(phone, 0.11, 0.015, 0.2, M.phone, 0, 0, 0); const phoneScr = plane(phone, 0.095, 0.18, M.screen, 0, 0.009, 0, -Math.PI / 2);
 // shelf + books + plant, poster, rug, smoke alarm, door
 box(scene, 1.3, 0.05, 0.24, M.woodD, -0.9, 2.05, -2.86); plane(scene, 1.0, 0.36, M.books, -1.05, 2.26, -2.84);
-box(scene, 0.14, 0.14, 0.14, M.pot, -0.38, 2.15, -2.84); for (const [dx, dy] of [[0, .2], [-.08, .14], [.08, .15]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), M.leaf); c.position.set(-0.38 + dx, 2.22 + dy, -2.84); scene.add(c); }
+if (LOOK.plant) { box(scene, 0.14, 0.14, 0.14, M.pot, -0.38, 2.15, -2.84); for (const [dx, dy] of [[0, .2], [-.08, .14], [.08, .15]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), M.leaf); c.position.set(-0.38 + dx, 2.22 + dy, -2.84); scene.add(c); } }
+if (LOOK.lights) { const lm = basic({ color: LOOK.lightsColor }); for (let k = 0; k < 22; k++) { const x = -2.9 + k * 0.27; box(scene, 0.05, 0.05, 0.05, lm, x, 2.82 - 0.06 * Math.abs(Math.sin(k * 1.3)), -2.92); } }
+if (LOOK.art) { const am = lam({ color: typeof LOOK.art === 'string' ? parseInt(LOOK.art.replace('#', ''), 16) : 0xf2c14e }); box(scene, 0.5, 0.36, 0.02, M.frame, -2.97, 1.75, -0.4, 0, Math.PI / 2, 0); box(scene, 0.42, 0.28, 0.02, am, -2.955, 1.75, -0.4, 0, Math.PI / 2, 0); }
 plane(scene, 0.55, 0.8, M.poster, -0.1, 1.5, -2.97); box(scene, 0.62, 0.87, 0.02, M.frame, -0.1, 1.5, -2.99);
 plane(scene, 2.6, 1.9, M.rug, 0.4, 0.01, -0.2, -Math.PI / 2, 0, 1, 1, 6, 4);
 const alarm = grp(scene, 0.3, 2.94, -1.2); { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.09, 8), M.alarm); alarm.add(c); box(alarm, 0.05, 0.03, 0.05, M.led, 0.1, -0.05, 0.08); }
@@ -180,7 +204,7 @@ function rings(arr, pos, t, rate, r0, r1, flat = true) { arr.forEach((m, k) => {
 function zzz(pos, t) { zs.forEach((m, k) => { const ph = ((t * 0.55 + k / 3) % 1 + 1) % 1; m.visible = true; m.position.set(pos.x + 0.3 * ph + 0.04 * Math.sin(ph * 9), pos.y + 0.55 * ph, pos.z); m.scale.setScalar((0.5 + 0.9 * ph) * Math.min(1, ph / 0.15, (1 - ph) / 0.15)); m.lookAt(camera.position); }); }
 
 // ---------------------------------------------------------------- character (faces +z; origin at the hips)
-const C = { skin: lam({ color: SKIN }), hood: lam({ color: 0x7fe0b4 }), hood2: lam({ color: 0x5cc49a }), pants: lam({ color: 0x5a5d6a }), hair: lam({ color: 0x15100e }), shoe: lam({ color: 0xf2f0ea }), sole: lam({ color: 0xf06a39 }), pack: lam({ color: 0xf06a39 }), pack2: lam({ color: 0xc8502a }) };
+const C = { skin: lam({ color: SKIN }), hood: lam({ color: LOOK.top }), hood2: lam({ color: LOOK.top2 }), pants: lam({ color: LOOK.pants }), hair: lam({ color: LOOK.hair }), shoe: lam({ color: LOOK.shoe }), sole: lam({ color: LOOK.sole }), pack: lam({ color: LOOK.pack }), pack2: lam({ color: new THREE.Color(LOOK.pack).multiplyScalar(0.8) }), cap: lam({ color: LOOK.capColor ? parseInt(String(LOOK.capColor).replace('#', ''), 16) : LOOK.top2 }) };
 const faceMat = lam({ map: F.neutral });
 const yaw = grp(scene), root = grp(yaw), hips = grp(root), torso = grp(hips, 0, 0.06, 0);
 box(hips, 0.4, 0.2, 0.28, C.pants, 0, 0, 0);
@@ -189,8 +213,15 @@ box(torso, 0.02, 0.12, 0.02, C.shoe, -0.05, 0.4, 0.16); box(torso, 0.02, 0.12, 0
 const pack = grp(torso, 0, 0.28, -0.26); box(pack, 0.4, 0.44, 0.18, C.pack, 0, 0, 0); box(pack, 0.26, 0.16, 0.04, C.pack2, 0, -0.08, -0.1); pack.visible = false;
 const neck = grp(torso, 0, 0.56, 0), head = grp(neck, 0, 0.02, 0);
 { const sk = C.skin; const m = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.4, 0.38), [sk, sk, sk, sk, faceMat, sk]); m.position.set(0, 0.2, 0.02); head.add(m);
-  box(head, 0.46, 0.14, 0.42, C.hair, 0, 0.42, 0.0); box(head, 0.46, 0.3, 0.12, C.hair, 0, 0.28, -0.17);
-  for (const [x, y, z] of [[-.16, .5, .12], [0, .52, .14], [.16, .5, .12], [-.18, .5, -.08], [.02, .53, -.06], [.18, .5, -.1], [-.22, .36, -.02], [.22, .36, -.02]]) box(head, 0.14, 0.12, 0.14, C.hair, x, y, z, .3, .4, .2);
+  const hs = LOOK.hairStyle;
+  if (hs === 'buzz') { box(head, 0.44, 0.06, 0.4, C.hair, 0, 0.42, 0.0); box(head, 0.44, 0.22, 0.06, C.hair, 0, 0.3, -0.17); }
+  else if (hs === 'cap') { box(head, 0.46, 0.14, 0.42, C.cap, 0, 0.43, 0.0); box(head, 0.4, 0.03, 0.2, C.cap, 0, 0.37, 0.27); box(head, 0.46, 0.2, 0.1, C.hair, 0, 0.27, -0.17); }
+  else if (hs === 'long') { box(head, 0.46, 0.14, 0.42, C.hair, 0, 0.42, 0.0); box(head, 0.48, 0.62, 0.12, C.hair, 0, 0.14, -0.18); box(head, 0.06, 0.46, 0.3, C.hair, -0.235, 0.22, -0.05); box(head, 0.06, 0.46, 0.3, C.hair, 0.235, 0.22, -0.05); box(head, 0.4, 0.06, 0.06, C.hair, 0, 0.36, 0.2); }
+  else if (hs === 'bun') { box(head, 0.46, 0.12, 0.42, C.hair, 0, 0.42, 0.0); box(head, 0.46, 0.3, 0.1, C.hair, 0, 0.28, -0.17); box(head, 0.2, 0.18, 0.2, C.hair, 0, 0.56, -0.1, .2, .3, 0); }
+  else if (hs === 'afro') { box(head, 0.62, 0.3, 0.56, C.hair, 0, 0.46, -0.02); box(head, 0.62, 0.36, 0.2, C.hair, 0, 0.28, -0.19); for (const [x, z] of [[-.3, .08], [.3, .08], [-.3, -.12], [.3, -.12]]) box(head, 0.1, 0.26, 0.2, C.hair, x, 0.36, z); }
+  else if (hs === 'spiky') { box(head, 0.46, 0.1, 0.42, C.hair, 0, 0.41, 0.0); box(head, 0.46, 0.26, 0.1, C.hair, 0, 0.28, -0.17); for (const [x, z] of [[-.14, .1], [0, .12], [.14, .1], [-.12, -.08], [.12, -.08], [0, -.02]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.22, 4), C.hair); c.position.set(x, 0.55, z); c.rotation.set(z * 1.5, 0, -x * 1.5); head.add(c); } }
+  else { box(head, 0.46, 0.14, 0.42, C.hair, 0, 0.42, 0.0); box(head, 0.46, 0.3, 0.12, C.hair, 0, 0.28, -0.17);
+  for (const [x, y, z] of [[-.16, .5, .12], [0, .52, .14], [.16, .5, .12], [-.18, .5, -.08], [.02, .53, -.06], [.18, .5, -.1], [-.22, .36, -.02], [.22, .36, -.02]]) box(head, 0.14, 0.12, 0.14, C.hair, x, y, z, .3, .4, .2); }
   box(head, 0.05, 0.1, 0.08, C.skin, -0.23, 0.18, 0.02); box(head, 0.05, 0.1, 0.08, C.skin, 0.23, 0.18, 0.02); }
 function limb(parent, x, y, len1, len2, w, m1, m2, hand) {
   const a = grp(parent, x, y, 0); box(a, w, len1, w, m1, 0, -len1 / 2, 0);
@@ -219,7 +250,7 @@ const blinkAt = (u, f, times) => times.some((b) => u > b && u < b + 0.1) ? 'blin
 // ---------------------------------------------------------------- moods
 function mood(kind, pulse = 0) {
   kind = PARAM.mood || kind;
-  const set = (wall, ceil, hemiC, hemiG, hI, keyC, kI, sky, lampI, bg) => { M.wall.color.set(wall); M.wall2.color.set(wall).multiplyScalar(0.88); M.ceil.color.set(ceil); hemi.color.set(hemiC); hemi.groundColor.set(hemiG); hemi.intensity = hI; key.color.set(keyC); key.intensity = kI; M.sky.map = sky; lamp.intensity = lampI; scene.background.set(bg); scene.fog.color.set(bg); M.shade.color.set(lampI > 0 ? 0xffd9a0 : 0xb9a590); };
+  const set = (wall, ceil, hemiC, hemiG, hI, keyC, kI, sky, lampI, bg) => { const base = new THREE.Color(LOOK.wall), dayW = new THREE.Color(0xb9c8f0); wall = new THREE.Color(wall).multiply(base).multiply(new THREE.Color(1 / dayW.r, 1 / dayW.g, 1 / dayW.b)); M.wall.color.copy(wall); M.wall2.color.copy(wall).multiplyScalar(0.88); M.ceil.color.set(ceil); hemi.color.set(hemiC); hemi.groundColor.set(hemiG); hemi.intensity = hI; key.color.set(keyC); key.intensity = kI; M.sky.map = sky; lamp.intensity = lampI; scene.background.set(bg); scene.fog.color.set(bg); M.shade.color.set(lampI > 0 ? 0xffd9a0 : 0xb9a590); };
   if (kind === 'night') set(0x3a4a9a, 0x4a5490, 0x7f8fff, 0x241c3a, 1.25, 0x8fa8ff, 0.55, T.skyNight, 2.2, 0x0c1024);
   if (kind === 'dawn') set(0x8a8ac0, 0x9a9ac8, 0xffd0c0, 0x5a4a60, 1.5, 0xffc090, 1.0, T.skyDawn, 0, 0x2a2440);
   if (kind === 'day') set(0xb9c8f0, 0xdfe4f4, 0xffffff, 0x9a8a80, 1.7, 0xfff0d0, 1.25, T.skyDay, 0, 0x8090b0);

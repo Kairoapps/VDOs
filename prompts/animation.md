@@ -5,13 +5,14 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
 
 1. `python3 -m vdos anim-status` — `next_style`, `concepts_used`, `in_stock`, `uses_left`. Only `low_poly` is live.
    If `next_style` is anything else, use `low_poly` and say so in the summary.
-1b. **Pre-voiced queue first (Chika, 2026-11-26).** The scheduled task has no ElevenLabs key, so voices are recorded ahead of time in
-   a session that has one. If `work/anim/queue/` has a folder whose `vo/` holds every line (`l01.mp3`… one per beat plus the CTA),
-   take the lowest-numbered one: `git mv` it to `work/anim/<id>/`, set `"id"` in its spec to `<id>`, keep `"voice_dir": "vo"`, and skip
-   step 2 (don't change any beat's `line`: the audio is already recorded; you may change shots, captions and overlays). Then do steps 4-5
-   with `--voice elevenlabs`; the voice check in step 4 is not needed for a queued story (its voice is on disk). If 3 or fewer queued
-   stories are left after tonight, add "VOICE QUEUE LOW: <n> left" to the push notification so Chika can have more recorded.
-   Only when the queue is empty, write a new story (step 2) and use the voice check in step 4.
+1b. **Fresh story, live voice (Chika, 2026-11-26).** Every night is a brand-new story (step 2) voiced live by ElevenLabs. The key is the
+   `ELEVENLABS_API_KEY=` line in the scheduled task's own prompt; use it only as a prefix on the curl check and the build command.
+   `work/anim/queue/` holds pre-voiced backup stories: use the lowest-numbered one **only if the live voice check fails** (`git mv` it to
+   `work/anim/<id>/`, set its `"id"`, keep `"voice_dir": "vo"`, don't change any `line`), and say so in the notification.
+1c. **New look every night (Chika, 2026-11-26).** Never reuse the same character and room. `build.py` picks a new `look` (character:
+   skin, hair style/colour, glasses, beard, outfit; room: wall texture/colour, floor, bedding, lights, props) that differs from recent
+   animations and saves it in the spec. Check on the sheet that tonight's character and room clearly differ from the last few videos'
+   sheets; if not, delete `"look"` from the spec, or set fields by hand, and rebuild. Don't copy a previous spec's `look`.
 2. **Story.** Write a new one, different from every entry in `concepts_used` (different hook AND different middle). 7-12 beats, 18-35 s.
    Shape: a hook in the first line that names a feeling every heavy sleeper knows -> the snooze spiral or its cost ->
    the turn ("so I...") -> one or two Unsnooze challenges shown working -> the payoff -> (download card is automatic).

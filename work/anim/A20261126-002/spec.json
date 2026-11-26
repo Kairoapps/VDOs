@@ -163,5 +163,50 @@
   }
  ],
  "cta_line": "[excited] Download Unsnooze. Link in bio!",
- "voice_dir": "vo"
+ "voice_dir": "vo",
+ "look": {
+  "name": "green studio / afro hair",
+  "room": "green studio",
+  "skin": "#f1c6a6",
+  "skinD": "#d49a7a",
+  "cheek": "#e89a8a",
+  "hair": "#c89a50",
+  "hairStyle": "afro",
+  "glasses": true,
+  "beard": false,
+  "freckles": false,
+  "top": "#2a2a30",
+  "top2": "#404048",
+  "pants": "#8a8a90",
+  "shoe": "#5a8af0",
+  "sole": "#f2f0ea",
+  "beardColor": "#c89a50",
+  "pack": "#2a2a30",
+  "capColor": "#e8b23a",
+  "wall": "#a8d8b0",
+  "wallTex": "stripes",
+  "floorKind": "wood",
+  "floor": [
+   "#c89a60",
+   "#b88a54",
+   "#d0a468"
+  ],
+  "floorLine": "#8a6238",
+  "quilt": [
+   "#f2e2b0",
+   "#3a7a5a",
+   "#e07a3a",
+   "#f2e2b0"
+  ],
+  "rug": "#e8b23a",
+  "rugTrim": "#3a7a5a",
+  "curtain": "#f2e2b0",
+  "poster": "#3a7a5a",
+  "wood": "#a07040",
+  "frame": "#f2e2b0",
+  "sheet": "#fbf6e8",
+  "plant": true,
+  "lights": false,
+  "art": "#e07a3a"
+ }
 }
