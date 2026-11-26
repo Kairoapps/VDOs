@@ -16,12 +16,18 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
 3. **Spec.** `work/anim/<id>/spec.json` (`<id>` = `A<yyyymmdd>-<n>`, today's date in Eastern time), using the shots and overlays in
    `anim/README.md`. Put `"lift": true` on the turn. If the story needs a shot that doesn't exist, add it to
    `anim/lowpoly/index.html` (it is saved with `cloud-save`).
-4. **Check, build, check.** `python3 anim/build.py <spec> --snap` and Read the snaps image: every shot shows the character doing
-   what the caption says. Then `python3 anim/build.py <spec>` (about a minute) and Read `<id>.sheet.jpg`: captions readable and
+4. **Check, build, check.** First check the voice: `curl -s -o /dev/null -w '%{http_code}' -H "xi-api-key: $ELEVENLABS_API_KEY" https://api.elevenlabs.io/v1/user`
+   must print 200 (the scheduled task gives the key as `ELEVENLABS_API_KEY` on the build command only; never write it to a file, commit,
+   log or summary: the repo is public). If it isn't 200, **skip tonight's animation** (403 = host blocked in claude.ai Settings > Capabilities >
+   Allowed websites; 401 = key missing or wrong) and put "ANIMATION SKIPPED: no voice (<code>)" first in the push notification.
+   Then `python3 anim/build.py <spec> --snap` and Read the snaps image: every shot shows the character doing
+   what the caption says. Then `python3 anim/build.py <spec> --require-voice` (about a minute) and Read `<id>.sheet.jpg`: captions readable and
    not covering his face, cards/phones in the top third, counters right, download card last. Fix the spec and rebuild until it is right
    (at most 3 rebuilds; if it still isn't right, skip tonight's animation and say so — the plan reuses the ones in stock).
-   Voice: the build always tries ElevenLabs (the key is a network secret on the cloud environment for `api.elevenlabs.io`, so there is no variable to check; an `ELEVENLABS_API_KEY` variable also works). If the call fails it prints why and makes a captions-only video; report which one in the summary.
-5. **Add it:** `python3 -m vdos anim-add work/anim/<id>/<id>.mp4 --title "<the hook line>" --summary "<2 sentences: what happens>" --style low_poly --concept <slug> --voice <elevenlabs|none>`
+   **Never add a captions-only animation (Chika, 2026-11-26).** `--require-voice` stops the build when the voice fails; if it does,
+   skip tonight's animation. After a good build add `"voice_dir": "vo"` to the spec so rebuilds reuse the recorded lines.
+
+5. **Add it:** `python3 -m vdos anim-add work/anim/<id>/<id>.mp4 --title "<the hook line>" --summary "<2 sentences: what happens>" --style low_poly --concept <slug> --voice elevenlabs`
    Then continue with `vdos publish` (step 2 of the daily run), which uploads it for Buffer.
 
 Posting an animation slot (`"kind": "animation"` in the plan) works like any other slot: same caption rules, hashtags and tests.

@@ -75,10 +75,11 @@ and check it with `--snap` before building. Shots must depend only on the time a
 Keep overlays in the top third; the character is framed below them. Only show challenges and numbers the app really has.
 
 ## Voice and sound
-- Voice: ElevenLabs, voice and model from `config.toml` `[animation]`. The key is stored on the cloud environment as a network
-  secret (host `api.elevenlabs.io`, header `xi-api-key`, no prefix), so the build sends no key itself; an `ELEVENLABS_API_KEY`
-  variable also works. If the call fails the build makes a captions-only video (music + sound effects) and prints why on the
-  `voice:` line. (Not yet tested from the cloud; check that line on the first night.)
+- Voice: ElevenLabs, voice and model from `config.toml` `[animation]`. The key comes from `ELEVENLABS_API_KEY`, which the nightly
+  scheduled task sets on the build command only (never commit it: this repo is public). `api.elevenlabs.io` must be allowed in
+  claude.ai Settings > Capabilities > Allowed websites (Cowork sessions; the Claude Code environment's network secret does not reach
+  them — found 2026-11-26). Without a voice the build makes a captions-only video, unless `--require-voice` is passed (the nightly
+  run always passes it: captions-only animations are not posted).
 - Music: an original lo-fi bed generated in `build.py` (no licence needed), ducked under the voice.
 - Sound effects: smoke-alarm chirps, the phone alarm from `sounds/alarm/`, thuds on stamps, chimes on the win and the download card.
 

@@ -53,8 +53,8 @@ def _cfg():
 
 def elevenlabs(lines, out_dir):
     """One mp3 per line with the ElevenLabs API. Returns True when every line was made; any failure -> False (captions only)."""
-    # The key normally lives on the cloud environment as a network secret for api.elevenlabs.io (header xi-api-key): the
-    # proxy adds it to the request, so nothing is set here. An ELEVENLABS_API_KEY variable also works if one is set.
+    # The key comes from the ELEVENLABS_API_KEY variable, which the nightly scheduled task sets for the build command only
+    # (never write it to a file or commit it: the repo is public). A proxy-injected xi-api-key header also works.
     key = os.environ.get("ELEVENLABS_API_KEY")
     cfg = _cfg()
 
@@ -438,6 +438,8 @@ def main():
     voice = False
     if spec.get("voice", True) and not snap:
         voice = have() or (elevenlabs(lines, vdir) and have())
+    if "--require-voice" in sys.argv and not snap and not voice:
+        sys.exit("voice: REQUIRED but missing -> no video built (fix ElevenLabs access, or skip tonight's animation)")
     vos = [trim(load_audio(glob.glob(str(vdir / f"l{i + 1:02d}.*"))[0])) for i in range(len(lines))] if voice else [None] * len(lines)
     vos = [None if v is None else v / (np.abs(v).max() + 1e-9) for v in vos]
     t = 0.0

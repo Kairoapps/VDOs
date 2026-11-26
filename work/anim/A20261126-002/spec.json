@@ -1,19 +1,167 @@
 {
- "id": "A20261126-002", "style": "low_poly", "concept": "excuse-countdown",
+ "id": "A20261126-002",
+ "style": "low_poly",
+ "concept": "excuse-countdown",
  "title": "6 AM. the negotiations begin.",
  "summary": "Low-poly story: at 6 AM he runs through his excuses (five more minutes, class is optional, skip breakfast) and ends up late again. So he gives his alarm one rule, no excuses: Unsnooze makes him do 15 squats and a memory game, and he's out the door on time.",
  "music": "get_up",
  "beats": [
-  {"shot": "phone_buzz_asleep", "line": "Six AM. The negotiations begin.", "caption": "6 AM. the *negotiations* begin.", "overlay": [{"type": "card", "label": "ALARM", "big": "6:00 AM", "at": 0.1, "y": 320}]},
-  {"shot": "snooze_slaps", "line": "[groggy] Excuse one: five more minutes.", "caption": "excuse #1:\n*five more minutes.*", "overlay": [{"type": "stamp", "text": "SNOOZED ×3", "at": 1.75, "y": 480}]},
-  {"shot": "facepalm", "line": "Excuse two: class is basically optional.", "caption": "excuse #2: class is\n*basically optional.*"},
-  {"shot": "talk", "line": "Excuse three: I'll just skip breakfast.", "caption": "excuse #3: I'll just\n*skip breakfast.*"},
-  {"shot": "late_sprint", "line": "[deadpan] Result: late. Again.", "caption": "result: *late.* again.", "overlay": [{"type": "card", "label": "RIGHT NOW", "big": "8:47 AM", "accent": "red", "at": 0.05, "x": 480}, {"type": "stamp", "text": "LATE", "at": 0.8, "x": 770, "y": 440, "rot": -11}]},
-  {"shot": "set_alarm_in_bed", "lift": true, "line": "So I gave my alarm one rule. No excuses.", "caption": "so I gave my alarm\none rule: *no excuses.*", "overlay": [{"type": "phone", "screen": "grid", "at": 0.5, "x": 820, "y": 420, "rot": -6}]},
-  {"shot": "squats", "line": "Now it won't stop until I do fifteen squats.", "caption": "now it won't stop\nuntil I do *15 squats.*", "overlay": [{"type": "phone", "screen": "squats", "from": 11, "to": 15, "total": 15, "at": 0.15, "x": 810, "y": 450, "scale": 0.64}]},
-  {"shot": "thinking", "line": "Then a memory game you can't do half asleep.", "caption": "then a *memory game*\nyou can't do half asleep.", "overlay": [{"type": "tiles", "names": ["memory"], "ats": [0.1]}]},
-  {"shot": "stretch_win", "line": "By the time it stops, the excuses are gone.", "caption": "by the time it stops,\nthe *excuses* are gone.", "overlay": [{"type": "card", "label": "ALARM", "big": "6:00 AM", "accent": "green", "at": 0.1, "y": 300}, {"type": "stamp", "text": "DISMISSED", "color": "green", "at": 0.9, "y": 460}]},
-  {"shot": "out_the_door", "line": "[proud] Out the door before excuse number one.", "caption": "out the door before\n*excuse #1.*", "overlay": [{"type": "card", "label": "FIRST CLASS 8:00", "big": "7:50 AM", "accent": "green", "at": 0.05, "y": 300}, {"type": "stamp", "text": "ON TIME", "color": "green", "at": 0.5, "x": 690, "y": 460}]}
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "Six AM. The negotiations begin.",
+   "caption": "6 AM. the *negotiations* begin.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 320
+    }
+   ]
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "[groggy] Excuse one: five more minutes.",
+   "caption": "excuse #1:\n*five more minutes.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×3",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "facepalm",
+   "line": "Excuse two: class is basically optional.",
+   "caption": "excuse #2: class is\n*basically optional.*"
+  },
+  {
+   "shot": "talk",
+   "line": "Excuse three: I'll just skip breakfast.",
+   "caption": "excuse #3: I'll just\n*skip breakfast.*"
+  },
+  {
+   "shot": "late_sprint",
+   "line": "[deadpan] Result: late. Again.",
+   "caption": "result: *late.* again.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:47 AM",
+     "accent": "red",
+     "at": 0.05,
+     "x": 480
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.8,
+     "x": 770,
+     "y": 440,
+     "rot": -11
+    }
+   ]
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "lift": true,
+   "line": "So I gave my alarm one rule. No excuses.",
+   "caption": "so I gave my alarm\none rule: *no excuses.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ]
+  },
+  {
+   "shot": "squats",
+   "line": "Now it won't stop until I do fifteen squats.",
+   "caption": "now it won't stop\nuntil I do *15 squats.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "squats",
+     "from": 11,
+     "to": 15,
+     "total": 15,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "Then a memory game you can't do half asleep.",
+   "caption": "then a *memory game*\nyou can't do half asleep.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "memory"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "By the time it stops, the excuses are gone.",
+   "caption": "by the time it stops,\nthe *excuses* are gone.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "color": "green",
+     "at": 0.9,
+     "y": 460
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Out the door before excuse number one.",
+   "caption": "out the door before\n*excuse #1.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "FIRST CLASS 8:00",
+     "big": "7:50 AM",
+     "accent": "green",
+     "at": 0.05,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "color": "green",
+     "at": 0.5,
+     "x": 690,
+     "y": 460
+    }
+   ]
+  }
  ],
- "cta_line": "[excited] Download Unsnooze. Link in bio!"
+ "cta_line": "[excited] Download Unsnooze. Link in bio!",
+ "voice_dir": "vo"
 }
