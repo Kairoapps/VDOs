@@ -7,9 +7,11 @@ Posts are recorded in the `slide_posts` table (separate from video slots so the 
 """
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+import statistics
+from collections import defaultdict
+from datetime import date, datetime, timedelta, timezone
 
-from . import config, db
+from . import config, db, weights
 
 PLATFORM_RATIO = {"tiktok": "9x16", "instagram": "4x5", "facebook": "4x5"}
 
@@ -72,8 +74,13 @@ def pick(con, d: date, rng) -> tuple[str | None, str]:
         pool = sorted(cat, key=lambda n: (use.get(n, {}).get("last") or date.min, use.get(n, {}).get("uses", 0)))[:1]
         note = "no fresh slideshow left: reused the least recently used one; build more"
     fewest = min(use.get(n, {"uses": 0})["uses"] for n in pool)
-    pool = [n for n in pool if use.get(n, {"uses": 0})["uses"] == fewest]  # unused first
-    return rng.choice(pool), note
+    pool = [n for n in pool if use.get(n, {"uses": 0})["uses"] == fewest]  # never-posted first
+    if fewest == 0:
+        return rng.choice(pool), note
+    # reruns: favor slideshows that scored well (weekly review writes the "slide_slideshow" weights)
+    w = weights.get(con, "slide_slideshow")
+    mean = sum(w.values()) / len(w) if w else 1.0
+    return rng.choices(pool, weights=[max(0.05, w.get(n, mean)) for n in pool], k=1)[0], note
 
 
 def inventory(con, d: date | None = None) -> dict:
@@ -139,3 +146,146 @@ def stats(con, days: int = 28) -> dict:
                              GROUP BY slideshow ORDER BY views DESC""").fetchall()
     out["by_slideshow"] = [{"slideshow": r["slideshow"], "posts": r["n"], "avg_views": round(r["views"] or 0, 1)} for r in by_show]
     return out
+
+
+# ---------------------------------------------------------------- weekly review
+
+SLIDE_DIMS = ["slideshow", "kind", "slides", "time_slot", "hashtag_set", "post_caption_style", "post_emoji"]
+SLIDE_SCORE = {"views": 0.55, "shares_saves": 0.25, "comments": 0.2}  # no watch time for photo posts
+
+
+def _pct(values, v):
+    if not values:
+        return 50.0
+    return 100.0 * (sum(1 for x in values if x < v) + 0.5 * sum(1 for x in values if x == v)) / len(values)
+
+
+def kind(name: str) -> str:
+    return "multi_challenge" if name in set(_cfg().get("multi_challenge", [])) else "single_challenge"
+
+
+def scored(con, days: int = 30) -> list[dict]:
+    """One row per slideshow post time (all its platforms), score 0-100 ranked within platform among slideshow posts."""
+    cfg = config.load()
+    early = cfg["analysis"]["early_age_days"]
+    now = datetime.now(timezone.utc)
+    lo = (now - timedelta(days=days + cfg["analysis"]["score_age_days"])).isoformat()
+    hi = (now - timedelta(days=early)).isoformat()
+    rows = [dict(r) for r in con.execute("""SELECT * FROM slide_posts WHERE status='sent' AND views IS NOT NULL
+                                            AND scheduled_at >= ? AND scheduled_at <= ?""", (lo, hi))]
+    cat = catalog()
+    by_plat = defaultdict(list)
+    for r in rows:
+        v = r["views"] or 0
+        r["ss_rate"] = ((r["shares"] or 0) + (r["saves"] or 0)) / v if v else 0
+        r["c_rate"] = (r["comments"] or 0) / v if v else 0
+        by_plat[r["platform"]].append(r)
+    for rs in by_plat.values():
+        vs, ss, cs = [r["views"] for r in rs], [r["ss_rate"] for r in rs], [r["c_rate"] for r in rs]
+        for r in rs:
+            r["score"] = (SLIDE_SCORE["views"] * _pct(vs, r["views"]) + SLIDE_SCORE["shares_saves"] * _pct(ss, r["ss_rate"])
+                          + SLIDE_SCORE["comments"] * _pct(cs, r["c_rate"]))
+    groups = defaultdict(list)
+    for r in rows:
+        groups[(r["slideshow"], r["scheduled_at"])].append(r)
+    out = []
+    for (name, at), rs in groups.items():
+        r0 = rs[0]
+        out.append({"slideshow": name, "scheduled_at": at, "score": statistics.mean(r["score"] for r in rs),
+                    "kind": kind(name), "slides": f"{len(cat.get(name, {}).get('9x16', []))} slides",
+                    "time_slot": r0["time_slot"] or "none", "hashtag_set": r0["hashtag_set"] or "none",
+                    "post_caption_style": r0["post_caption_style"] or "none", "post_emoji": r0["post_emoji"] or "none",
+                    "views": {r["platform"]: r["views"] for r in rs}, "total_views": sum(r["views"] or 0 for r in rs),
+                    "comments": sum(r["comments"] or 0 for r in rs), "likes": sum(r["likes"] or 0 for r in rs),
+                    "shares_saves": sum((r["shares"] or 0) + (r["saves"] or 0) for r in rs),
+                    "urls": {r["platform"]: r["external_url"] for r in rs if r.get("external_url")}})
+    return out
+
+
+def rank(items: list[dict]) -> dict[str, list[dict]]:
+    min_n = config.load()["analysis"]["min_posts_per_value"]
+    res = {}
+    for dim in SLIDE_DIMS:
+        g = defaultdict(list)
+        for s in items:
+            g[s[dim]].append(s["score"])
+        rows = [{"value": k, "n": len(v), "median": round(statistics.median(v), 1), "enough": len(v) >= min_n} for k, v in g.items()]
+        rows.sort(key=lambda r: (not r["enough"], -r["median"]))
+        res[dim] = rows
+    return res
+
+
+def vs_video(con, days: int = 7) -> dict:
+    """Per platform: slideshow vs video posts from the last `days` days that are at least early_age_days old.
+    Medians of latest views / likes / comments / shares+saves, plus engagement per 1k views."""
+    cfg = config.load()
+    now = datetime.now(timezone.utc)
+    lo = (now - timedelta(days=days)).isoformat()
+    hi = (now - timedelta(days=cfg["analysis"]["early_age_days"])).isoformat()
+    srows = con.execute("""SELECT platform, views, likes, comments, COALESCE(shares,0)+COALESCE(saves,0) ss FROM slide_posts
+                           WHERE status='sent' AND views IS NOT NULL AND scheduled_at BETWEEN ? AND ?""", (lo, hi)).fetchall()
+    vrows = con.execute("""SELECT p.platform, m.views, m.likes, m.comments, COALESCE(m.shares,0)+COALESCE(m.saves,0) ss
+                           FROM posts p JOIN slots s ON s.id=p.slot_id
+                           JOIN metrics m ON m.post_id=p.id AND m.pulled_at=(SELECT MAX(pulled_at) FROM metrics WHERE post_id=p.id)
+                           WHERE p.status='sent' AND p.platform IN ('tiktok','instagram','facebook')
+                             AND s.scheduled_at BETWEEN ? AND ?""", (lo, hi)).fetchall()
+
+    def summ(rows):
+        if not rows:
+            return None
+        v = [r["views"] or 0 for r in rows]
+        eng = sum((r["likes"] or 0) + (r["comments"] or 0) + r["ss"] for r in rows)
+        return {"posts": len(rows), "median_views": round(statistics.median(v)), "avg_views": round(statistics.mean(v)),
+                "median_likes": statistics.median([r["likes"] or 0 for r in rows]),
+                "comments": sum(r["comments"] or 0 for r in rows), "shares_saves": sum(r["ss"] for r in rows),
+                "eng_per_1k": round(1000 * eng / sum(v), 1) if sum(v) else 0}
+
+    out = {}
+    for plat in ("tiktok", "instagram", "facebook"):
+        s = summ([r for r in srows if r["platform"] == plat])
+        v = summ([r for r in vrows if r["platform"] == plat])
+        verdict = None
+        if s and v and s["posts"] >= 3 and v["posts"] >= 3:
+            ratio = s["median_views"] / v["median_views"] if v["median_views"] else None
+            if ratio is not None:
+                verdict = ("slideshows ahead" if ratio >= 1.15 else "videos ahead" if ratio <= 0.87 else "about even") + f" ({ratio:.2f}x views)"
+        out[plat] = {"slideshow": s, "video": v, "verdict": verdict or "not enough posts yet (3+ of each)"}
+    return out
+
+
+def update_weights(con, ranking: dict) -> None:
+    """Store slideshow rankings as weights with a slide_ prefix so they never mix with the video tests."""
+    cfg = config.load()
+    exploit = cfg["analysis"]["exploit_share"]
+    now = db.now_iso()
+    for dim, rows in ranking.items():
+        if not rows:
+            continue
+        qual = [r for r in rows if r["enough"]]
+        denom = sum(max(1.0, r["median"]) ** 2 for r in qual)
+        for r in rows:
+            w = (1 - exploit) / len(rows) if qual else 1.0 / len(rows)
+            if qual and r["enough"]:
+                w += exploit * max(1.0, r["median"]) ** 2 / denom
+            con.execute("""INSERT INTO weights(dimension, value, weight, median_score, n, updated_at) VALUES (?,?,?,?,?,?)
+                           ON CONFLICT(dimension, value) DO UPDATE SET weight=excluded.weight, median_score=excluded.median_score,
+                           n=excluded.n, updated_at=excluded.updated_at""",
+                        (f"slide_{dim}", str(r["value"]), round(w, 4), r["median"], r["n"], now))
+
+
+def weekly(con) -> dict:
+    """Everything the weekly report says about slideshows."""
+    items = scored(con)
+    ranking = rank(items)
+    update_weights(con, ranking)
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    week = sorted([s for s in items if s["scheduled_at"] >= week_ago], key=lambda s: -s["score"])
+    posted = con.execute("""SELECT platform, status, COUNT(*) n FROM slide_posts WHERE scheduled_at >= ?
+                            GROUP BY platform, status""", (week_ago,)).fetchall()
+    inv = inventory(con)
+    use = usage(con)
+    never = [n for n in catalog() if n not in use]
+    return {"n_scored": len(items), "ranking": ranking, "vs_video": vs_video(con, 7), "vs_video_30d": vs_video(con, 30),
+            "best_week": week[:3], "worst_week": week[-3:][::-1] if len(week) > 3 else [],
+            "posted_week": [dict(r) for r in posted], "inventory": inv, "never_posted": never,
+            "build_more": inv["days_left_fresh"] < 7}

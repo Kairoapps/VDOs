@@ -46,6 +46,8 @@ max_uses = 3                               # ...up to 3 times; if nothing is eli
 # Buffer can't add music to TikTok photo posts or Instagram carousels (API limit). false = post automatically, silent.
 # true = TikTok slideshow posts use Buffer's "notify me" so Chika finishes them in the TikTok app with a trending sound.
 tiktok_notify_for_music = false
+# Slideshows that show several challenges (the rest show one). Used to compare single vs multi in the weekly report.
+multi_challenge = ["three_in_a_row", "every_way", "random_week", "rate_them"]
 
 [compress]
 # The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).

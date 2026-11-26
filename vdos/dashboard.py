@@ -236,6 +236,25 @@ def build(result: dict | None = None, out: Path | None = None) -> Path:
                 f'<table><thead><tr><th>Time (ET)</th><th>Score</th><th>Posts</th></tr></thead><tbody>{exp_rows}</tbody></table></div>'
                 f'<div class="note">{_e(e.get("recommendation", ""))}</div></div>')
 
+    # Slideshows
+    sl = r.get("slideshows") or {}
+    def _cmp(d):
+        return f'{_num(d["median_views"])} <span class="note">({d["eng_per_1k"]}/1k · n={d["posts"]})</span>' if d else '<span class="note">—</span>'
+    vs_rows = "".join(f'<tr><td>{_e(p)}</td><td>{_cmp(x["slideshow"])}</td><td>{_cmp(x["video"])}</td><td>{_e(x["verdict"])}</td></tr>'
+                      for p, x in (sl.get("vs_video_30d") or {}).items())
+    sl_inv = sl.get("inventory") or {}
+    sl_cards = "".join(f'<div class="card"><h3>{_e(t)}</h3>{_bars((sl.get("ranking") or {}).get(d, []))}</div>'
+                       for d, t in (("slideshow", "Best slideshows"), ("kind", "One challenge vs several"),
+                                    ("time_slot", "Slideshow posting time"), ("post_caption_style", "Slideshow caption style")))
+    slideshows = f"""
+<div class="grid g3">
+ <div class="card"><h3>Slideshow vs video (30 days)</h3><div class="scroll"><table><thead><tr><th>Platform</th><th>Slideshows (median views)</th>
+  <th>Videos (median views)</th><th>Verdict</th></tr></thead><tbody>{vs_rows or '<tr><td colspan="4" class="note">No slideshow posts yet.</td></tr>'}</tbody></table></div>
+  <div class="note">Posts at least 3 days old. /1k = likes + comments + shares + saves per 1,000 views.</div></div>
+ <div class="card tile"><div class="l">Fresh slideshows left</div><div class="v">{sl_inv.get('never_posted', 0)}</div>
+  <span class="badge">{sl_inv.get('slideshows', 0)} total · {sl_inv.get('uses_left', 0)} uses left{' · build more' if sl.get('build_more') else ''}</span></div>
+</div><div class="grid g3">{sl_cards}</div>"""
+
     clip_rows = "".join(
         f'<tr data-status="{c["status"]}"><td>{_e(c["id"])}</td><td>{_e(c["topic"])}</td><td>{_e(c.get("angle") or "")}</td>'
         f'<td>{c["uses"]} / {c["cap"]}{" ★" if c["evergreen"] else ""}</td><td>{_e(c["last_used"] or "—")}</td>'
@@ -263,13 +282,14 @@ b.classList.add('on');document.querySelectorAll('#clips tbody tr').forEach(tr=>t
     doc = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VDOs dashboard</title><style>{CSS}</style></head><body><main>
 <header><h1>Unsnooze videos</h1><div class="sub">Updated {_e(r['generated_at'][:16].replace('T', ' '))} UTC · {r['n_scored_slots']} scored posts (30 days)</div></header>
-<nav><a href="#top">Overview</a><a href="#videos">Top videos</a><a href="#leaders">What's winning</a><a href="#hashtags">Hashtags</a>
+<nav><a href="#top">Overview</a><a href="#videos">Top videos</a><a href="#leaders">What's winning</a><a href="#slideshows">Slideshows</a><a href="#hashtags">Hashtags</a>
 <a href="#cta">CTA &amp; comments</a><a href="#tests">All A/B tests</a><a href="#clips">Clips</a></nav>
 <section id="top">{tiles}
 <div class="grid g2" style="margin-top:12px"><div class="card"><h3>Record more like this</h3><ul>{shot}</ul></div>
 <div class="card"><h3>Retired this week</h3><ul>{retired}</ul></div></div></section>
 <h2 id="videos">Best videos this week</h2><div class="grid g3">{videos}</div>
 <h2 id="leaders">What's winning right now</h2><div class="how">The best option in every test. "Early" = fewer than {min_n} posts, so it can still change.</div>{leaders_html}
+<h2 id="slideshows">Slideshows</h2>{slideshows}
 <h2 id="hashtags">Hashtags</h2>{hashtags}
 <h2 id="cta">CTA &amp; comments</h2>{cta}
 <h2 id="tests">All A/B tests</h2><div class="how">{_e(how)} Light bars = fewer than {min_n} posts. Each version picks every option at random,
