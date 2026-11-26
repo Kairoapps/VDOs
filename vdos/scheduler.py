@@ -141,6 +141,16 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
         # Platforms with a Buffer rolling-24h cap (YouTube on the free plan) only get the slots that fit.
         capped = {p: _capped_slots(d, times, int(cap[p]), _recent_platform_posts(con, p, d), tz)
                   for p in pl if p in cap and int(cap[p]) < len(times)}
+        # Animations: `animation.min_per_day`..`max_per_day` of the day's slots are animated videos (Chika, 2026-11-25:
+        # 4 videos a day, 1-2 of them animations). Which slots get them is random, so they are spread over all times.
+        acfg = cfg.get("animation") or {}
+        anim_ready = [r for r in avail if r["topic"] == "animation"]
+        lo_a, hi_a = int(acfg.get("min_per_day", 0)), int(acfg.get("max_per_day", 0))
+        had_a = con.execute("""SELECT COUNT(*) c FROM slots s JOIN clips c ON c.id=s.clip_id
+                               WHERE c.topic='animation' AND substr(s.scheduled_at,1,10)=?""", (d.isoformat(),)).fetchone()["c"]
+        k_a = hi_a if (hi_a > lo_a and len(anim_ready) >= hi_a and rng.random() < float(acfg.get("two_share", 0.5))) else lo_a
+        k_a = max(0, min(k_a - had_a, len(anim_ready), len(times)))
+        anim_times = set(rng.sample(times, k_a)) if k_a else set()
         tags_today: dict[str, int] = {}
         pcfg = cfg.get("post_captions") or {}
         cta_ok = list((cfg.get("cta") or {}).get("modes", ["none"])) or ["none"]  # prefer versions with an allowed CTA
@@ -148,6 +158,9 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
             pool = [r for r in avail if r["id"] not in used]
             if not pool:
                 break
+            want_anim = t in anim_times
+            kind_pool = [r for r in pool if (r["topic"] == "animation") == want_anim]
+            pool = kind_pool or pool      # nothing of the wanted kind left: fill the slot with the other kind
             # weight: topic x format performance, evergreen boost, fresher clips slightly favored
             tf = weights.get(con, "topic_format")
             mean = sum(tf.values()) / len(tf) if tf else 1.0
@@ -186,6 +199,7 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
                 "summary": edit.get("summary", ""), "transcript": transcript,
                 "use_number": clip["committed"] + 1, "cap": clip["cap"],
                 "angle": clip.get("angle") or "challenge",
+                "kind": "animation" if clip["topic"] == "animation" else "clip", "style": spec.get("style"),
                 "platforms": [p for p in pl if p not in capped or t in capped[p]],
                 "post_caption_style": weights.choose(con, "post_caption_style", pcfg.get("styles", ["hook_cta"]), rng=rng),
                 "post_emoji": weights.choose(con, "post_emoji", pcfg.get("emojis", ["1"]), rng=rng),
@@ -194,6 +208,8 @@ def plan(day: str | None = None, seed: int | None = None) -> dict:
         inv = reuse.inventory(con)
     return {"date": d.isoformat(), "slots": picks, "shortfall": n - len(picks), "inventory": inv,
             "platforms": cfg["posting"]["platforms"],
+            "animations": {"planned": sum(1 for p in picks if p["kind"] == "animation"), "ready": len(anim_ready),
+                           "wanted": [lo_a, hi_a]},
             "limits": {p: sorted(ts) for p, ts in capped.items()} if n else {}}
 
 

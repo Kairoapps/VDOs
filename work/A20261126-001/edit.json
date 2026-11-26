@@ -1,0 +1,10 @@
+{
+  "topic": "animation",
+  "format": "animation",
+  "angle": "animation",
+  "summary": "Low-poly animated story: nobody snoozes a fire alarm, but he snoozes his 6 AM alarm seven times and is late again. So he makes his alarm work like one with Unsnooze: push-ups, 100 steps, math, memory, shaking the phone. He hasn't been late since.",
+  "style": "low_poly",
+  "concept": "fire-alarm",
+  "title": "You've never snoozed a fire alarm",
+  "voice": "elevenlabs"
+}

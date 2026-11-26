@@ -11,7 +11,7 @@ Runs entirely in Claude's cloud — Chika's Mac does not need to be on. Don't st
 
 1. `add_repo` owner `Kairoapps`, repo `VDOs`, access `push`, then clone **without downloading media**:
    `GIT_LFS_SKIP_SMUDGE=1 git clone --single-branch -b main https://github.com/Kairoapps/VDOs vdos && cd vdos` (main only: the publish branch is large)
-2. `pip install -q --break-system-packages pillow` (ffmpeg and Python 3.11+ are already there).
+2. `pip install -q --break-system-packages pillow numpy` (ffmpeg, Node, Chrome and Python 3.11+ are already there).
 3. `export VDOS_ROOT=$PWD` and run every command below from the repo as `python3 -m vdos …`. Always add `--no-git` to `ingest`, `retire` and `weekly` (saving happens in step 6).
 
 ## 1. New clips: ingest, edit, render
@@ -31,6 +31,11 @@ python3 -m vdos variants <clip>      # once per edited clip (3 versions each)
 ```
 If the weekly review left `work/<clip>/more.json` (`{"n": 2}`), pull that clip's raw file, run `python3 -m vdos variants <clip> -n 2`, and rename the file to `more.done-<date>.json`.
 
+## 1b. Tonight's animation
+
+Follow `prompts/animation.md`: write one new animated story, build it with `anim/build.py`, check the sheet, `vdos anim-add`.
+(4 slots a day, 1-2 of them animations — Chika, 2026-11-25.) If the build can't be made right, skip it and carry on.
+
 ## 2. Publish videos for Buffer
 
 ```
@@ -49,7 +54,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **3 slots, and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 3 posts a day per platform.** No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots, 1-2 of them animations (`"kind": "animation"`; the plan's `animations` field shows planned/ready), and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 4 posts a day per platform.** If `animations.planned` is 0, say so in the summary (no animation was ready). No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
 - **First line on every platform: "Download the Unsnooze app"** (its own line, at the very start of the caption/description; not counted in `post_emoji`). Then the caption.
@@ -85,4 +90,4 @@ python3 -m vdos cloud-save -m "daily run <date>"
 
 ## 7. Summary
 
-3–5 lines: posts scheduled (times, clips, which slots went to YouTube; Facebook included), clips edited/rendered, failures, inventory level. Send it as a push notification too.
+3–5 lines: posts scheduled (times, clips, which slots are animations, which went to YouTube; Facebook included), tonight's animation (concept, voice: elevenlabs or captions only, or why it was skipped), clips edited/rendered, failures, inventory level. Send it as a push notification too.

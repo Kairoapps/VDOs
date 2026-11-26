@@ -1,0 +1,23 @@
+{
+ "id": "A20261126-001", "style": "low_poly", "concept": "fire-alarm",
+ "title": "You've never snoozed a fire alarm",
+ "summary": "Low-poly story: nobody snoozes a fire alarm, but he snoozes his 6 AM alarm seven times and is late again. So he makes his alarm work like a fire alarm with Unsnooze: push-ups, 100 steps, math, memory, shaking the phone. He hasn't been late since.",
+ "voice_dir": "vo",
+ "beats": [
+  {"shot": "asleep_smoke_alarm", "line": "You've never snoozed a fire alarm.", "caption": "You've never *snoozed* a fire alarm."},
+  {"shot": "bolt_upright", "line": "You didn't decide to get up.", "caption": "you didn't decide to get up."},
+  {"shot": "smoke_alarm_swat", "line": "It just won't stop, until you deal with it.", "caption": "it just won't stop\nuntil you deal with it.", "overlay": [{"type": "card", "label": "SNOOZE BUTTON", "big": "NONE", "accent": "red", "at": 0.7, "x": 540, "y": 430}]},
+  {"shot": "phone_buzz_asleep", "line": "But your 6 AM alarm?", "caption": "but your 6 AM alarm?"},
+  {"shot": "snooze_slaps", "line": "[groggy] Snoozed. Seven times.", "caption": "snoozed. *seven* times.", "overlay": [{"type": "card", "label": "ALARM", "big": "6:00 AM", "at": 0.1, "y": 330}, {"type": "stamp", "text": "SNOOZED ×7", "at": 1.75, "y": 500}]},
+  {"shot": "late_sprint", "line": "[deadpan] Late. Again.", "caption": "late. again.", "overlay": [{"type": "card", "label": "RIGHT NOW", "big": "8:47 AM", "accent": "red", "at": 0.05, "x": 480}, {"type": "stamp", "text": "LATE", "at": 0.8, "x": 770, "y": 440, "rot": -11}]},
+  {"shot": "set_alarm_in_bed", "lift": true, "line": "So I made my alarm work like a fire alarm.", "caption": "so I made my alarm\nwork like a *fire alarm.*", "overlay": [{"type": "phone", "screen": "grid", "at": 0.5, "x": 820, "y": 420, "rot": -6}]},
+  {"shot": "pushups", "line": "Now it won't shut up until I do ten push-ups.", "caption": "now it won't shut up\nuntil I do *10 push-ups.*", "overlay": [{"type": "phone", "screen": "pushups", "from": 7, "to": 10, "total": 10, "at": 0.15, "x": 810, "y": 450, "scale": 0.64}]},
+  {"shot": "walk_steps", "line": "Or walk a hundred steps.", "caption": "or walk a *hundred steps.*", "overlay": [{"type": "phone", "screen": "walk", "from": 80, "to": 98, "total": 100, "at": 0.1, "x": 840, "rot": 5}]},
+  {"shot": "stretch_win", "line": "And by the time it stops, I'm already up.", "caption": "and by the time it stops,\nI'm *already up.*", "overlay": [{"type": "card", "label": "ALARM", "big": "6:00 AM", "accent": "green", "at": 0.1, "y": 300}, {"type": "stamp", "text": "DISMISSED", "color": "green", "at": 0.9, "y": 460}]},
+  {"shot": "floor_ping", "line": "And it's not just push-ups.", "caption": "and it's not just *push-ups.*", "overlay": [{"type": "card", "label": "NEXT CHALLENGE", "big": "Ready?", "at": 0.4, "x": 540, "y": 330}]},
+  {"shot": "thinking", "then": {"shot": "shake_phone", "at": 1.56}, "line": "Math. Memory. Shaking your phone like it owes you money.", "caption": "*math. memory.*\nshaking your phone\nlike it owes you money.", "overlay": [{"type": "tiles", "names": ["math", "memory"], "ats": [0.08, 0.78]}]},
+  {"shot": "store_art", "line": "Fifteen ways to make sure you're actually awake.", "caption": "*fifteen ways* to make sure\nyou're actually awake."},
+  {"shot": "out_the_door", "line": "[proud] I haven't been late since.", "caption": "I haven't been *late* since.", "overlay": [{"type": "card", "label": "FIRST CLASS 8:00", "big": "7:52 AM", "accent": "green", "at": 0.05, "y": 300}, {"type": "stamp", "text": "ON TIME", "color": "green", "at": 0.5, "x": 690, "y": 460}]}
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

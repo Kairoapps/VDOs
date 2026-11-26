@@ -19,3 +19,11 @@ work/publish-branch/
 
 # Audio without clear commercial rights stays local
 sounds/unlicensed/
+
+# Animations: node packages and render scratch stay local; the finished mp4 goes to media/edited -> publish branch
+anim/lowpoly/node_modules/
+anim/lowpoly/package-lock.json
+work/anim/*/render/
+work/anim/*/*.mp4
+work/anim/*/*.wav
+work/anim/_skills/

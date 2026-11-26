@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import analysis, buffer_sync, config, dashboard, db, gitops, ingest, prep, publish, reuse, scheduler, server, variants
+from . import animation, analysis, buffer_sync, config, dashboard, db, gitops, ingest, prep, publish, reuse, scheduler, server, variants
 
 
 def out(obj) -> None:
@@ -151,6 +151,14 @@ def cmd_cloud_save(a):
     out({"git": gitops.sync(a.message, push=True, paths=gitops.CLOUD_PATHS)})
 
 
+def cmd_anim_add(a):
+    out(animation.register(Path(a.file), a.title, a.summary, style=a.style, concept=a.concept or "", voice=a.voice, day=a.date))
+
+
+def cmd_anim_status(a):
+    out(animation.status())
+
+
 def cmd_serve(a):
     server.serve(a.port)
 
@@ -188,6 +196,11 @@ def main(argv=None):
     s.add_argument("--remote"); s.set_defaults(f=cmd_publish)
     s = sub.add_parser("cloud-save", help="commit + push the database, edits and reports (cloud run)")
     s.add_argument("-m", "--message", default="cloud run: ledger + edits"); s.set_defaults(f=cmd_cloud_save)
+    s = sub.add_parser("anim-add", help="add a finished animation (mp4) to the library")
+    s.add_argument("file"); s.add_argument("--title", required=True, help="the hook line (used like a clip's on-screen title)")
+    s.add_argument("--summary", required=True); s.add_argument("--style", default="low_poly"); s.add_argument("--concept")
+    s.add_argument("--voice", default="none"); s.add_argument("--date"); s.set_defaults(f=cmd_anim_add)
+    s = sub.add_parser("anim-status", help="animations in stock, concepts used, style to make next"); s.set_defaults(f=cmd_anim_status)
     s = sub.add_parser("serve"); s.add_argument("--port", type=int); s.set_defaults(f=cmd_serve)
 
     a = p.parse_args(argv)

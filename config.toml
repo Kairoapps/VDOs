@@ -21,10 +21,10 @@ organization_id = "6acd0dec0ee270b5947c74de"
 channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2fe9157f", youtube = "6ad5c498778b240e2f557a0c", facebook = "6b0698338541f09ecb99dbf0" }
 
 [posting]
-# 3 slots a day (Chika, 2026-11-25 night; briefly 4 that evening), every slot goes to TikTok + Instagram Reels +
+# 4 slots a day, 1-2 of them animations (Chika, 2026-11-25 9pm; was 3). Every slot goes to TikTok + Instagram Reels +
 # Facebook Page Reels + YouTube Shorts. (A daily slideshow slot was tried on 2026-11-25 and dropped the same night.)
 # Buffer is on a paid plan (2026-11-25). Paid-plan YouTube limit is 5 per rolling 24 h; the planner still enforces it.
-posts_per_day = 3
+posts_per_day = 4
 timezone = "America/New_York"
 min_gap_hours = 3.0
 platforms = ["instagram", "tiktok", "youtube", "facebook"]
@@ -32,7 +32,7 @@ platform_daily_max = { youtube = 5 }
 # Same variant goes to every platform in a slot (one "use").
 same_variant_all_platforms = true
 # Used when no time-slot experiment is running (and as the fallback).
-default_slots = ["09:30", "14:30", "19:30"]   # posting window: 8:00am-9:00pm Eastern (2026-11-25)
+default_slots = ["08:30", "12:00", "15:30", "19:30"]   # posting window: 8:00am-9:00pm Eastern (2026-11-25)
 
 [compress]
 # The Mac shrinks every new raw clip before uploading (Ray-Ban files are ~15 Mbps HEVC, far more than a 1080p post needs).
@@ -122,6 +122,21 @@ default = "alarm-core"
 styles = ["hook_cta", "relatable", "question"]   # 2026-11-25: dropped "comment_cta" (no comment CTAs)
 emojis = ["0", "1", "2-3"]
 
+# Animated videos, made in code by the nightly run (anim/, prompts/animation.md). Each day 1-2 of the slots are animations.
+[animation]
+min_per_day = 1
+max_per_day = 2
+two_share = 0.5            # how often a day gets 2 animations instead of 1 (when 2 are ready)
+new_per_night = 1          # new animations the nightly run makes
+# Styles Chika allowed (2026-11-25): low poly and zach-3d-films, leaning low poly. The weekly ranking of
+# title_style anim_low_poly / anim_zach_3d nudges this.
+styles = { low_poly = 1.0, zach_3d = 0.0 }   # zach_3d stays 0 until an Unsnooze version of that engine has been built and checked once
+skill_repo = "https://github.com/artemnovitckii/claude-animation-skills"
+skill_commit = "86f7010"   # pinned: the nightly run executes this code unattended
+voice = "elevenlabs"       # needs ELEVENLABS_API_KEY + api.elevenlabs.io allowed in the cloud; otherwise captions only
+elevenlabs_voice = "Jack John - Conversational and Upbeat"
+elevenlabs_model = "eleven_v3"
+
 # Content angles (set per clip in edit.json "angle"); ranked weekly and used to weight which clips post.
 [angles]
-values = ["challenge", "sus", "multi_challenge"]
+values = ["challenge", "sus", "multi_challenge", "animation"]

@@ -1,0 +1,493 @@
+#!/usr/bin/env python3
+"""Build one low-poly Unsnooze animation from a spec:  python3 anim/build.py work/anim/<id>/spec.json [--snap]
+
+spec.json -> <id>.mp4 (1080x1920, 30 fps) + <id>.sheet.jpg next to the spec. See anim/README.md for the spec.
+Steps: voice (ElevenLabs if a key is set, else captions only) -> timeline -> 3D frames (anim/lowpoly, headless Chrome)
+-> UI overlays, captions, CTA card -> music + sound effects -> mp4.
+"""
+import base64, glob, json, math, os, re, subprocess, sys, urllib.request, wave
+from pathlib import Path
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
+ASSETS = HERE / "assets"
+W, H, FPS, SR = 1080, 1920, 30, 44100
+TAU = math.tau
+BOLD = str(ROOT / "assets/fonts/Poppins-Bold.ttf")
+MED = str(ASSETS / "fonts/Poppins-Medium.ttf")
+EMOJI = str(ROOT / "assets/fonts/NotoColorEmoji.ttf")
+STARS = next((p for p in ["/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"] if os.path.exists(p)), BOLD)
+ORANGE, RED, GREEN, DARK = (240, 106, 57), (232, 48, 42), (52, 199, 120), (19, 19, 19)
+COL = {"orange": ORANGE, "red": RED, "green": GREEN}
+ALIAS = {"asleep_smoke_alarm": "s01", "bolt_upright": "s02", "smoke_alarm_swat": "s03", "phone_buzz_asleep": "s04", "snooze_slaps": "s05",
+         "late_sprint": "s06", "set_alarm_in_bed": "s07", "pushups": "s08", "walk_steps": "s09", "stretch_win": "s10", "floor_ping": "s11",
+         "thinking": "s12a", "shake_phone": "s12b", "out_the_door": "s14", "store_art": "ways"}
+SHOTS = set(ALIAS) | {"squats", "talk", "facepalm"}
+SMOKE = {"asleep_smoke_alarm", "bolt_upright", "smoke_alarm_swat"}
+RINGING = {"phone_buzz_asleep", "pushups", "walk_steps", "shake_phone", "squats"}
+
+
+def F(p, s):
+    return ImageFont.truetype(p, s)
+
+
+def eo(t):
+    t = max(0.0, min(1.0, t)); return 1 - (1 - t) ** 3
+
+
+def load_audio(path):
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(path), "-f", "s16le", "-ac", "1", "-ar", str(SR), "-"], capture_output=True).stdout
+    return np.frombuffer(raw, "<i2").astype(np.float64) / 32768
+
+
+# ------------------------------------------------------------------ voice
+def _cfg():
+    try:
+        import tomllib
+        return tomllib.load(open(ROOT / "config.toml", "rb")).get("animation", {})
+    except Exception:
+        return {}
+
+
+def elevenlabs(lines, out_dir):
+    """One mp3 per line with the ElevenLabs API. Returns True when every line was made; any failure -> False (captions only)."""
+    key = os.environ.get("ELEVENLABS_API_KEY")
+    if not key:
+        print("voice: no ELEVENLABS_API_KEY -> captions only"); return False
+    cfg = _cfg()
+
+    def call(url, body=None):
+        req = urllib.request.Request(url, data=json.dumps(body).encode() if body else None,
+                                     headers={"xi-api-key": key, "content-type": "application/json", "accept": "application/json" if body is None else "audio/mpeg"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return r.read()
+    try:
+        vid = os.environ.get("ELEVENLABS_VOICE_ID") or cfg.get("elevenlabs_voice_id")
+        if not vid:
+            name = cfg.get("elevenlabs_voice", "")
+            for url in (f"https://api.elevenlabs.io/v2/voices?search={urllib.request.quote(name.split(' - ')[0])}", "https://api.elevenlabs.io/v1/voices"):
+                vs = json.loads(call(url)).get("voices", [])
+                hit = [v for v in vs if name.split(" - ")[0].lower() in v.get("name", "").lower()] or vs
+                if hit:
+                    vid = hit[0]["voice_id"]; break
+        if not vid:
+            print("voice: no ElevenLabs voice found -> captions only"); return False
+        out_dir.mkdir(parents=True, exist_ok=True)
+        models = [m for m in (cfg.get("elevenlabs_model"), "eleven_multilingual_v2") if m]
+        for i, text in enumerate(lines):
+            for m in models:
+                try:
+                    t = text if "v3" in m or "v4" in m else re.sub(r"\[[a-z ]+\]\s*", "", text)   # tone tags only on the newest model
+                    mp3 = call(f"https://api.elevenlabs.io/v1/text-to-speech/{vid}?output_format=mp3_44100_128", {"text": t, "model_id": m})
+                    (out_dir / f"l{i + 1:02d}.mp3").write_bytes(mp3); break
+                except Exception as e:
+                    err = e
+            else:
+                raise err
+        return True
+    except Exception as e:
+        print(f"voice: ElevenLabs failed ({str(e)[:160]}) -> captions only"); return False
+
+
+def trim(x, th=0.012):
+    idx = np.where(np.abs(x) > th)[0]
+    return x[max(0, idx[0] - int(.02 * SR)):idx[-1] + int(.06 * SR)] if len(idx) else x
+
+
+# ------------------------------------------------------------------ captions
+def parse_caption(text):
+    """'you *never* snooze' -> lines of (word, highlighted). Wraps at ~24 characters when no line breaks are given."""
+    lines, cur, n, hl = [], [], 0, False
+    for raw in text.replace("\n", " \n ").split(" "):
+        if raw == "\n":
+            lines.append(cur); cur, n = [], 0; continue
+        if not raw:
+            continue
+        w = raw
+        if w.startswith("*"):
+            hl = True; w = w[1:]
+        end = w.endswith("*") or re.search(r"\*[.,!?…]*$", w)
+        w2 = w.replace("*", "")
+        if "\n" not in text and n + len(w2) > 24 and cur:
+            lines.append(cur); cur, n = [], 0
+        cur.append((w2, hl)); n += len(w2) + 1
+        if end:
+            hl = False
+    lines.append(cur)
+    return [l for l in lines if l]
+
+
+# ------------------------------------------------------------------ UI pieces
+def rr(size, rad, fill):
+    c = Image.new("RGBA", size, (0, 0, 0, 0)); ImageDraw.Draw(c).rounded_rectangle((0, 0, size[0] - 1, size[1] - 1), rad, fill=fill); return c
+
+
+def shadowed(layer, blur=22, off=14, alpha=120):
+    pad = blur * 3
+    c = Image.new("RGBA", (layer.width + pad * 2, layer.height + pad * 2), (0, 0, 0, 0))
+    s = Image.new("RGBA", c.size, (0, 0, 0, 0)); s.paste((0, 0, 0, alpha), (pad, pad + off), layer.getchannel("A"))
+    c.alpha_composite(s.filter(ImageFilter.GaussianBlur(blur))); c.alpha_composite(layer, (pad, pad)); return c
+
+
+def rounded_img(im, rad):
+    im = im.convert("RGBA"); m = Image.new("L", im.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, im.width - 1, im.height - 1), rad, fill=255); im.putalpha(m); return im
+
+
+def app_card(label, big, accent=ORANGE, w=None):
+    f = F(BOLD, 98); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(big, font=f))
+    w = w or max(520, tw + 110)
+    c = rr((w, 250), 46, (28, 28, 30, 250)); d = ImageDraw.Draw(c)
+    d.text((50, 36), label, font=F(BOLD, 32), fill=(*accent, 255)); d.text((50, 78), big, font=f, fill=(255, 255, 255, 255))
+    return shadowed(c)
+
+
+def stamp(text, color=RED):
+    f = F(BOLD, 96); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(text, font=f))
+    s = Image.new("RGBA", (tw + 96, 176), (0, 0, 0, 0)); d = ImageDraw.Draw(s)
+    d.rounded_rectangle((6, 6, tw + 89, 169), 22, outline=(*color, 255), width=12, fill=(255, 255, 255, 235)); d.text((48, 22), text, font=f, fill=(*color, 255))
+    return s
+
+
+PBOX = (78, 320, 582, 1384)   # the phone inside a 660x1434 App Store screenshot
+_img = {}
+
+
+def asset(name):
+    if name not in _img:
+        _img[name] = Image.open(ASSETS / name).convert("RGBA")
+    return _img[name]
+
+
+def phone_cut(name):
+    ph = asset(name).crop(PBOX); m = Image.new("L", ph.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle((2, 2, ph.width - 3, ph.height - 3), 74, fill=255); ph.putalpha(m); return ph
+
+
+def phone_screen(kind, n, total):
+    ox, oy = PBOX[0], PBOX[1]
+    if kind == "grid":
+        return phone_cut("shot3.png")
+    p = phone_cut("shot1.png"); d = ImageDraw.Draw(p)
+    if kind == "pushups":     # the real push-up screen, with the counter redrawn
+        d.rounded_rectangle((136 - ox, 1238 - oy, 524 - ox, 1310 - oy), 14, fill=(58, 54, 50, 255))
+        d.text((330 - ox, 1266 - oy), f"{n} / {total}", font=F(MED, 28), fill=(255, 255, 255, 255), anchor="mm")
+        d.rounded_rectangle((164 - ox, 1289 - oy, 496 - ox, 1299 - oy), 5, fill=(84, 80, 76, 255))
+        d.rounded_rectangle((164 - ox, 1289 - oy, 164 - ox + int(332 * n / max(1, total)), 1299 - oy), 5, fill=(*ORANGE, 255))
+        return p
+    title, unit, foot = {"walk": (f"Walk {total} steps", "steps", "Keep walking to turn off your alarm"), "shake": ("Shake device", "", "Shake to turn off your alarm"),
+                         "squats": (f"Do {total} squats", "squats", "Keep going to turn off your alarm")}.get(kind, (kind, "", ""))
+    d.rounded_rectangle((92 - ox, 404 - oy, 568 - ox, 1366 - oy), 40, fill=(*DARK, 255)); d.rectangle((92 - ox, 404 - oy, 568 - ox, 460 - oy), fill=(*DARK, 255))
+    d.text((330 - ox, 470 - oy), title, font=F(MED, 34), fill=(255, 255, 255, 255), anchor="mm")
+    cx, cy, r = 330 - ox, 800 - oy, 150
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(48, 48, 50, 255), width=38)
+    d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * n / max(1, total), fill=(*ORANGE, 255), width=38)
+    d.text((cx, cy - (6 if unit else 0)), str(n), font=F(BOLD, 84), fill=(*ORANGE, 255), anchor="mm")
+    if unit:
+        d.text((cx, cy + 62), unit, font=F(MED, 26), fill=(255, 255, 255, 140), anchor="mm")
+    d.text((cx, 1160 - oy), foot, font=F(MED, 22), fill=(255, 255, 255, 130), anchor="mm")
+    return p
+
+
+TILE = {"memory": (178, 776, 526, 1123), "walking": (554, 776, 902, 1123), "matching": (178, 1138, 526, 1485), "math": (554, 1138, 902, 1485),
+        "house_hunt": (178, 1500, 526, 1847), "affirmation": (554, 1500, 902, 1847)}
+
+
+def tile(name):
+    return shadowed(rounded_img(asset("shot3_hi.png").crop(TILE[name]), 34))
+
+
+def pop(im, layer, cx, cy, t, t0, dur=0.28, rot=0.0, slam=False, scale=1.0):
+    if t < t0:
+        return
+    p = eo((t - t0) / dur)
+    sc = ((2.6 - 1.6 * p) if slam else (0.55 + 0.45 * p + 0.07 * math.sin(min(1, (t - t0) / (dur * 1.7)) * math.pi))) * scale
+    l = layer.rotate(rot, expand=True, resample=Image.BICUBIC) if rot else layer
+    l = l.resize((max(2, int(l.width * sc)), max(2, int(l.height * sc))), Image.LANCZOS)
+    if p < 1:
+        l.putalpha(l.getchannel("A").point(lambda v: int(v * p)))
+    im.alpha_composite(l, (int(cx - l.width / 2), int(cy - l.height / 2)))
+
+
+_cache = {}
+
+
+def C(key, fn):
+    if key not in _cache:
+        _cache[key] = fn()
+    return _cache[key]
+
+
+def draw_overlays(im, beat, t):
+    a, b = beat["t0"], beat["t1"]
+    for j, o in enumerate(beat.get("overlay", [])):
+        at = a + float(o.get("at", 0.1)); kind = o["type"]; key = (beat["i"], j)
+        if kind == "card":
+            pop(im, C(key, lambda: app_card(o.get("label", "ALARM"), o["big"], COL.get(o.get("accent", "orange"), ORANGE))), o.get("x", W / 2 - 40), o.get("y", 320), t, at)
+        elif kind == "stamp":
+            pop(im, C(key, lambda: stamp(o["text"], COL.get(o.get("color", "red"), RED))), o.get("x", W / 2 + 110), o.get("y", 470), t, at, 0.14, rot=o.get("rot", -9), slam=True)
+        elif kind == "phone":
+            lo, hi, total = o.get("from", 0), o.get("to", 0), o.get("total", o.get("to", 10))
+            n = int(round(lo + (hi - lo) * min(1, max(0, (t - at) / max(0.3, (b - at) * 0.9)))))
+            jit = 10 * math.sin((t - a) * 40) if o["screen"] == "shake" else 0
+            pop(im, shadowed(phone_screen(o["screen"], n, total)), o.get("x", W / 2 + 295) + jit, o.get("y", 440) + 8 * math.sin((t - a) * 2.2), t, at, 0.3, rot=o.get("rot", -5) + jit * 0.4, scale=o.get("scale", 0.6))
+        elif kind == "tiles":
+            for q, name in enumerate(o["names"][:3]):
+                x, y, r = [(290, 330, 7), (780, 360, -6), (540, 520, 3)][q]
+                pop(im, C((key, q), lambda: tile(name)), x, y, t, a + float(o.get("ats", [0.08, 0.78, 1.4])[q]), 0.2, rot=r, scale=0.9)
+
+
+def draw_caption(im, beat, t):
+    if not beat.get("caption"):
+        return
+    lines = C(("cap", beat["i"]), lambda: parse_caption(beat["caption"]))
+    font = F(BOLD, 60); d = ImageDraw.Draw(im); sp = d.textlength(" ", font=font)
+    nchar = sum(len(w) for ln in lines for w, _ in ln) or 1
+    y = int(H * (0.80 if beat["shot"] == "store_art" else 0.68)) - (40 if len(lines) > 2 else 0); acc = 0
+    a, dur = beat["line_at"], beat["line_dur"]
+    for ln in lines:
+        x = (W - (sum(d.textlength(w, font=font) for w, _ in ln) + sp * (len(ln) - 1))) / 2
+        for w, hl in ln:
+            if t >= a + acc / nchar * dur * 0.85:
+                d.text((x, y), w, font=font, fill=(255, 255, 255, 255) if hl else (255, 242, 26, 255), stroke_width=6, stroke_fill=(0, 0, 0, 255))
+            acc += len(w); x += d.textlength(w, font=font) + sp
+        y += 80
+
+
+# ------------------------------------------------------------------ CTA card
+def emoji(ch, size):
+    try:
+        e = Image.new("RGBA", (140, 140), (0, 0, 0, 0)); ImageDraw.Draw(e).text((0, 0), ch, font=ImageFont.truetype(EMOJI, 109), embedded_color=True)
+        return e.crop(e.getbbox()).resize((size, size), Image.LANCZOS)
+    except Exception:
+        return Image.new("RGBA", (size, size), (0, 0, 0, 0))
+
+
+def cta_layers():
+    icon = Image.open(ASSETS / "icon.png"); L = {}
+    g = np.linspace(0, 1, H)[:, None]; top, bot = np.array([244, 170, 128]), np.array([206, 100, 62])
+    arr = (top * (1 - g) + bot * g)[:, None, :].repeat(W, 1).reshape(H, W, 3)
+    yy, xx = np.mgrid[0:H, 0:W]; glow = np.exp(-(((xx - W / 2) / 620) ** 2 + ((yy - 330) / 520) ** 2))[..., None] * 22
+    L["bg"] = Image.fromarray(np.clip(arr + glow, 0, 255).astype("uint8")).convert("RGBA")
+    L["icon"] = shadowed(rounded_img(icon.resize((280, 280), Image.LANCZOS), 64), 26, 18, 90)
+    t = Image.new("RGBA", (W, 300), (0, 0, 0, 0)); d = ImageDraw.Draw(t)
+    for i, s in enumerate(("Download", "Unsnooze Today")):
+        d.text((W / 2 + 2, 70 + i * 128 + 5), s, font=F(BOLD, 112), fill=(120, 50, 20, 70), anchor="mm"); d.text((W / 2, 70 + i * 128), s, font=F(BOLD, 112), fill=(255, 255, 255, 255), anchor="mm")
+    L["title"] = t
+    cw = 920; c = rr((cw, 1400), 52, (255, 255, 255, 255)); d = ImageDraw.Draw(c)
+    c.alpha_composite(rounded_img(icon.resize((124, 124), Image.LANCZOS), 28), (36, 36))
+    d.text((186, 40), "Unsnooze - Challenge Alarm", font=F(BOLD, 36), fill=(0, 0, 0, 255)); d.text((186, 88), "Complete hard tasks to wake up", font=F(MED, 27), fill=(110, 110, 115, 255))
+    d.text((186, 126), "★★★★★", font=F(STARS, 26), fill=(130, 130, 135, 255)); d.text((324, 126), "4.8", font=F(MED, 26), fill=(130, 130, 135, 255))
+    d.rounded_rectangle((cw - 170, 62, cw - 36, 124), 31, fill=(236, 238, 245, 255)); d.text((cw - 103, 93), "GET", font=F(BOLD, 30), fill=(20, 110, 245, 255), anchor="mm")
+    sw = (cw - 36 * 2 - 20 * 2) // 3; sh_ = int(sw * 1434 / 660)
+    for i in range(3):
+        c.alpha_composite(rounded_img(Image.open(ASSETS / f"shot{i + 1}.png").resize((sw, sh_), Image.LANCZOS), 26), (36 + i * (sw + 20), 190))
+    c = c.crop((0, 0, cw, 190 + sh_ + 36)); m = Image.new("L", c.size, 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, c.width - 1, c.height - 1), 52, fill=255)
+    bgc = Image.new("RGBA", c.size, (255, 255, 255, 255)); bgc.alpha_composite(c); bgc.putalpha(m); L["card"] = shadowed(bgc, 30, 20, 80)
+    bw, bh = 500, 148; bd = rr((bw, bh), 26, (0, 0, 0, 255)); d = ImageDraw.Draw(bd)
+    d.rounded_rectangle((2, 2, bw - 3, bh - 3), 24, outline=(166, 166, 166, 255), width=3)
+    bd.paste((255, 255, 255, 255), (26, 14), Image.open(ASSETS / "apple_mask.png").convert("L"))
+    d.text((156, 22), "Download on the", font=F(MED, 30), fill=(255, 255, 255, 255)); d.text((154, 52), "App Store", font=F(MED, 64), fill=(255, 255, 255, 255))
+    L["badge"] = shadowed(bd, 18, 10, 90)
+    lb = Image.new("RGBA", (W, 110), (0, 0, 0, 0)); d = ImageDraw.Draw(lb); tw = d.textlength("LINK IN BIO", font=F(BOLD, 66)); x0 = (W - tw - 84) / 2
+    d.text((x0, 12), "LINK IN BIO", font=F(BOLD, 66), fill=(255, 255, 255, 255)); lb.alpha_composite(emoji("👇", 70), (int(x0 + tw + 14), 18)); L["bio"] = lb
+    return L
+
+
+def cta(t, t0):
+    L = C("cta", cta_layers); im = L["bg"].copy(); u = t - t0; card_h = L["card"].height; y_card = 640 + card_h / 2 - 60
+    pop(im, L["icon"], W / 2, 200, t, t0, 0.3)
+    if u > 0.12:
+        p = eo((u - 0.12) / 0.3); l = L["title"].copy(); l.putalpha(l.getchannel("A").point(lambda v: int(v * p))); im.alpha_composite(l, (0, int(350 + 30 * (1 - p))))
+    if u > 0.28:
+        p = eo((u - 0.28) / 0.4); l = L["card"]; im.alpha_composite(l, (int((W - l.width) / 2), int(y_card - card_h / 2 + 500 * (1 - p))))
+    y_b = y_card + card_h / 2 + 30
+    pop(im, L["badge"], W / 2, y_b, t, t0 + 0.55, 0.3, scale=1 + 0.035 * math.sin(max(0, u - 0.9) * 6.0))
+    if u > 0.8:
+        p = eo((u - 0.8) / 0.3); l = L["bio"].copy(); l.putalpha(l.getchannel("A").point(lambda v: int(v * p))); im.alpha_composite(l, (0, int(y_b + 105 + 8 * math.sin(u * 5))))
+    return im
+
+
+# ------------------------------------------------------------------ audio
+def music(n, lift):
+    """Original lo-fi bed: soft electric-piano chords, then bass + drums from the 'lift' time."""
+    bpm = 84; beat = 60 / bpm; bar = beat * 4; out = np.zeros(n + SR * 4); N = lambda m: 440 * 2 ** ((m - 69) / 12)
+    chords = [[53, 57, 60, 64], [52, 55, 59, 62], [57, 60, 64, 67], [50, 53, 57, 60]]; bass = [41, 40, 45, 38]
+
+    def ep(f, dur, vol):
+        x = np.arange(int(dur * SR)) / SR; e = np.minimum(1, x / 0.01) * np.exp(-x * 1.6)
+        return vol * e * (np.sin(TAU * f * x) + 0.35 * np.sin(TAU * 2 * f * x) * np.exp(-x * 4) + 0.12 * np.sin(TAU * 3 * f * x) * np.exp(-x * 7)) * (1 + 0.08 * np.sin(TAU * 4.5 * x))
+
+    def add(x, t0):
+        i0 = int(t0 * SR)
+        if i0 < len(out):
+            x = x[: len(out) - i0]; out[i0:i0 + len(x)] += x
+    rng = np.random.default_rng(4); t, b = 0.0, 0
+    while t < n / SR:
+        ch = chords[b % 4]; full = t >= lift - 0.05
+        for j, m in enumerate(ch):
+            add(ep(N(m), bar, 0.16), t + j * 0.035); add(ep(N(m + (12 if j == 3 else 0)), beat * 2, 0.08), t + beat * 2.5 + j * 0.02)
+        if full:
+            for q in (0, 1.5, 2.5):
+                x = np.arange(int(beat * 1.2 * SR)) / SR; add(0.32 * np.sin(TAU * N(bass[b % 4]) * x) * np.minimum(1, x / 0.01) * np.exp(-x * 3), t + q * beat)
+            for q in range(4):
+                x = np.arange(int(0.25 * SR)) / SR
+                if q in (0, 2):
+                    add(0.55 * np.sin(TAU * (48 + 70 * np.exp(-x * 30)) * x) * np.exp(-x * 14), t + q * beat)
+                else:
+                    nz = rng.standard_normal(len(x)); add(0.10 * (nz - np.convolve(nz, np.ones(8) / 8, "same")) * np.exp(-x * 22) + 0.2 * np.sin(TAU * 190 * x) * np.exp(-x * 26), t + q * beat)
+                for h in (0, 0.5):
+                    xh = np.arange(int(0.06 * SR)) / SR; nz = rng.standard_normal(len(xh)); add(0.035 * (nz - np.convolve(nz, np.ones(4) / 4, "same")) * np.exp(-xh * 70), t + (q + h) * beat)
+        t += bar; b += 1
+    out = np.convolve(out, np.ones(6) / 6, "same")[:n]
+    return out / (np.abs(out).max() + 1e-9)
+
+
+def build_audio(path, beats, total, cta0, voice):
+    n = int(total * SR); a = np.zeros(n); tt = np.arange(n) / SR
+
+    def put(x, t0, vol=1.0):
+        i0 = int(max(0, t0) * SR); x = x[: max(0, n - i0)]; a[i0:i0 + len(x)] += x * vol
+
+    def tone(t0, dur, f, vol):
+        x = np.arange(int(dur * SR)) / SR; env = np.minimum(1, x / 0.006) * np.minimum(1, (dur - x) / 0.03)
+        put(env * (0.5 * np.sin(TAU * f * x) + 0.5 * np.sign(np.sin(TAU * f * x))), t0, vol)
+
+    def thud(t0):
+        x = np.arange(int(0.22 * SR)) / SR; put(np.sin(TAU * (90 - 120 * x) * x) * np.exp(-x * 22), t0, 0.5)
+
+    def chime(t0, notes, vol):
+        for k, f in enumerate(notes):
+            x = np.arange(int(1.2 * SR)) / SR; put(np.exp(-x * 4) * np.sin(TAU * f * x), t0 + k * 0.1, vol)
+    ringf = sorted(glob.glob(str(ROOT / "sounds/alarm/alarm-clock-loop*.mp3"))) or sorted(glob.glob(str(ROOT / "sounds/alarm/*.mp3")))
+    ring = load_audio(ringf[0]) if ringf else np.zeros(SR)
+    ring = ring / (np.abs(ring).max() + 1e-9)
+
+    def ring_span(t0, t1, vol=0.10):
+        m = int((t1 - t0) * SR)
+        if m <= SR // 10:
+            return
+        x = np.resize(ring, m).copy(); f = int(0.03 * SR); x[-f:] *= np.linspace(1, 0, f); x[:f] *= np.linspace(0, 1, f); put(x, t0, vol)
+    for b in beats:
+        s, t0, t1 = b["shot"], b["t0"], b["t1"]
+        if s in SMOKE:
+            t = t0
+            while t < t1 - 0.2:
+                tone(t, 0.16, 3150, 0.05); t += 0.42
+        if s in RINGING:
+            ring_span(t0, t1)
+        if s == "snooze_slaps":
+            for r0, r1 in ((t0, t0 + 0.4), (t0 + 0.68, t0 + 1.05), (t0 + 1.33, t0 + 1.6)):
+                ring_span(r0, r1); thud(r1)
+        if s == "floor_ping":
+            chime(t0 + 0.38, (1319, 1760), 0.12); ring_span(t0 + 0.6, t1)
+        if s == "stretch_win":
+            ring_span(t0, t0 + 0.9); chime(t0 + 0.9, (784, 988, 1175), 0.10)
+        for o in b.get("overlay", []):
+            if o["type"] == "stamp":
+                thud(t0 + float(o.get("at", 0.1)))
+    chime(cta0, (523, 659, 784, 1047), 0.07)
+    a *= 0.6
+    vo = np.zeros(n)
+    for b in beats:
+        if b.get("vo") is not None:
+            v = b["vo"]; i0 = int(b["line_at"] * SR); v = v[: n - i0]; vo[i0:i0 + len(v)] += v * 0.9
+    env = np.abs(vo); k = int(0.25 * SR); env = np.clip(np.convolve(env, np.ones(k) / k, mode="same") / 0.08, 0, 1)
+    lift = next((b["t0"] for b in beats if b.get("lift")), beats[len(beats) // 2]["t0"])
+    a += music(n, lift) * ((0.34 - 0.17 * env) if voice else 0.42)
+    a += vo
+    a = np.tanh(a * 1.1) * 0.95 * np.minimum(1, (total - tt) / 0.3)
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((a * 32767).astype("<i2").tobytes())
+
+
+# ------------------------------------------------------------------ main
+def main():
+    spec_path = Path(sys.argv[1]).resolve(); snap = "--snap" in sys.argv
+    spec = json.loads(spec_path.read_text()); work = spec_path.parent; name = spec.get("id") or spec_path.stem
+    beats = [dict(b, i=i) for i, b in enumerate(spec["beats"])]
+    for b in beats:
+        if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
+            sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")
+    cta_line = spec.get("cta_line", "Download Unsnooze. Link in bio!")
+    lines = [b.get("line") or re.sub(r"[*\n]", " ", b.get("caption", "")) for b in beats] + [cta_line]
+    # voice: pre-made lines in spec["voice_dir"], else ElevenLabs, else captions only
+    vdir = work / spec["voice_dir"] if spec.get("voice_dir") else work / "vo"
+    have = lambda: all(glob.glob(str(vdir / f"l{i + 1:02d}.*")) for i in range(len(lines)))
+    voice = False
+    if spec.get("voice", True) and not snap:
+        voice = have() or (elevenlabs(lines, vdir) and have())
+    vos = [trim(load_audio(glob.glob(str(vdir / f"l{i + 1:02d}.*"))[0])) for i in range(len(lines))] if voice else [None] * len(lines)
+    vos = [None if v is None else v / (np.abs(v).max() + 1e-9) for v in vos]
+    t = 0.0
+    for b, v in zip(beats, vos[:-1]):
+        txt = re.sub(r"\[[a-z ]+\]|[*]", "", b.get("line") or b.get("caption", ""))
+        ld = len(v) / SR if v is not None else max(0.9, len(txt) * 0.062)
+        dur = max(float(b.get("min", 1.3)), ld + (0.3 if v is not None else 0.75)) if "dur" not in b else float(b["dur"])
+        b.update(t0=round(t, 3), t1=round(t + dur, 3), line_at=round(t + 0.12, 3), line_dur=ld, vo=v); t += dur
+    cta0 = round(t, 3); cta_dur = max(3.4, (len(vos[-1]) / SR + 1.4) if vos[-1] is not None else 3.4); total = round(cta0 + cta_dur, 2)
+    shots = []
+    for b in beats:
+        if b.get("then"):      # {"shot": "thinking", "then": {"shot": "shake_phone", "at": 1.6}}
+            cut = b["t0"] + float(b["then"]["at"]); shots += [dict(name=b["shot"], t0=b["t0"], t1=cut, p=b.get("p", {})), dict(name=b["then"]["shot"], t0=cut, t1=b["t1"], p=b["then"].get("p", {}))]
+        else:
+            shots.append(dict(name=b["shot"], t0=b["t0"], t1=b["t1"], p=b.get("p", {})))
+    (work / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots), indent=1)) if spec_path.name != "spec.json" else None
+    rdir = work / "render"; rdir.mkdir(exist_ok=True); (rdir / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots), indent=1))
+    lp = HERE / "lowpoly"
+    if not (lp / "node_modules" / "playwright-core").exists():
+        subprocess.run(["npm", "install", "--silent", "--no-audit", "--no-fund"], cwd=lp, check=True)
+    if snap:
+        times = ",".join(f"{(s['t0'] + s['t1']) / 2:.2f}" for s in shots)
+        subprocess.run(["node", str(lp / "render.mjs"), str(rdir), "snap", times], check=True)
+        fs = sorted(glob.glob(str(rdir / "snaps" / "s_*.png")))[-len(shots):]
+        sh = Image.new("RGB", (180 * len(fs), 320))
+        for i, f in enumerate(fs):
+            sh.paste(Image.open(f).convert("RGB").resize((180, 320), Image.NEAREST), (i * 180, 0))
+        sh.save(work / f"{name}.snaps.jpg"); print(json.dumps({"snaps": str(work / f'{name}.snaps.jpg'), "shots": [s["name"] for s in shots]})); return
+    r = subprocess.run(["node", str(lp / "render.mjs"), str(rdir), "all"], capture_output=True, text=True)
+    nfr = len(glob.glob(str(rdir / "frames" / "f_*.png")))
+    if nfr < int(cta0 * FPS) - 2:
+        sys.exit(f"3D render failed ({nfr} frames):\n{r.stdout[-1500:]}\n{r.stderr[-1500:]}")
+    art = None
+
+    def frame(t):
+        nonlocal art
+        if t >= cta0:
+            return cta(t, cta0).convert("RGB")
+        b = next((x for x in beats if x["t0"] <= t < x["t1"]), beats[-1])
+        if b["shot"] == "store_art":      # the real "15+ ways to wake up" App Store screenshot, slow scroll
+            art = art or Image.open(ASSETS / "shot3_hi.png").convert("RGB").resize((1188, 2580), Image.LANCZOS)
+            u = eo((t - b["t0"]) / (b["t1"] - b["t0"])); ent = 1 - eo((t - b["t0"]) / 0.3); y0 = 60 + 430 * u
+            fr = art.crop((54, int(y0), 54 + W, int(y0) + H))
+            if ent > 0:
+                bg = Image.new("RGB", (W, H), (244, 137, 91)); bg.paste(fr, (0, int(H * 0.5 * ent))); fr = bg
+            im = fr.convert("RGBA")
+        else:
+            k = min(int(round(t * FPS)), nfr - 1)
+            im = Image.open(rdir / "frames" / f"f_{k:05d}.png").convert("RGB").resize((W, H), Image.NEAREST).convert("RGBA")
+            draw_overlays(im, b, t)
+        draw_caption(im, b, t)
+        return im.convert("RGB")
+    wav = work / f"{name}.wav"; build_audio(wav, beats + [dict(shot="cta", t0=cta0, t1=total, line_at=cta0 + 0.12, vo=vos[-1])], total, cta0, voice)
+    out = work / f"{name}.mp4"
+    p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", str(wav),
+                          "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)
+    for i in range(int(total * FPS)):
+        p.stdin.write(frame(i / FPS).tobytes())
+    p.stdin.close(); p.wait()
+    # contact sheet: the middle of every beat + the CTA
+    ts = [(b["t0"] + b["t1"]) / 2 + 0.25 * (b["t1"] - b["t0"]) for b in beats] + [cta0 + 2.5]
+    sh = Image.new("RGB", (216 * min(8, len(ts)), 384 * math.ceil(len(ts) / 8)))
+    for i, t in enumerate(ts):
+        sh.paste(frame(t).resize((216, 384)), ((i % 8) * 216, (i // 8) * 384))
+    sh.save(work / f"{name}.sheet.jpg", quality=85)
+    import shutil; shutil.rmtree(rdir / "frames", ignore_errors=True); wav.unlink(missing_ok=True)
+    print(json.dumps({"video": str(out), "sheet": str(work / f"{name}.sheet.jpg"), "seconds": total, "voice": "elevenlabs" if voice else "none",
+                      "beats": [(b["shot"], b["t0"], b["t1"]) for b in beats]}))
+
+
+if __name__ == "__main__":
+    main()

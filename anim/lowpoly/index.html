@@ -1,0 +1,411 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#111}#c{width:360px;height:640px;image-rendering:pixelated}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head><body><canvas id="c" width="360" height="640"></canvas>
+<script type="module">
+import * as THREE from "three";
+// Unsnooze low-poly animations: one bedroom, one character, a library of shots (see anim/README.md).
+// PS1-style technique (360x640 render, vertex snapping, 15-bit dither, pixel textures drawn in code)
+// after the /low-poly skill in artemnovitckii/claude-animation-skills. window.renderAt(t) draws global time t.
+const SPEC = await (await fetch('spec.json?' + Date.now())).json();
+const RW = 360, RH = 640;
+let seed = 2026;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const sm = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const D = Math.PI / 180, TAU = Math.PI * 2;
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(RW, RH, false);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101428); scene.fog = new THREE.Fog(0x101428, 9, 22);
+const camera = new THREE.PerspectiveCamera(50, RW / RH, 0.08, 60);
+
+// ---------------------------------------------------------------- PS1 shader patch
+const SNX = (RW / 2).toFixed(1), SNY = (RH / 2).toFixed(1);
+function ps1(m) {
+  m.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+      if (gl_Position.w > 0.0) { vec2 sn = vec2(${SNX}, ${SNY});
+        gl_Position.xy = floor(gl_Position.xy / gl_Position.w * sn + 0.5) / sn * gl_Position.w; }`);
+    sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>', `#include <dithering_fragment>
+      { const float BY[16] = float[16](0.,8.,2.,10.,12.,4.,14.,6.,3.,11.,1.,9.,15.,7.,13.,5.);
+        ivec2 q = ivec2(mod(gl_FragCoord.xy, 4.0));
+        float th = (BY[q.x + q.y * 4] + 0.5) / 16.0 - 0.5;
+        gl_FragColor.rgb = clamp(floor(gl_FragColor.rgb * 31.0 + th + 0.5) / 31.0, 0.0, 1.0); }`);
+  };
+  m.customProgramCacheKey = () => 'ps1';
+  return m;
+}
+const lam = (o) => ps1(new THREE.MeshLambertMaterial(Object.assign({ flatShading: true }, o)));
+const basic = (o) => ps1(new THREE.MeshBasicMaterial(o));
+
+// ---------------------------------------------------------------- pixel textures
+function tex(w, h, draw) {
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; draw(g, w, h);
+  const t = new THREE.CanvasTexture(cv);
+  t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+const rgbOf = (h) => [(h >> 16) & 255, (h >> 8) & 255, h & 255];
+const col = (h, k = 1) => { const [r, g, b] = rgbOf(h); return `rgb(${clamp(r * k, 0, 255) | 0},${clamp(g * k, 0, 255) | 0},${clamp(b * k, 0, 255) | 0})`; };
+const px = (g, x, y, c, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
+const noise = (g, x0, y0, w, h, base, j) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) px(g, x, y, col(base, 1 + (rnd() * 2 - 1) * j)); };
+function uvs(geo, sx, sy) { const a = geo.attributes.uv; for (let i = 0; i < a.count; i++) a.setXY(i, a.getX(i) * sx, a.getY(i) * sy); return geo; }
+const GL = {
+  '0': ['.###.', '#...#', '#..##', '#.#.#', '##..#', '#...#', '.###.'], '1': ['..#..', '.##..', '..#..', '..#..', '..#..', '..#..', '.###.'],
+  '2': ['.###.', '#...#', '....#', '...#.', '..#..', '.#...', '#####'], '3': ['####.', '....#', '....#', '.###.', '....#', '....#', '####.'],
+  '4': ['...#.', '..##.', '.#.#.', '#..#.', '#####', '...#.', '...#.'], '5': ['#####', '#....', '####.', '....#', '....#', '#...#', '.###.'],
+  '6': ['.###.', '#....', '#....', '####.', '#...#', '#...#', '.###.'], '7': ['#####', '....#', '...#.', '..#..', '.#...', '.#...', '.#...'],
+  '8': ['.###.', '#...#', '#...#', '.###.', '#...#', '#...#', '.###.'], '9': ['.###.', '#...#', '#...#', '.####', '....#', '....#', '.###.'],
+  ':': ['.....', '..#..', '..#..', '.....', '..#..', '..#..', '.....'], 'Z': ['#####', '....#', '...#.', '..#..', '.#...', '#....', '#####'],
+  '!': ['..#..', '..#..', '..#..', '..#..', '..#..', '.....', '..#..'],
+};
+function bitText(g, str, x, y, s, c) { for (const ch of str) { const gl = GL[ch]; if (gl) gl.forEach((row, j) => { for (let i = 0; i < 5; i++) if (row[i] === '#') px(g, x + i * s, y + j * s, c, s, s); }); x += 6 * s; } }
+
+const T = {};
+T.floor = tex(32, 32, (g) => {
+  for (let y = 0; y < 32; y++) { const b = [0x9a6a42, 0x8a5c38, 0xa37046, 0x91633c][(y / 8) | 0]; for (let x = 0; x < 32; x++) px(g, x, y, col(b, .92 + rnd() * .12)); }
+  for (let y = 7; y < 32; y += 8) for (let x = 0; x < 32; x++) px(g, x, y, col(0x5a3a22));
+  for (let k = 0; k < 4; k++) px(g, (k * 9 + 3) % 32, k * 8, col(0x5a3a22), 1, 8);
+});
+T.wall = tex(32, 32, (g) => { noise(g, 0, 0, 32, 32, 0xffffff, .035); for (let k = 0; k < 16; k++) px(g, rnd() * 32 | 0, rnd() * 32 | 0, col(0xe6e6e6)); });
+T.quilt = tex(32, 32, (g) => {
+  const cs = [0xd9534a, 0x3f6fb5, 0xe8b23a, 0x4fa07a, 0x9a5fb0, 0xf0e6d0, 0xe07a3a, 0x3fa3b5];
+  for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) { noise(g, i * 8, j * 8, 8, 8, cs[(i * 3 + j * 5 + (i ^ j)) % 8], .06); px(g, i * 8, j * 8, col(0x2a2a3a), 8, 1); px(g, i * 8, j * 8, col(0x2a2a3a), 1, 8); }
+});
+T.rug = tex(32, 32, (g) => {
+  noise(g, 0, 0, 32, 32, 0xd9603a, .06); px(g, 2, 2, col(0xf2dcae), 28, 2); px(g, 2, 28, col(0xf2dcae), 28, 2); px(g, 2, 2, col(0xf2dcae), 2, 28); px(g, 28, 2, col(0xf2dcae), 2, 28);
+  for (let k = 0; k < 6; k++) { px(g, 7 + k * 3, 14, col(0xf2dcae), 2, 4); }
+});
+T.wood = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, 0x7a4a28, .08); for (let y = 3; y < 16; y += 5) px(g, 0, y, col(0x54321a), 16, 1); });
+T.sheet = tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, 0xeeeae0, .03); });
+T.books = tex(32, 16, (g) => {
+  px(g, 0, 0, 'rgba(0,0,0,0)', 32, 16); const cs = [0xd9534a, 0x3f6fb5, 0xe8b23a, 0x4fa07a, 0xf0e6d0, 0x9a5fb0, 0xe07a3a];
+  let x = 1; for (let k = 0; k < 9 && x < 30; k++) { const w = 2 + (rnd() * 2 | 0), h = 10 + (rnd() * 5 | 0); noise(g, x, 16 - h, w, h, cs[k % 7], .05); px(g, x, 16 - h + 2, col(0xffffff, .9), w, 1); x += w + 1; }
+});
+T.poster = tex(16, 24, (g) => { noise(g, 0, 0, 16, 24, 0xf06a39, .03); px(g, 1, 1, col(0xfff4e0), 14, 1); px(g, 1, 22, col(0xfff4e0), 14, 1); px(g, 5, 7, col(0xfff4e0), 6, 7); px(g, 4, 8, col(0xfff4e0), 8, 5); px(g, 7, 9, col(0xf06a39), 1, 3); px(g, 8, 11, col(0xf06a39), 2, 1); px(g, 4, 5, col(0xfff4e0), 2, 2); px(g, 10, 5, col(0xfff4e0), 2, 2); });
+const skyTex = (st) => tex(16, 32, (g) => { for (let y = 0; y < 32; y++) for (let x = 0; x < 16; x++) { const f = y / 31 * (st.length - 1) + (((x + y) & 1) ? .3 : -.3); px(g, x, y, col(st[clamp(Math.round(f), 0, st.length - 1)])); } });
+T.skyNight = tex(16, 32, (g) => { noise(g, 0, 0, 16, 32, 0x1a2a5c, .06); for (let k = 0; k < 9; k++) px(g, rnd() * 16 | 0, rnd() * 18 | 0, col(0xfff2c0)); for (let x = 0; x < 16; x++) { const h = 4 + ((x * 7) % 5) * 2; px(g, x, 32 - h, col(0x0c1230), 1, h); if (x % 3 === 0) px(g, x, 32 - h + 2, col(0xffd27a)); } });
+T.skyDawn = skyTex([0x6a7cc8, 0x9a86c0, 0xd88aa0, 0xf6a070, 0xffc878, 0xffe2a0]);
+T.skyDay = skyTex([0x7ec4f2, 0x9ad2f6, 0xbfe2fa, 0xdff0fc, 0xfff4d8, 0xffe9b0]);
+const clockTex = {}; const clockFor = (s) => clockTex[s] || (clockTex[s] = tex(32, 16, (g) => { px(g, 0, 0, col(0x140606), 32, 16); bitText(g, s, Math.round((32 - (s.length * 6 - 1)) / 2), 4, 1, col(0xff3b2a)); }));
+T.screen = tex(16, 32, (g) => { px(g, 0, 0, col(0x131313), 16, 32); px(g, 2, 4, col(0xf06a39), 12, 3); px(g, 2, 10, col(0x2c2c2e), 5, 6); px(g, 9, 10, col(0x2c2c2e), 5, 6); px(g, 2, 18, col(0x2c2c2e), 5, 6); px(g, 9, 18, col(0x2c2c2e), 5, 6); px(g, 3, 27, col(0xf06a39), 10, 2); });
+T.screenRing = tex(16, 32, (g) => { px(g, 0, 0, col(0xf06a39), 16, 32); px(g, 5, 9, col(0xfff4e0), 6, 8); px(g, 4, 10, col(0xfff4e0), 8, 6); px(g, 7, 11, col(0xf06a39), 1, 3); px(g, 8, 13, col(0xf06a39), 2, 1); px(g, 3, 24, col(0xfff4e0), 10, 3); });
+const glyphTex = (ch, c) => tex(8, 8, (g) => { g.clearRect(0, 0, 8, 8); bitText(g, ch, 1, 0, 1, col(c)); });
+T.Z = glyphTex('Z', 0xdfe8ff); T.bang = glyphTex('!', 0xffd21a);
+// faces: 16x16, drawn per expression
+const SKIN = 0xa5673f, SKIN_D = 0x7a4a2c;
+function face(fn) { return tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, SKIN, .03); px(g, 2, 10, col(0xc0603f, 1), 2, 2); px(g, 12, 10, col(0xc0603f, 1), 2, 2); px(g, 7, 8, col(SKIN_D), 2, 2); fn(g); }); }
+const eye = (g, x, open) => { if (open === 0) px(g, x, 7, col(0x1a100a), 3, 1); else if (open === 2) { px(g, x, 4, col(0xffffff), 3, 4); px(g, x + 1, 5, col(0x1a100a), 1, 2); } else { px(g, x, 5, col(0xffffff), 3, 3); px(g, x + 1, 6, col(0x1a100a), 1, 2); } };
+const brow = (g, x, kind, s) => { const c = col(0x1a100a); if (kind === 'flat') px(g, x, 3, c, 3, 1); if (kind === 'up') px(g, x, 2, c, 3, 1); if (kind === 'worry') { px(g, x + (s > 0 ? 0 : 2), 2, c, 1, 1); px(g, x + 1, 3, c, 1, 1); px(g, x + (s > 0 ? 2 : 0), 3, c, 1, 1); } if (kind === 'angry') { px(g, x + (s > 0 ? 2 : 0), 2, c, 1, 1); px(g, x + 1, 3, c, 1, 1); px(g, x + (s > 0 ? 0 : 2), 3, c, 1, 1); } };
+const F = {
+  sleep: face((g) => { eye(g, 3, 0); eye(g, 10, 0); px(g, 7, 12, col(0x3a1a12), 2, 1); }),
+  shock: face((g) => { eye(g, 3, 2); eye(g, 10, 2); brow(g, 3, 'up'); brow(g, 10, 'up'); px(g, 6, 11, col(0x2a0e0a), 4, 4); px(g, 7, 12, col(0x8a2a2a), 2, 2); }),
+  groggy: face((g) => { px(g, 3, 6, col(0xffffff), 3, 2); px(g, 10, 6, col(0xffffff), 3, 2); px(g, 4, 7, col(0x1a100a)); px(g, 11, 7, col(0x1a100a)); px(g, 3, 5, col(SKIN_D), 3, 1); px(g, 10, 5, col(SKIN_D), 3, 1); brow(g, 3, 'worry', 1); brow(g, 10, 'worry', -1); px(g, 6, 12, col(0x3a1a12), 4, 1); }),
+  neutral: face((g) => { eye(g, 3, 1); eye(g, 10, 1); brow(g, 3, 'flat'); brow(g, 10, 'flat'); px(g, 6, 12, col(0x3a1a12), 4, 1); }),
+  blink: face((g) => { eye(g, 3, 0); eye(g, 10, 0); brow(g, 3, 'flat'); brow(g, 10, 'flat'); px(g, 6, 12, col(0x3a1a12), 4, 1); }),
+  happy: face((g) => { eye(g, 3, 1); eye(g, 10, 1); brow(g, 3, 'up'); brow(g, 10, 'up'); px(g, 5, 11, col(0x3a1a12), 6, 1); px(g, 6, 12, col(0x3a1a12), 4, 1); px(g, 6, 12, col(0xffffff), 4, 1); px(g, 6, 13, col(0x3a1a12), 4, 1); }),
+  effort: face((g) => { eye(g, 3, 0); eye(g, 10, 0); brow(g, 3, 'angry', 1); brow(g, 10, 'angry', -1); px(g, 5, 12, col(0x3a1a12), 6, 2); px(g, 6, 12, col(0xffffff), 4, 1); }),
+  determined: face((g) => { eye(g, 3, 1); eye(g, 10, 1); brow(g, 3, 'angry', 1); brow(g, 10, 'angry', -1); px(g, 6, 12, col(0x3a1a12), 4, 1); px(g, 9, 11, col(0x3a1a12)); }),
+  yawn: face((g) => { eye(g, 3, 0); eye(g, 10, 0); brow(g, 3, 'up'); brow(g, 10, 'up'); px(g, 6, 10, col(0x2a0e0a), 4, 5); px(g, 7, 12, col(0x8a2a2a), 2, 2); }),
+  think: face((g) => { eye(g, 3, 1); eye(g, 10, 1); px(g, 4, 5, col(0x1a100a)); px(g, 11, 5, col(0x1a100a)); px(g, 4, 6, col(0xffffff)); px(g, 11, 6, col(0xffffff)); brow(g, 3, 'up'); brow(g, 10, 'flat'); px(g, 7, 12, col(0x3a1a12), 3, 1); }),
+  pant: face((g) => { eye(g, 3, 1); eye(g, 10, 1); brow(g, 3, 'worry', 1); brow(g, 10, 'worry', -1); px(g, 6, 11, col(0x2a0e0a), 4, 3); px(g, 7, 13, col(0xd0605a), 2, 1); }),
+};
+
+// ---------------------------------------------------------------- helpers
+const box = (parent, w, h, d, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); parent.add(m); return m; };
+const plane = (parent, w, h, mat, x, y, z, rx = 0, ry = 0, sx = 1, sy = 1, sgx = 1, sgy = 1) => { const m = new THREE.Mesh(uvs(new THREE.PlaneGeometry(w, h, sgx, sgy), sx, sy), mat); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); parent.add(m); return m; };
+const frustum = (parent, wt, wb, h, dz, mat, x, y, z) => { const geo = new THREE.CylinderGeometry(wt / Math.SQRT2, wb / Math.SQRT2, h, 4, 1); geo.rotateY(Math.PI / 4); geo.scale(1, 1, dz); const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); parent.add(m); return m; };
+const grp = (parent, x = 0, y = 0, z = 0) => { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; };
+
+// ---------------------------------------------------------------- lights
+const hemi = new THREE.HemisphereLight(0x8fa0ff, 0x30243a, 1.0); scene.add(hemi);
+const key = new THREE.DirectionalLight(0xffffff, 1.0); key.position.set(3, 6, 6); scene.add(key);
+const lamp = new THREE.PointLight(0xffb060, 0, 0, 2); lamp.position.set(-2.25, 1.15, -1.45); scene.add(lamp);
+const red = new THREE.PointLight(0xff2010, 0, 0, 1.6); red.position.set(0.3, 2.75, -1.2); scene.add(red);
+const phoneGlow = new THREE.PointLight(0xff8040, 0, 0, 2); scene.add(phoneGlow);
+
+// ---------------------------------------------------------------- room (x -3..3, z -3..3, y 0..3)
+const M = {
+  floor: lam({ map: T.floor }), wall: lam({ map: T.wall, color: 0x3a4a9a }), wall2: lam({ map: T.wall, color: 0x33428c }), ceil: lam({ color: 0x4a5490 }),
+  wood: lam({ map: T.wood }), woodD: lam({ map: T.wood, color: 0x9a8070 }), sheet: lam({ map: T.sheet }), quilt: lam({ map: T.quilt }), rug: lam({ map: T.rug }),
+  pillow: lam({ color: 0xf4efe6 }), frame: lam({ color: 0xe8e2d4 }), sky: basic({ map: T.skyNight }), curtain: lam({ color: 0x5568c0 }),
+  shade: basic({ color: 0xffd9a0 }), lampBase: lam({ color: 0xc87a5a }), clockBody: lam({ color: 0x1a1a1e }), clockFace: basic({ map: clockFor('6:00') }),
+  alarm: lam({ color: 0xeeeeea }), led: basic({ color: 0x551010 }), books: basic({ map: T.books, transparent: true, alphaTest: 0.5 }), poster: lam({ map: T.poster }),
+  pot: lam({ color: 0xd8805a }), leaf: lam({ color: 0x3f9a5a }), door: lam({ map: T.wood, color: 0xd0b090 }), knob: lam({ color: 0xe8c040 }),
+  phone: lam({ color: 0x18181a }), screen: basic({ map: T.screenRing }), screenUI: basic({ map: T.screen }),
+};
+plane(scene, 6, 6, M.floor, 0, 0, 0, -Math.PI / 2, 0, 4, 4, 8, 8);
+plane(scene, 6, 3, M.wall, 0, 1.5, -3, 0, 0, 4, 2, 8, 4);
+plane(scene, 6, 3, M.wall2, -3, 1.5, 0, 0, Math.PI / 2, 4, 2, 8, 4);
+plane(scene, 6, 3, M.wall2, 3, 1.5, 0, 0, -Math.PI / 2, 4, 2, 8, 4);
+plane(scene, 6, 6, M.ceil, 0, 3, 0, Math.PI / 2, 0, 1, 1, 6, 6);
+box(scene, 6, 0.12, 0.05, M.frame, 0, 0.06, -2.97); box(scene, 0.05, 0.12, 6, M.frame, -2.97, 0.06, 0); box(scene, 0.05, 0.12, 6, M.frame, 2.97, 0.06, 0);
+// window on the back wall (right)
+plane(scene, 1.5, 1.4, M.sky, 1.2, 1.75, -2.98, 0, 0, 1, 1);
+for (const dx of [-0.78, 0, 0.78]) box(scene, 0.07, 1.5, 0.07, M.frame, 1.2 + dx, 1.75, -2.95);
+for (const dy of [-0.72, 0, 0.72]) box(scene, 1.6, 0.07, 0.07, M.frame, 1.2, 1.75 + dy, -2.95);
+box(scene, 1.7, 0.08, 0.2, M.frame, 1.2, 1.0, -2.9);
+for (const dx of [-1.0, 1.0]) box(scene, 0.3, 1.9, 0.08, M.curtain, 1.2 + dx, 1.75, -2.9);
+box(scene, 2.6, 0.05, 0.05, M.woodD, 1.2, 2.72, -2.9);
+// bed (head at -x), nightstand, lamp, clock, phone
+const bed = grp(scene, -1.3, 0, -2.2);
+box(bed, 2.3, 0.3, 1.25, M.wood, 0, 0.18, 0); box(bed, 2.2, 0.22, 1.18, M.sheet, 0, 0.42, 0); box(bed, 0.1, 1.0, 1.3, M.wood, -1.15, 0.5, 0);
+box(bed, 0.5, 0.14, 0.8, M.pillow, -0.78, 0.6, 0, 0, 0, 0.06);
+const quilt = box(bed, 1.5, 0.14, 1.24, M.quilt, 0.33, 0.66, 0);
+const stand = grp(scene, -2.25, 0, -1.3);
+box(stand, 0.6, 0.55, 0.5, M.wood, 0, 0.275, 0); box(stand, 0.5, 0.03, 0.02, M.knob, 0, 0.36, 0.26);
+box(stand, 0.08, 0.16, 0.08, M.lampBase, -0.2, 0.63, -0.15); const shade = frustum(stand, 0.13, 0.22, 0.18, 1, M.shade, -0.2, 0.79, -0.15);
+const clock = grp(stand, 0.02, 0.55, 0.14); box(clock, 0.3, 0.16, 0.12, M.clockBody, 0, 0.08, 0); const clockFace = plane(clock, 0.26, 0.12, M.clockFace, 0, 0.08, 0.062);
+const phone = grp(scene, -2.0, 0.565, -1.22); box(phone, 0.11, 0.015, 0.2, M.phone, 0, 0, 0); const phoneScr = plane(phone, 0.095, 0.18, M.screen, 0, 0.009, 0, -Math.PI / 2);
+// shelf + books + plant, poster, rug, smoke alarm, door
+box(scene, 1.3, 0.05, 0.24, M.woodD, -0.9, 2.05, -2.86); plane(scene, 1.0, 0.36, M.books, -1.05, 2.26, -2.84);
+box(scene, 0.14, 0.14, 0.14, M.pot, -0.38, 2.15, -2.84); for (const [dx, dy] of [[0, .2], [-.08, .14], [.08, .15]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), M.leaf); c.position.set(-0.38 + dx, 2.22 + dy, -2.84); scene.add(c); }
+plane(scene, 0.55, 0.8, M.poster, -0.1, 1.5, -2.97); box(scene, 0.62, 0.87, 0.02, M.frame, -0.1, 1.5, -2.99);
+plane(scene, 2.6, 1.9, M.rug, 0.4, 0.01, -0.2, -Math.PI / 2, 0, 1, 1, 6, 4);
+const alarm = grp(scene, 0.3, 2.94, -1.2); { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.09, 8), M.alarm); alarm.add(c); box(alarm, 0.05, 0.03, 0.05, M.led, 0.1, -0.05, 0.08); }
+plane(scene, 0.95, 2.1, M.door, 2.97, 1.05, 0.9, 0, -Math.PI / 2); box(scene, 0.04, 0.08, 0.08, M.knob, 2.94, 1.0, 0.55);
+// FX: rings, Zzz, bang, sweat
+const mkRing = (c) => { const m = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.0, 12), basic({ color: c, transparent: true, side: THREE.DoubleSide, depthWrite: false })); m.visible = false; scene.add(m); return m; };
+const ringsR = [mkRing(0xff4030), mkRing(0xff4030), mkRing(0xff4030)], ringsO = [mkRing(0xff8a3a), mkRing(0xff8a3a)];
+const mkSprite = (t, s) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(s, s), basic({ map: t, transparent: true, alphaTest: 0.5 })); m.visible = false; scene.add(m); return m; };
+const zs = [mkSprite(T.Z, 0.2), mkSprite(T.Z, 0.2), mkSprite(T.Z, 0.2)], bang = mkSprite(T.bang, 0.42);
+const drops = [0, 1, 2].map(() => { const m = box(scene, 0.04, 0.06, 0.04, basic({ color: 0x9fd4ff }), 0, 0, 0); m.visible = false; return m; });
+function rings(arr, pos, t, rate, r0, r1, flat = true) { arr.forEach((m, k) => { const ph = ((t * rate + k / arr.length) % 1 + 1) % 1; const s = lerp(r0, r1, ph); m.visible = true; m.position.copy(pos); m.scale.setScalar(s); m.material.opacity = 1 - ph; if (flat) m.rotation.set(-Math.PI / 2, 0, 0); else m.lookAt(camera.position); }); }
+function zzz(pos, t) { zs.forEach((m, k) => { const ph = ((t * 0.55 + k / 3) % 1 + 1) % 1; m.visible = true; m.position.set(pos.x + 0.3 * ph + 0.04 * Math.sin(ph * 9), pos.y + 0.55 * ph, pos.z); m.scale.setScalar((0.5 + 0.9 * ph) * Math.min(1, ph / 0.15, (1 - ph) / 0.15)); m.lookAt(camera.position); }); }
+
+// ---------------------------------------------------------------- character (faces +z; origin at the hips)
+const C = { skin: lam({ color: SKIN }), hood: lam({ color: 0x7fe0b4 }), hood2: lam({ color: 0x5cc49a }), pants: lam({ color: 0x5a5d6a }), hair: lam({ color: 0x15100e }), shoe: lam({ color: 0xf2f0ea }), sole: lam({ color: 0xf06a39 }), pack: lam({ color: 0xf06a39 }), pack2: lam({ color: 0xc8502a }) };
+const faceMat = lam({ map: F.neutral });
+const yaw = grp(scene), root = grp(yaw), hips = grp(root), torso = grp(hips, 0, 0.06, 0);
+box(hips, 0.4, 0.2, 0.28, C.pants, 0, 0, 0);
+frustum(torso, 0.5, 0.44, 0.5, 0.62, C.hood, 0, 0.27, 0); box(torso, 0.26, 0.12, 0.03, C.hood2, 0, 0.12, 0.15); box(torso, 0.3, 0.16, 0.14, C.hood, 0, 0.5, -0.14);
+box(torso, 0.02, 0.12, 0.02, C.shoe, -0.05, 0.4, 0.16); box(torso, 0.02, 0.12, 0.02, C.shoe, 0.05, 0.4, 0.16);
+const pack = grp(torso, 0, 0.28, -0.26); box(pack, 0.4, 0.44, 0.18, C.pack, 0, 0, 0); box(pack, 0.26, 0.16, 0.04, C.pack2, 0, -0.08, -0.1); pack.visible = false;
+const neck = grp(torso, 0, 0.56, 0), head = grp(neck, 0, 0.02, 0);
+{ const sk = C.skin; const m = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.4, 0.38), [sk, sk, sk, sk, faceMat, sk]); m.position.set(0, 0.2, 0.02); head.add(m);
+  box(head, 0.46, 0.14, 0.42, C.hair, 0, 0.42, 0.0); box(head, 0.46, 0.3, 0.12, C.hair, 0, 0.28, -0.17);
+  for (const [x, y, z] of [[-.16, .5, .12], [0, .52, .14], [.16, .5, .12], [-.18, .5, -.08], [.02, .53, -.06], [.18, .5, -.1], [-.22, .36, -.02], [.22, .36, -.02]]) box(head, 0.14, 0.12, 0.14, C.hair, x, y, z, .3, .4, .2);
+  box(head, 0.05, 0.1, 0.08, C.skin, -0.23, 0.18, 0.02); box(head, 0.05, 0.1, 0.08, C.skin, 0.23, 0.18, 0.02); }
+function limb(parent, x, y, len1, len2, w, m1, m2, hand) {
+  const a = grp(parent, x, y, 0); box(a, w, len1, w, m1, 0, -len1 / 2, 0);
+  const b = grp(a, 0, -len1, 0); box(b, w * 0.92, len2, w * 0.92, m2, 0, -len2 / 2, 0);
+  const h = grp(b, 0, -len2, 0); hand(h); return { a, b, h };
+}
+const hand = (h) => { box(h, 0.12, 0.12, 0.12, C.skin, 0, -0.05, 0); box(h, 0.13, 0.04, 0.13, C.hood2, 0, 0.02, 0); };
+const foot = (h) => { box(h, 0.15, 0.1, 0.26, C.shoe, 0, -0.03, 0.05); box(h, 0.16, 0.035, 0.27, C.sole, 0, -0.09, 0.05); };
+const aL = limb(torso, -0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.hood, hand), aR = limb(torso, 0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.hood, hand);
+const lL = limb(hips, -0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.pants, foot), lR = limb(hips, 0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.pants, foot);
+const handPhone = grp(aR.h, 0, -0.08, 0.08); box(handPhone, 0.11, 0.2, 0.015, M.phone, 0, 0, 0); plane(handPhone, 0.095, 0.18, M.screenUI, 0, 0, 0.009); handPhone.visible = false;
+const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.36, 8), basic({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false })); shadow.rotation.x = -Math.PI / 2; scene.add(shadow);
+const STAND_Y = 0.68;
+function pose(o = {}) {       // angles in degrees; arms/legs: [shoulderX, shoulderZ, elbowX] / [hipX, hipZ, kneeX]
+  const d = Object.assign({ x: 0, y: STAND_Y, z: 0, yaw: 0, pitch: 0, roll: 0, torso: [0, 0, 0], head: [0, 0, 0], aL: [0, -6, 0], aR: [0, 6, 0], lL: [0, 0, 0], lR: [0, 0, 0], sq: 0, face: 'neutral', shadow: true }, o);
+  yaw.position.set(d.x, d.y, d.z); yaw.rotation.set(0, d.yaw * D, 0); root.rotation.set(d.pitch * D, 0, d.roll * D);
+  hips.scale.set(1 + d.sq * 0.5, 1 - d.sq, 1 + d.sq * 0.5);
+  torso.rotation.set(d.torso[0] * D, d.torso[1] * D, d.torso[2] * D); neck.rotation.set(d.head[0] * D, d.head[1] * D, d.head[2] * D);
+  for (const [L, v] of [[aL, d.aL], [aR, d.aR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
+  for (const [L, v] of [[lL, d.lL], [lR, d.lR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
+  faceMat.map = F[d.face];
+  shadow.visible = d.shadow; shadow.position.set(d.x, 0.012, d.z); const k = clamp(1.3 - (d.y - STAND_Y) * 1.2, 0.5, 1.3); shadow.scale.setScalar(k);
+}
+const blinkAt = (u, f, times) => times.some((b) => u > b && u < b + 0.1) ? 'blink' : f;
+
+// ---------------------------------------------------------------- moods
+function mood(kind, pulse = 0) {
+  kind = PARAM.mood || kind;
+  const set = (wall, ceil, hemiC, hemiG, hI, keyC, kI, sky, lampI, bg) => { M.wall.color.set(wall); M.wall2.color.set(wall).multiplyScalar(0.88); M.ceil.color.set(ceil); hemi.color.set(hemiC); hemi.groundColor.set(hemiG); hemi.intensity = hI; key.color.set(keyC); key.intensity = kI; M.sky.map = sky; lamp.intensity = lampI; scene.background.set(bg); scene.fog.color.set(bg); M.shade.color.set(lampI > 0 ? 0xffd9a0 : 0xb9a590); };
+  if (kind === 'night') set(0x3a4a9a, 0x4a5490, 0x7f8fff, 0x241c3a, 1.25, 0x8fa8ff, 0.55, T.skyNight, 2.2, 0x0c1024);
+  if (kind === 'dawn') set(0x8a8ac0, 0x9a9ac8, 0xffd0c0, 0x5a4a60, 1.5, 0xffc090, 1.0, T.skyDawn, 0, 0x2a2440);
+  if (kind === 'day') set(0xb9c8f0, 0xdfe4f4, 0xffffff, 0x9a8a80, 1.7, 0xfff0d0, 1.25, T.skyDay, 0, 0x8090b0);
+  red.intensity = 16 * pulse; M.led.color.set(pulse > 0.3 ? 0xff3020 : 0x551010);
+}
+const pulseAt = (t, rate = 2.4) => Math.pow(Math.max(0, Math.sin(t * rate * TAU)), 2);
+let TILT = 0;
+function cam(p0, t0, p1, t1, k, fov = 50, shake = 0, t = 0) {
+  const e = k * k * (3 - 2 * k);
+  camera.position.set(lerp(p0[0], p1[0], e) + shake * Math.sin(t * 61), lerp(p0[1], p1[1], e) + shake * Math.sin(t * 47 + 1), lerp(p0[2], p1[2], e));
+  camera.fov = fov; camera.updateProjectionMatrix();
+  camera.lookAt(lerp(t0[0], t1[0], e), lerp(t0[1], t1[1], e), lerp(t0[2], t1[2], e));
+  camera.rotateX(TILT * D);      // tilt up: pushes the subject down the frame, leaving the top for UI cards
+}
+let PARAM = {};
+function setClock(s) { M.clockFace.map = clockFor(PARAM.clock || s); }
+function resetProps() {
+  for (const m of [...ringsR, ...ringsO, ...zs, bang, ...drops]) m.visible = false;
+  phone.position.set(-2.0, 0.565, -1.22); phone.rotation.set(0, 0.3, 0); phoneScr.material = M.screen; M.screen.color.set(0x333333); phoneGlow.intensity = 0;
+  handPhone.visible = false; pack.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
+}
+const LIE = { x: -1.55, y: 0.66, z: -2.2, yaw: 90, pitch: -90, shadow: false };
+const SIT = { x: -1.75, y: 0.7, z: -2.2, yaw: 90, shadow: false, lL: [-90, 0, 0], lR: [-90, 0, 0] };
+const alarmPos = new THREE.Vector3(0.3, 2.86, -1.2);
+
+// ---------------------------------------------------------------- shots: fn(u seconds into shot, d duration, k = u/d, t global)
+const S = {};
+S.s01 = (u, d, k, t) => {       // asleep under a screaming smoke alarm
+  mood('night', pulseAt(t)); setClock('3:12');
+  pose({ ...LIE, face: 'sleep', aL: [0, -8, 0], aR: [0, 8, 0], torso: [0, 0, 0] }); zzz(new THREE.Vector3(-2.0, 1.05, -2.1), t);
+  rings(ringsR, alarmPos, t, 1.6, 0.22, 0.9);
+  cam([1.5, 1.9, 2.6], [-0.9, 1.3, -1.9], [0.9, 1.6, 1.5], [-1.1, 1.2, -2.0], k);
+};
+S.s02 = (u, d, k, t) => {       // bolts upright, hands over ears
+  mood('night', pulseAt(t)); setClock('3:12');
+  const up = sm(0.05, 0.3, u), over = Math.sin(clamp((u - 0.05) / 0.45, 0, 1) * Math.PI) * 14, ears = sm(0.22, 0.48, u), sh = Math.sin(u * 26) * sm(0.4, 0.6, u);
+  pose({ ...SIT, pitch: -90 * (1 - up) - over * (1 - up * 0.3), lL: [-90 * up, 0, 0], lR: [-90 * up, 0, 0], face: u < 0.12 ? 'sleep' : 'shock',
+    torso: [2 * sh, 0, 0], head: [0, 0, 5 * sh], aL: [lerp(0, -40, ears), lerp(-8, -150, ears), lerp(0, -120, ears)], aR: [lerp(0, -40, ears), lerp(8, 150, ears), lerp(0, -120, ears)] });
+  quilt.position.x = 0.33 + 0.25 * up; quilt.scale.x = 1 - 0.3 * up;
+  rings(ringsR, alarmPos, t, 1.6, 0.22, 0.9);
+  if (u > 0.3) { bang.visible = true; bang.position.set(-1.35, 2.0 + 0.04 * Math.sin(u * 20), -2.1); bang.scale.setScalar(0.4 + 0.8 * sm(0.3, 0.42, u)); bang.lookAt(camera.position); }
+  cam([0.3, 1.5, 0.2], [-1.6, 1.25, -2.2], [0.05, 1.45, -0.2], [-1.65, 1.3, -2.2], k, 48, 0.012 * sm(0.3, 0.5, u), t);
+};
+S.s03 = (u, d, k, t) => {       // the alarm, from below; then him swatting at it with a pillow
+  mood('night', pulseAt(t)); setClock('3:12');
+  rings(ringsR, alarmPos, t, 1.8, 0.2, 0.62);
+  if (k < 0.5) {
+    pose({ ...SIT, face: 'shock', aL: [-40, -150, -120], aR: [-40, 150, -120] });
+    cam([0.9, 1.2, -0.2], [0.3, 2.9, -1.2], [0.7, 1.5, -0.5], [0.3, 2.9, -1.2], k * 2, 46);
+  } else {
+    const w = Math.sin(u * 13);
+    pose({ x: 0.3, y: STAND_Y + 0.05 * Math.abs(w), z: -1.0, yaw: -20, face: 'determined', aR: [-170 + 14 * w, 14, -18 + 10 * w], aL: [-165 - 14 * w, -14, -18 - 10 * w], head: [-28, 0, 0], torso: [-6, 0, 4 * w], sq: -0.04,
+      lL: [0, -4, 0], lR: [0, 4, 0] });
+    cam([1.5, 1.7, 1.9], [0.3, 1.75, -1.0], [1.2, 1.6, 1.5], [0.3, 1.8, -1.0], (k - 0.5) * 2, 50);
+  }
+};
+S.s04 = (u, d, k, t) => {       // 6:00, phone buzzing, still asleep
+  mood('night', 0); setClock('6:00');
+  pose({ ...LIE, face: 'sleep' }); zzz(new THREE.Vector3(-2.0, 1.05, -2.1), t);
+  const b = Math.sin(u * 44); phone.rotation.y = 0.3 + 0.12 * b; phone.position.x = -2.0 + 0.012 * b; M.screen.color.set(0xffffff); phoneGlow.position.set(-2.0, 0.8, -1.2); phoneGlow.intensity = 1.6 + 1.2 * pulseAt(t, 3);
+  rings(ringsO, new THREE.Vector3(-2.0, 0.6, -1.22), t, 2.2, 0.1, 0.42);
+  cam([-0.9, 1.25, 0.5], [-2.0, 0.75, -1.5], [-1.35, 1.0, 0.0], [-2.05, 0.72, -1.4], k, 46);
+};
+S.s05 = (u, d, k, t) => {       // snoozed, seven times: three slaps, the clock jumping ahead each time
+  mood(u > 1.55 ? 'dawn' : 'night', 0);
+  const hits = [0.4, 1.05, 1.6]; let n = 0, lift = 0;
+  for (const h of hits) { if (u > h) n++; lift = Math.max(lift, sm(h - 0.26, h - 0.08, u) * (1 - sm(h - 0.06, h, u))); }
+  const rest = sm(hits[2] + 0.1, hits[2] + 0.6, u);
+  setClock(['6:00', '6:09', '6:45', '7:30'][n]);
+  const ring = n < 3 && !hits.some((h) => u > h && u < h + 0.28);
+  M.screen.color.set(ring ? 0xffffff : 0x333333); if (ring) { rings(ringsO, new THREE.Vector3(-2.0, 0.6, -1.22), t, 2.2, 0.1, 0.42); phoneGlow.position.set(-2.0, 0.8, -1.2); phoneGlow.intensity = 1.8; phone.rotation.y = 0.3 + 0.1 * Math.sin(u * 44); }
+  const jolt = hits.reduce((a, h) => a + (u > h ? Math.exp(-(u - h) * 14) : 0), 0); phone.position.y = 0.565 - 0.0 * jolt; phone.rotation.z = 0.25 * jolt;
+  pose({ ...LIE, z: -1.98, face: 'sleep', head: [0, 0, -14 * (1 - rest) + 20 * rest], aL: [lerp(-8, -62, lift) * (1 - rest), lerp(-112, -122, lift) * (1 - rest) - 8 * rest, -30 * lift], aR: [0, 8, 0] });
+  if (rest > 0.6) zzz(new THREE.Vector3(-2.0, 1.05, -1.95), t);
+  cam([-0.6, 1.5, 0.7], [-1.95, 0.72, -1.6], [-0.95, 1.3, 0.35], [-2.0, 0.7, -1.55], k, 46, 0.02 * jolt, t);
+};
+S.s06 = (u, d, k, t) => {       // late. again.
+  mood('day', 0); setClock('8:47'); quilt.position.set(0.7, 0.62, 0.3); quilt.rotation.set(0, 0.5, 0.12);
+  if (u < 0.5) {                 // eyes snap open in bed, clock in frame
+    const up = sm(0.12, 0.34, u);
+    pose({ ...SIT, pitch: -90 * (1 - up), lL: [-90 * up, 0, 0], lR: [-90 * up, 0, 0], face: u < 0.1 ? 'sleep' : 'shock', aL: [0, -30 * up, 0], aR: [0, 30 * up, 0] });
+    cam([-1.2, 1.2, 0.2], [-2.0, 0.85, -1.7], [-1.1, 1.25, 0.1], [-1.95, 0.95, -1.8], u / 0.5, 44, 0.01, t);
+  } else {                        // sprint for the door, arms flailing
+    const v = u - 0.5, run = Math.sin(v * 22), x = lerp(-0.9, 2.2, sm(0, d - 0.5, v) * 0.9 + 0.1 * (v / (d - 0.5)));
+    pose({ x, y: STAND_Y + 0.07 * Math.abs(run), z: 0.4, yaw: 80, face: 'shock', torso: [16, 0, 0], head: [-10, -40, 0], aL: [-60 * run - 20, -50, -70], aR: [60 * run - 20, 50, -70],
+      lL: [-55 * run, 0, 60 * Math.max(0, run)], lR: [55 * run, 0, 60 * Math.max(0, -run)], sq: 0.05 * Math.abs(run) });
+    cam([0.2, 1.3, 3.4], [x - 0.2, 1.0, 0.3], [0.9, 1.2, 3.2], [x, 1.0, 0.3], sm(0, d - 0.5, v), 52, 0.012, t);
+  }
+};
+S.s07 = (u, d, k, t) => {       // that night: setting the alarm
+  mood('night', 0); setClock('11:30');
+  const tap = pulseAt(u, 1.6);
+  pose({ ...SIT, face: blinkAt(u, 'determined', [0.9, 2.1]), torso: [8, 0, 0], head: [22 + 3 * tap, 0, 0], aL: [-48, 14, -78], aR: [-48 - 5 * tap, -14, -78 - 6 * tap] });
+  handPhone.visible = true; phone.position.set(0, -5, 0); phoneGlow.position.set(-1.45, 1.35, -2.2); phoneGlow.intensity = 2.2;
+  quilt.position.x = 0.58; quilt.scale.x = 0.7;
+  const a = lerp(0.35, -0.25, k * k * (3 - 2 * k));
+  cam([-1.5 + 2.3 * Math.sin(a + 0.9), 1.45, -2.2 + 2.3 * Math.cos(a + 0.9)], [-1.6, 1.2, -2.2], [-1.5 + 2.0 * Math.sin(a + 0.6), 1.4, -2.2 + 2.0 * Math.cos(a + 0.6)], [-1.6, 1.22, -2.2], k, 46);
+};
+const FLOORPH = new THREE.Vector3(1.15, 0.14, 0.0);
+function floorPhone(t, ring = true) { phone.position.copy(FLOORPH); phone.rotation.set(-1.15, -Math.PI / 2, 0, 'YXZ'); phoneScr.material = M.screen; M.screen.color.set(0xffffff); phoneGlow.position.set(1.0, 0.3, 0.0); phoneGlow.intensity = 1.5; if (ring) rings(ringsO, new THREE.Vector3(1.15, 0.2, 0.0), t, 2.2, 0.1, 0.45, false); }
+S.s08 = (u, d, k, t) => {       // ten push-ups before it shuts up
+  mood('dawn', 0); setClock('6:00'); floorPhone(t);
+  const ph = u * 1.15, dn = (1 - Math.cos(ph * TAU)) / 2, y = lerp(0.47, 0.2, dn);
+  pose({ x: 0.0, y, z: 0.0, yaw: 90, pitch: 84 - 10 * dn, face: dn > 0.5 ? 'effort' : 'determined', head: [-50, 0, 0], aL: [-84 + 50 * dn, -8 - 26 * dn, -100 * dn], aR: [-84 + 50 * dn, 8 + 26 * dn, -100 * dn],
+    lL: [8 - 6 * dn, 0, 0], lR: [8 - 6 * dn, 0, 0], shadow: false });
+  shadow.visible = true; shadow.position.set(0.1, 0.012, 0); shadow.scale.set(2.3, 1, 1);
+  drops.forEach((m, i) => { const q = ((ph * 1.0 + i / 3) % 1 + 1) % 1; m.visible = true; m.position.set(0.72 + 0.25 * q * (i - 1), 0.75 + 0.5 * q - 1.3 * q * q, 0.25 * (i - 1) + 0.1); });
+  cam([-0.7, 0.75, 3.3], [0.3, 0.45, 0], [0.5, 0.5, 2.9], [0.35, 0.42, 0], k, 50);
+};
+S.s09 = (u, d, k, t) => {       // or walk a hundred steps (camera backs away in front of him)
+  mood('dawn', 0); setClock('6:00');
+  const ph = u * 2.3 * TAU, sw = Math.sin(ph), co = Math.cos(ph), z = lerp(-1.6, 1.0, k);
+  pose({ x: 0.6, y: STAND_Y + 0.045 * Math.abs(co), z, face: blinkAt(u, 'groggy', [0.6]), torso: [4, 0, 5 * sw], head: [10, 0, -4 * sw], aL: [28 * sw, -8, -14], aR: [-66, 4, -70],
+    lL: [-34 * sw, 0, 44 * Math.max(0, co)], lR: [34 * sw, 0, 44 * Math.max(0, -co)], sq: 0.04 * (1 - Math.abs(co)) });
+  handPhone.visible = true; phone.position.set(0, -5, 0); rings(ringsO, new THREE.Vector3(0.82, 1.25, z + 0.3), t, 2.2, 0.08, 0.3, false);
+  cam([0.9, 1.05, z + 2.6], [0.6, 0.95, z], [0.9, 1.05, z + 2.6], [0.6, 0.95, z], 0, 50, 0.006, t);
+};
+S.s10 = (u, d, k, t) => {       // alarm off: big stretch, then a fist pump at the sunny window
+  mood('day', 0); setClock('6:04');
+  const up = sm(0.0, 0.45, u) * (1 - sm(0.75, 1.0, u)), pump = sm(0.85, 1.05, u), hop = Math.sin(clamp((u - 0.9) / 0.4, 0, 1) * Math.PI);
+  pose({ x: 1.0, y: STAND_Y + 0.05 * up + 0.22 * hop, z: -1.4, yaw: -18, face: pump > 0.5 ? blinkAt(u, 'happy', [1.5]) : 'yawn', torso: [-10 * up + 3 * pump, 0, 0], head: [-16 * up - 5 * pump, 0, 4 * pump],
+    aL: [lerp(0, -8, up), lerp(-6, -168, up), 0], aR: [lerp(lerp(0, -8, up), -150, pump), lerp(lerp(6, 168, up), 20, pump), -70 * pump], lL: [10 * hop, -3, 30 * hop], lR: [10 * hop, 3, 30 * hop], sq: -0.06 * up + 0.08 * pump * (1 - hop) * (u < 1.0 ? 1 : 0) - 0.05 * hop });
+  cam([0.2, 1.2, 1.5], [1.0, 1.05, -1.5], [0.6, 1.15, 0.9], [1.0, 1.1, -1.5], k, 48);
+};
+S.s11 = (u, d, k, t) => {       // collapsed on the rug... and the phone pings again
+  mood('dawn', 0); setClock('6:02'); floorPhone(t, u > 0.38);
+  if (u <= 0.38) { M.screen.color.set(0x333333); phoneGlow.intensity = 0; }
+  const look = sm(0.38, 0.6, u), pant = Math.sin(u * 14) * (1 - look);
+  pose({ x: 0.1, y: 0.2, z: 0.0, yaw: 62, face: look > 0.5 ? 'shock' : 'pant', torso: [-22 + 3 * pant + 26 * look, 0, 0], head: [-6 + 26 * look, 0, 0], aL: [38 - 30 * look, -18, 0], aR: [38 - 30 * look, 18, 0],
+    lL: [-86, -10, 8], lR: [-86, 10, 8], sq: 0.03 * pant });
+  cam([0.0, 1.0, 3.2], [0.45, 0.55, 0], [0.4, 0.85, 2.7], [0.55, 0.5, 0], k, 48);
+};
+S.s12a = (u, d, k, t) => {      // math. memory. (thinking hard)
+  mood('dawn', 0); setClock('6:02');
+  const tap = pulseAt(u, 2.2);
+  pose({ x: 0.3, z: 0.1, yaw: -8, face: 'think', head: [-10, 10, 8], torso: [-2, 0, 2], aR: [-58, 30, -132 - 5 * tap], aL: [-30, -44, -96], lL: [-8 * tap, -5, 12 * tap], lR: [0, 5, 0] });
+  cam([0.6, 1.3, 2.5], [0.34, 1.12, 0.1], [0.5, 1.3, 2.2], [0.34, 1.14, 0.1], k, 44);
+};
+S.s12b = (u, d, k, t) => {      // shaking the phone like it owes him money
+  mood('dawn', 0); setClock('6:02');
+  const s = Math.sin(u * 30), c = Math.cos(u * 30);
+  pose({ x: 0.3, y: STAND_Y + 0.03 * Math.abs(s), z: 0.1, yaw: -8, face: 'effort', torso: [6 * s, 0, 0], head: [5 * c, 0, 7 * s], aR: [-84 - 30 * s, 14, -50 + 20 * s], aL: [-84 - 30 * s, -14, -50 + 20 * s], lL: [0, -9, 0], lR: [0, 9, 0], sq: 0.05 * c });
+  handPhone.visible = true; phone.position.set(0, -5, 0);
+  cam([0.7, 1.2, 2.6], [0.3, 1.05, 0.1], [0.6, 1.2, 2.3], [0.3, 1.05, 0.1], k, 48, 0.02, t);
+};
+S.ways = (u, d, k, t) => { mood('day', 0); pose({ x: 0.3, z: 0.1, face: 'happy' }); cam([0.5, 1.3, 2.2], [0.3, 1.1, 0.1], [0.5, 1.3, 2.2], [0.3, 1.1, 0.1], 0); };
+S.s14 = (u, d, k, t) => {       // out the door, on time
+  mood('day', 0); setClock('7:52'); pack.visible = true;
+  const ph = u * 2.2 * TAU, sw = Math.sin(ph), co = Math.cos(ph), x = lerp(0.2, 1.7, k);
+  pose({ x, y: STAND_Y + 0.06 * Math.abs(co), z: 0.9, yaw: 62, face: blinkAt(u, 'happy', [0.5]), torso: [-3, 0, 7 * sw], head: [-6, -52, -4 * sw], aL: [40 * sw, -10, -26], aR: [-40 * sw, 10, -26],
+    lL: [-38 * sw, 0, 50 * Math.max(0, co)], lR: [38 * sw, 0, 50 * Math.max(0, -co)], sq: 0.05 * (1 - Math.abs(co)) });
+  cam([0.6, 0.7, 3.4], [x, 1.0, 0.9], [1.0, 0.75, 3.1], [x + 0.1, 1.05, 0.9], k, 48);
+};
+
+S.squats = (u, d, k, t) => {     // squats until the alarm gives up
+  mood('dawn', 0); setClock('6:00'); floorPhone(t);
+  const dn = (1 - Math.cos(u * 1.25 * TAU)) / 2;
+  pose({ x: 0.2, y: STAND_Y - 0.26 * dn, z: 0.0, yaw: 28, face: dn > 0.5 ? 'effort' : 'determined', torso: [16 * dn, 0, 0], head: [-8 * dn, 0, 0], aL: [-82 * dn, -6, 0], aR: [-82 * dn, 6, 0],
+    lL: [-78 * dn, -8, 104 * dn], lR: [-78 * dn, 8, 104 * dn] });
+  cam([-0.6, 0.9, 3.1], [0.4, 0.75, 0], [0.0, 0.8, 2.7], [0.45, 0.72, 0], k, 48);
+};
+S.talk = (u, d, k, t) => {       // straight to camera, hands moving (works for any line)
+  mood('day', 0); setClock('7:30');
+  const g = Math.sin(u * 5.2), g2 = Math.sin(u * 3.1 + 1);
+  pose({ x: 0.3, z: 0.1, yaw: -6, face: blinkAt(u, g2 > 0.2 ? 'happy' : 'neutral', [0.7, 2.3, 3.9]), head: [-4 + 3 * g2, 6 * g, 2 * g], torso: [-2, 3 * g, 0], aR: [-52 - 14 * g, 22, -96 + 16 * g], aL: [-46 + 12 * g2, -24, -92 - 14 * g2], lL: [0, -4, 0], lR: [0, 4, 0] });
+  cam([0.6, 1.3, 2.6], [0.32, 1.12, 0.1], [0.5, 1.3, 2.3], [0.32, 1.14, 0.1], k, 44);
+};
+S.facepalm = (u, d, k, t) => {   // hand over the face
+  mood('day', 0); setClock('8:47');
+  const up = sm(0.1, 0.45, u), sh = Math.sin(u * 3) * up;
+  pose({ x: 0.3, z: 0.1, yaw: -6, face: up > 0.5 ? 'groggy' : 'shock', head: [16 * up, 4 * sh, 0], torso: [6 * up, 0, 0], aR: [-64 * up, -16 * up + 6, -138 * up], aL: [0, -6, 0] });
+  cam([0.6, 1.3, 2.6], [0.32, 1.12, 0.1], [0.5, 1.3, 2.3], [0.32, 1.14, 0.1], k, 44);
+};
+// story-friendly names for the shots (specs use these)
+const ALIAS = { asleep_smoke_alarm: 's01', bolt_upright: 's02', smoke_alarm_swat: 's03', phone_buzz_asleep: 's04', snooze_slaps: 's05', late_sprint: 's06', set_alarm_in_bed: 's07',
+  pushups: 's08', walk_steps: 's09', stretch_win: 's10', floor_ping: 's11', thinking: 's12a', shake_phone: 's12b', out_the_door: 's14', store_art: 'ways' };
+const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15 };
+window.renderAt = (t) => {
+  const sh = SPEC.shots.find((s) => t >= s.t0 && t < s.t1) || SPEC.shots[SPEC.shots.length - 1];
+  resetProps();
+  const u = t - sh.t0, d = sh.t1 - sh.t0;
+  const name = ALIAS[sh.name] || sh.name; PARAM = sh.p || {};
+  TILT = (PARAM.tilt !== undefined ? PARAM.tilt : TILTS[name]) || 0;
+  S[name](u, d, clamp(u / d, 0, 1), t);
+  camera.updateMatrixWorld(); renderer.render(scene, camera);
+  return true;
+};
+window.ready = true;
+</script></body></html>
