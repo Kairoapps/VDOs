@@ -53,14 +53,14 @@ def _cfg():
 
 def elevenlabs(lines, out_dir):
     """One mp3 per line with the ElevenLabs API. Returns True when every line was made; any failure -> False (captions only)."""
+    # The key normally lives on the cloud environment as a network secret for api.elevenlabs.io (header xi-api-key): the
+    # proxy adds it to the request, so nothing is set here. An ELEVENLABS_API_KEY variable also works if one is set.
     key = os.environ.get("ELEVENLABS_API_KEY")
-    if not key:
-        print("voice: no ELEVENLABS_API_KEY -> captions only"); return False
     cfg = _cfg()
 
     def call(url, body=None):
         req = urllib.request.Request(url, data=json.dumps(body).encode() if body else None,
-                                     headers={"xi-api-key": key, "content-type": "application/json", "accept": "application/json" if body is None else "audio/mpeg"})
+                                     headers={**({"xi-api-key": key} if key else {}), "content-type": "application/json", "accept": "application/json" if body is None else "audio/mpeg"})
         with urllib.request.urlopen(req, timeout=120) as r:
             return r.read()
     try:
@@ -88,7 +88,7 @@ def elevenlabs(lines, out_dir):
                 raise err
         return True
     except Exception as e:
-        print(f"voice: ElevenLabs failed ({str(e)[:160]}) -> captions only"); return False
+        print(f"voice: ElevenLabs not available ({str(e)[:160]}) -> captions only"); return False
 
 
 def trim(x, th=0.012):

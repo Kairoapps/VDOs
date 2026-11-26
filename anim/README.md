@@ -75,9 +75,10 @@ and check it with `--snap` before building. Shots must depend only on the time a
 Keep overlays in the top third; the character is framed below them. Only show challenges and numbers the app really has.
 
 ## Voice and sound
-- Voice: ElevenLabs, voice and model from `config.toml` `[animation]`. It needs `ELEVENLABS_API_KEY` in the run's environment and
-  `api.elevenlabs.io` reachable. Without them the build makes a captions-only video (music + sound effects), which is the usual
-  low-poly-shorts format. (This path could not be tested from the cloud yet; the first night with a key should check the log line `voice:`.)
+- Voice: ElevenLabs, voice and model from `config.toml` `[animation]`. The key is stored on the cloud environment as a network
+  secret (host `api.elevenlabs.io`, header `xi-api-key`, no prefix), so the build sends no key itself; an `ELEVENLABS_API_KEY`
+  variable also works. If the call fails the build makes a captions-only video (music + sound effects) and prints why on the
+  `voice:` line. (Not yet tested from the cloud; check that line on the first night.)
 - Music: an original lo-fi bed generated in `build.py` (no licence needed), ducked under the voice.
 - Sound effects: smoke-alarm chirps, the phone alarm from `sounds/alarm/`, thuds on stamps, chimes on the win and the download card.
 

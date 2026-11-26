@@ -20,7 +20,7 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
    what the caption says. Then `python3 anim/build.py <spec>` (about a minute) and Read `<id>.sheet.jpg`: captions readable and
    not covering his face, cards/phones in the top third, counters right, download card last. Fix the spec and rebuild until it is right
    (at most 3 rebuilds; if it still isn't right, skip tonight's animation and say so — the plan reuses the ones in stock).
-   Voice: the build uses ElevenLabs when `ELEVENLABS_API_KEY` is set, otherwise captions only; report which one in the summary.
+   Voice: the build always tries ElevenLabs (the key is a network secret on the cloud environment for `api.elevenlabs.io`, so there is no variable to check; an `ELEVENLABS_API_KEY` variable also works). If the call fails it prints why and makes a captions-only video; report which one in the summary.
 5. **Add it:** `python3 -m vdos anim-add work/anim/<id>/<id>.mp4 --title "<the hook line>" --summary "<2 sentences: what happens>" --style low_poly --concept <slug> --voice <elevenlabs|none>`
    Then continue with `vdos publish` (step 2 of the daily run), which uploads it for Buffer.
 
