@@ -5,6 +5,13 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
 
 1. `python3 -m vdos anim-status` — `next_style`, `concepts_used`, `in_stock`, `uses_left`. Only `low_poly` is live.
    If `next_style` is anything else, use `low_poly` and say so in the summary.
+1b. **Pre-voiced queue first (Chika, 2026-11-26).** The scheduled task has no ElevenLabs key, so voices are recorded ahead of time in
+   a session that has one. If `work/anim/queue/` has a folder whose `vo/` holds every line (`l01.mp3`… one per beat plus the CTA),
+   take the lowest-numbered one: `git mv` it to `work/anim/<id>/`, set `"id"` in its spec to `<id>`, keep `"voice_dir": "vo"`, and skip
+   step 2 (don't change any beat's `line`: the audio is already recorded; you may change shots, captions and overlays). Then do steps 4-5
+   with `--voice elevenlabs`; the voice check in step 4 is not needed for a queued story (its voice is on disk). If 3 or fewer queued
+   stories are left after tonight, add "VOICE QUEUE LOW: <n> left" to the push notification so Chika can have more recorded.
+   Only when the queue is empty, write a new story (step 2) and use the voice check in step 4.
 2. **Story.** Write a new one, different from every entry in `concepts_used` (different hook AND different middle). 7-12 beats, 18-35 s.
    Shape: a hook in the first line that names a feeling every heavy sleeper knows -> the snooze spiral or its cost ->
    the turn ("so I...") -> one or two Unsnooze challenges shown working -> the payoff -> (download card is automatic).

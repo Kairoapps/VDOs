@@ -1,0 +1,119 @@
+{
+ "id": "Q05",
+ "style": "low_poly",
+ "concept": "bargain-pov",
+ "title": "POV: negotiating with yourself at 6 AM.",
+ "summary": "POV of the snooze bargain: his sleepy brain offers deals (just one more, you'll skip the gym, you deserve it) and his alarm doesn't negotiate. Push-ups and a shake challenge end the debate.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "POV: negotiating with yourself at six AM.",
+   "caption": "POV: *negotiating*\nwith yourself at 6 AM.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "talk",
+   "line": "Sleepy me: just one more.",
+   "caption": "*sleepy me:*\njust one more."
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "[groggy] Okay, three more.",
+   "caption": "okay, *three* more.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×3",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "facepalm",
+   "line": "Sleepy me always wins.",
+   "caption": "sleepy me *always wins.*"
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "So I hired a mediator.",
+   "caption": "so I hired\na *mediator.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "pushups",
+   "line": "It doesn't negotiate. Ten push-ups.",
+   "caption": "it doesn't negotiate.\n*10 push-ups.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 6,
+     "to": 10,
+     "total": 10,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "shake_phone",
+   "line": "Then shake it till the debate is over.",
+   "caption": "then *shake it*\ntill the debate's over.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "shake",
+     "from": 20,
+     "to": 40,
+     "total": 40,
+     "at": 0.1,
+     "x": 830
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "[proud] Awake me finally wins one.",
+   "caption": "*awake me*\nfinally wins one.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

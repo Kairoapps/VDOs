@@ -1,0 +1,147 @@
+{
+ "id": "Q01",
+ "style": "low_poly",
+ "concept": "snooze-math",
+ "title": "snooze math doesn't add up.",
+ "summary": "He does the math on his snooze habit: nine minutes, seven times, an hour of bad sleep and still late. So he makes his alarm demand 20 push-ups and a math problem with Unsnooze, and gets that hour back.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "Let's do some snooze math.",
+   "caption": "let's do some *snooze math.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "Nine minutes. Times seven.",
+   "caption": "9 minutes. *times seven.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×7",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "That's an hour of terrible sleep.",
+   "caption": "that's an *hour*\nof terrible sleep.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "SNOOZE TIME",
+     "big": "63 MIN",
+     "at": 0.1,
+     "y": 320,
+     "accent": "red"
+    }
+   ]
+  },
+  {
+   "shot": "late_sprint",
+   "line": "[deadpan] And I'm still late.",
+   "caption": "and I'm *still late.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:47 AM",
+     "at": 0.1,
+     "x": 480,
+     "accent": "red"
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.8,
+     "x": 770,
+     "y": 440,
+     "rot": -11
+    }
+   ]
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "So I changed the math.",
+   "caption": "so I *changed the math.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "pushups",
+   "line": "Twenty push-ups before it goes quiet.",
+   "caption": "*20 push-ups*\nbefore it goes quiet.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 16,
+     "to": 20,
+     "total": 20,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "Then an actual math problem.",
+   "caption": "then an *actual*\nmath problem.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "math"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Now the math works. One alarm, zero snoozes.",
+   "caption": "one alarm.\n*zero snoozes.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

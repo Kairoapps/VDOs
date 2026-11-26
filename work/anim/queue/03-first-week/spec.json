@@ -1,0 +1,127 @@
+{
+ "id": "Q03",
+ "style": "low_poly",
+ "concept": "first-week",
+ "title": "week one without snoozing.",
+ "summary": "A diary of his first week with Unsnooze: Monday he tries to fight it, by Wednesday he's doing the squats without complaining, and by Friday he's up before the alarm finishes.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "Week one with an alarm I can't snooze.",
+   "caption": "week one with an alarm\nI *can't snooze.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "smoke_alarm_swat",
+   "line": "Monday: I tried to fight it.",
+   "caption": "*monday:* I tried\nto fight it.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "MONDAY",
+     "big": "6:30 AM",
+     "at": 0.1,
+     "x": 540,
+     "y": 330,
+     "accent": "red"
+    }
+   ]
+  },
+  {
+   "shot": "floor_ping",
+   "line": "It did not care.",
+   "caption": "it did *not* care."
+  },
+  {
+   "shot": "squats",
+   "line": "Tuesday: fifteen squats, very angry.",
+   "caption": "*tuesday:* 15 squats,\nvery angry.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "squats",
+     "from": 10,
+     "to": 15,
+     "total": 15,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "Wednesday: memory game. Got it first try.",
+   "caption": "*wednesday:* memory game.\nfirst try.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "memory"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Thursday: I didn't even complain.",
+   "caption": "*thursday:* didn't\neven complain.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "THURSDAY",
+     "big": "6:30 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Friday: up before it finished ringing.",
+   "caption": "*friday:* up before\nit finished ringing.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "FRIDAY",
+     "big": "6:31 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "at": 0.5,
+     "x": 690,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

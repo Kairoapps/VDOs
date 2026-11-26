@@ -1,0 +1,116 @@
+{
+ "id": "Q04",
+ "style": "low_poly",
+ "concept": "hundred-steps",
+ "title": "my alarm makes me walk 100 steps.",
+ "summary": "One challenge in detail: his alarm won't turn off until he walks 100 steps. By step 40 he's awake, by step 100 he's at the kitchen and the alarm is dismissed.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "My alarm won't turn off until I walk a hundred steps.",
+   "caption": "no turning it off\ntill I walk *100 steps.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:15 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "[groggy] There's no snooze button.",
+   "caption": "there's *no snooze* button.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "NO SNOOZE",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Step one. Still basically asleep.",
+   "caption": "step one.\n*still basically asleep.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 1,
+     "to": 12,
+     "total": 100,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Step forty. Okay, I'm awake.",
+   "caption": "step 40.\n*okay, I'm awake.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 38,
+     "to": 52,
+     "total": 100,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Step ninety. Somehow I'm in the kitchen.",
+   "caption": "step 90. somehow\nI'm *in the kitchen.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 86,
+     "to": 99,
+     "total": 100,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Step one hundred. Alarm's off, and so is the bed.",
+   "caption": "*step 100.*\nalarm's off.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:15 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "store_art",
+   "line": "Fifteen ways to wake up. I picked walking.",
+   "caption": "*15+ ways* to wake up.\nI picked walking."
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

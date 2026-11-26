@@ -1,0 +1,115 @@
+{
+ "id": "Q08",
+ "style": "low_poly",
+ "concept": "snooze-button-dead",
+ "title": "I deleted my snooze button.",
+ "summary": "He realizes the snooze button is the problem, so he gets rid of it: his Unsnooze alarm has no snooze, only challenges. Push-ups and steps later, he's up and out.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "snooze_slaps",
+   "line": "[groggy] Every morning, same button.",
+   "caption": "every morning,\n*same button.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 330
+    },
+    {
+     "type": "stamp",
+     "text": "SNOOZE",
+     "at": 1.75,
+     "y": 500
+    }
+   ]
+  },
+  {
+   "shot": "facepalm",
+   "line": "The snooze button was the problem.",
+   "caption": "the snooze button\nwas *the problem.*"
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "So I got rid of it.",
+   "caption": "so I *got rid of it.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "SNOOZE BUTTON",
+     "big": "GONE",
+     "at": 0.4,
+     "x": 540,
+     "y": 330,
+     "accent": "red"
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "pushups",
+   "line": "Now there's push-ups instead.",
+   "caption": "now there's\n*push-ups* instead.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 7,
+     "to": 10,
+     "total": 10,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Or fifty steps across the room.",
+   "caption": "or *50 steps*\nacross the room.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 34,
+     "to": 49,
+     "total": 50,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Hard to fall back asleep after that.",
+   "caption": "hard to fall back\nasleep *after that.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] I don't miss it.",
+   "caption": "I *don't miss it.*"
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

@@ -1,0 +1,108 @@
+{
+ "id": "Q07",
+ "style": "low_poly",
+ "concept": "roommate",
+ "title": "my roommate hated my alarm.",
+ "summary": "His alarm rang for 40 minutes every morning while he snoozed, and his roommate hated it. Now Unsnooze makes him do squats and walk until he's up, and the alarm rings for 2 minutes.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "My roommate hated my alarm.",
+   "caption": "my roommate *hated*\nmy alarm.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "[groggy] It rang for forty minutes.",
+   "caption": "it rang for\n*40 minutes.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×6",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "smoke_alarm_swat",
+   "line": "Every single morning.",
+   "caption": "every *single* morning."
+  },
+  {
+   "shot": "facepalm",
+   "line": "I slept through all of it. He didn't.",
+   "caption": "I slept through it.\n*he didn't.*"
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "So I made it impossible to ignore.",
+   "caption": "so I made it\n*impossible to ignore.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "squats",
+   "line": "Fifteen squats. Then it's quiet.",
+   "caption": "*15 squats.*\nthen it's quiet.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "squats",
+     "from": 10,
+     "to": 15,
+     "total": 15,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Now it rings for two minutes, tops.",
+   "caption": "now it rings for\n*2 minutes,* tops.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RING TIME",
+     "big": "2 MIN",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "talk",
+   "line": "[proud] My roommate says thank you.",
+   "caption": "my roommate says\n*thank you.*"
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

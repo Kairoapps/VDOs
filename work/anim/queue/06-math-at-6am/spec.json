@@ -1,0 +1,124 @@
+{
+ "id": "Q06",
+ "style": "low_poly",
+ "concept": "math-at-6am",
+ "title": "doing math at 6 AM wasn't my plan.",
+ "summary": "His alarm hits him with a math problem at 6 AM. He can't solve it asleep, which is the point: by the answer his brain is on. Then a memory game seals it.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "Six AM. My alarm has a question.",
+   "caption": "6 AM. my alarm\n*has a question.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "bolt_upright",
+   "line": "A math question.",
+   "caption": "a *math* question."
+  },
+  {
+   "shot": "thinking",
+   "line": "You can't solve math asleep.",
+   "caption": "you *can't* solve math\nasleep.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "math"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "thinking",
+   "line": "By the answer, my brain's on.",
+   "caption": "by the answer,\nmy *brain's on.*",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "math",
+      "memory"
+     ],
+     "ats": [
+      0.05,
+      0.6
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "Then a memory game, just to be sure.",
+   "caption": "then a *memory game,*\njust to be sure.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Turns out I'm a morning person now.",
+   "caption": "turns out I'm a\n*morning person* now.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Don't tell my teachers.",
+   "caption": "don't tell\n*my teachers.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "FIRST CLASS 8:00",
+     "big": "7:45 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "at": 0.5,
+     "x": 690,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

@@ -1,0 +1,94 @@
+{
+ "id": "Q09",
+ "style": "low_poly",
+ "concept": "affirmation",
+ "title": "my alarm makes me say it out loud.",
+ "summary": "His alarm makes him read an affirmation out loud before it stops. Groggy and embarrassed at first, but saying 'I'm getting up' turns out to work, and a shake challenge finishes the job.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "My alarm makes me say it out loud.",
+   "caption": "my alarm makes me\n*say it out loud.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:30 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "An affirmation. At six thirty.",
+   "caption": "an *affirmation.*\nat 6:30.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "affirmation"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "talk",
+   "line": "[groggy] I am getting up today.",
+   "caption": "\"I am *getting up* today.\""
+  },
+  {
+   "shot": "facepalm",
+   "line": "Very embarrassing. Very effective.",
+   "caption": "very embarrassing.\n*very effective.*"
+  },
+  {
+   "shot": "shake_phone",
+   "line": "Then I shake it, just to be sure.",
+   "caption": "then I *shake it,*\njust to be sure.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "shake",
+     "from": 25,
+     "to": 40,
+     "total": 40,
+     "at": 0.1,
+     "x": 830
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Turns out saying it makes it true.",
+   "caption": "turns out saying it\n*makes it true.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:30 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "store_art",
+   "line": "Fifteen ways to wake up. Pick yours.",
+   "caption": "*15+ ways* to wake up.\npick yours."
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}

@@ -1,0 +1,78 @@
+{
+ "id": "Q10",
+ "style": "low_poly",
+ "concept": "house-hunt",
+ "title": "my alarm sent me on a scavenger hunt.",
+ "summary": "His alarm uses House Hunt: it won't stop until he walks to a spot in his place and finds it. He's out of bed and across the apartment before he's fully awake.",
+ "voice_dir": "vo",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "My alarm sent me on a scavenger hunt.",
+   "caption": "my alarm sent me\non a *scavenger hunt.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1
+    }
+   ]
+  },
+  {
+   "shot": "bolt_upright",
+   "line": "House Hunt. Go find something.",
+   "caption": "*house hunt.*\ngo find something."
+  },
+  {
+   "shot": "thinking",
+   "line": "It won't stop until I find it.",
+   "caption": "it won't stop\nuntil *I find it.*",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "house_hunt"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ],
+   "lift": true
+  },
+  {
+   "shot": "walk_steps",
+   "line": "So I'm walking across the apartment half asleep.",
+   "caption": "walking across the\napartment *half asleep.*"
+  },
+  {
+   "shot": "stretch_win",
+   "line": "Found it. Alarm off. Fully awake.",
+   "caption": "found it.\n*fully awake.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300,
+     "accent": "green"
+    },
+    {
+     "type": "stamp",
+     "text": "FOUND IT",
+     "at": 0.9,
+     "y": 460,
+     "color": "green"
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Hard to get back in bed from the kitchen.",
+   "caption": "hard to get back in bed\n*from the kitchen.*"
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!"
+}
