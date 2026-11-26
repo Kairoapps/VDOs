@@ -64,7 +64,7 @@ Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the
 - Never ask people to comment "UNSNOOZE" (or any keyword) in a caption — dropped 2026-11-25. If a slot's `cta` is ever not `none` (an old version), say so in the summary.
 Per platform:
 - **Instagram:** "Download the Unsnooze app", then the caption in the slot's style, then the hashtags. `hook_cta` uses the soft CTA ("unsnooze makes you actually get up. link in bio").
-- **TikTok:** "Download the Unsnooze app", then one punchy line in the slot's style + hashtags; `metadata.tiktok.title` short.
+- **TikTok:** "Download the Unsnooze app", then one punchy line in the slot's style + hashtags. **Never set `metadata.tiktok.title`** (Chika, 2026-11-26: a TikTok title hides the "Download the Unsnooze app" line of the description). Only send `metadata.tiktok.isAiGenerated` when needed.
 - **YouTube Shorts:** `metadata.youtube.title` ≤ 70 chars in the slot's style (emoji count from `post_emoji`), `categoryId` "22"; description starts with "Download the Unsnooze app", then a line in the slot's style + the hashtags.
 - **Facebook Page (Reel):** the same caption as Instagram ("Download the Unsnooze app" first, slot's style, line breaks, then the hashtags in the same text — Reels have one description field, no title). Buffer channel `facebook` in `config.toml`.
 
