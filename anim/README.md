@@ -80,3 +80,10 @@ Keep overlays in the top third; the character is framed below them. Only show ch
   low-poly-shorts format. (This path could not be tested from the cloud yet; the first night with a key should check the log line `voice:`.)
 - Music: an original lo-fi bed generated in `build.py` (no licence needed), ducked under the voice.
 - Sound effects: smoke-alarm chirps, the phone alarm from `sounds/alarm/`, thuds on stamps, chimes on the win and the download card.
+
+## Background music
+
+The build writes its own music; there is no music file. `anim/build.py` has five original lo-fi tracks (`sunday`,
+`slow_morning`, `get_up`, `late_night`, `bright`: same instruments, different key, tempo and chords). By default the
+track is picked from the video's id, so it changes from video to video but repeats now and then. To choose one, add
+`"music": "<name>"` to the spec. The build prints which track it used.

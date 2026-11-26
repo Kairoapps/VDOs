@@ -311,10 +311,27 @@ def cta(t, t0):
 
 
 # ------------------------------------------------------------------ audio
+# Five original lo-fi beds (same instruments, different key / tempo / progression). A video uses spec["music"] if set
+# (a name below), otherwise one is picked from its id, so tracks repeat now and then instead of changing every time.
+TRACKS = {
+    "sunday": (84, [[53, 57, 60, 64], [52, 55, 59, 62], [57, 60, 64, 67], [50, 53, 57, 60]], [41, 40, 45, 38]),   # the first one
+    "slow_morning": (76, [[50, 53, 57, 60], [55, 59, 62, 65], [48, 52, 55, 59], [57, 60, 64, 67]], [38, 43, 36, 45]),
+    "get_up": (92, [[57, 60, 64, 67], [53, 57, 60, 64], [48, 52, 55, 59], [55, 59, 62, 64]], [45, 41, 36, 43]),
+    "late_night": (72, [[51, 55, 58, 62], [48, 51, 55, 58], [56, 60, 63, 67], [58, 62, 65, 68]], [39, 36, 44, 46]),
+    "bright": (96, [[55, 59, 62, 66], [52, 55, 59, 62], [48, 52, 55, 59], [50, 54, 57, 60]], [43, 40, 36, 38]),
+}
+TRACK = "sunday"
+
+
+def pick_track(spec, name):
+    import zlib
+    t = spec.get("music")
+    return t if t in TRACKS else sorted(TRACKS)[zlib.crc32(name.encode()) % len(TRACKS)]
+
+
 def music(n, lift):
     """Original lo-fi bed: soft electric-piano chords, then bass + drums from the 'lift' time."""
-    bpm = 84; beat = 60 / bpm; bar = beat * 4; out = np.zeros(n + SR * 4); N = lambda m: 440 * 2 ** ((m - 69) / 12)
-    chords = [[53, 57, 60, 64], [52, 55, 59, 62], [57, 60, 64, 67], [50, 53, 57, 60]]; bass = [41, 40, 45, 38]
+    bpm, chords, bass = TRACKS[TRACK]; beat = 60 / bpm; bar = beat * 4; out = np.zeros(n + SR * 4); N = lambda m: 440 * 2 ** ((m - 69) / 12)
 
     def ep(f, dur, vol):
         x = np.arange(int(dur * SR)) / SR; e = np.minimum(1, x / 0.01) * np.exp(-x * 1.6)
@@ -408,6 +425,8 @@ def main():
     spec_path = Path(sys.argv[1]).resolve(); snap = "--snap" in sys.argv
     spec = json.loads(spec_path.read_text()); work = spec_path.parent; name = spec.get("id") or spec_path.stem
     beats = [dict(b, i=i) for i, b in enumerate(spec["beats"])]
+    global TRACK
+    TRACK = pick_track(spec, name); print("music track:", TRACK)
     for b in beats:
         if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
             sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")
