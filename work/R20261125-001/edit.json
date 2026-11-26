@@ -1,0 +1,74 @@
+{
+  "topic": "tap",
+  "format": "pov",
+  "summary": "Chilling on the lounge couch, alarm hits, has to hammer-tap the screen dozens of times before it lets go.",
+  "keep": [
+    [
+      20.3,
+      47.6
+    ]
+  ],
+  "alarm_at": 21.3,
+  "dismiss_at": 45.6,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta tap my phone 60 times to turn off my alarm 🔨"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap my phone 60 times to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap my phone 60 times to turn off my alarm 😤🔨💯",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you tap 500 times 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you tap 500 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you tap 500 times 💀👆🫠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants 60 taps first 🙄"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants 60 taps first",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants 60 taps first 🙄😮‍💨🔨",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 20.3
+    },
+    {
+      "type": "question",
+      "start": 20.3,
+      "text": "Could you tap this fast?"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

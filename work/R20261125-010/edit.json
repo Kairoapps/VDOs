@@ -1,0 +1,78 @@
+{
+  "topic": "pushup",
+  "format": "pov",
+  "summary": "3:45am alarm in the lounge; props the phone against the wall and does pushups on the floor until it lets go.",
+  "keep": [
+    [
+      31.9,
+      46.0
+    ],
+    [
+      52.0,
+      75.5
+    ]
+  ],
+  "alarm_at": 32.9,
+  "dismiss_at": 73.0,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta do 10 pushups to turn off my alarm 💪"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta do 10 pushups to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta do 10 pushups to turn off my alarm 💪😤🔥",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do 100 pushups at 3:45am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do 100 pushups at 3:45am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you do 100 pushups at 3:45am 💀💪🫠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is my personal trainer now 😮‍💨"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is my personal trainer now",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm is my personal trainer now 😮‍💨💪🙄",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 31.9
+    },
+    {
+      "type": "bold_claim",
+      "start": 31.9,
+      "text": "pushups at 3:45am"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

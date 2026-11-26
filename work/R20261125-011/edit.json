@@ -1,0 +1,73 @@
+{
+  "topic": "shake",
+  "format": "pov",
+  "summary": "3:32am alarm; shakes the snow globe on screen until it's dismissed.",
+  "keep": [
+    [
+      5.7,
+      13.0
+    ],
+    [
+      23.0,
+      33.5
+    ]
+  ],
+  "alarm_at": 6.7,
+  "dismiss_at": 31.0,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta shake a snow globe to turn off my alarm ❄️"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake a snow globe to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake a snow globe to turn off my alarm ❄️📱😵",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 200 times 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 200 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 200 times 💀❄️📳",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a snow day 🥶"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a snow day",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a snow day 🥶❄️😩",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 5.7
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

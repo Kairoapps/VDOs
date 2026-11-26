@@ -1,0 +1,156 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261125-002__v1",
+   "scheduled_at": "2026-11-26T08:00:00-05:00",
+   "time_slot": "08:00",
+   "hashtag_set": "unsnooze-brand",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b07c4dbb8e2338b8592faa2",
+     "caption": "Download the Unsnooze app\nmy alarm won't shut up until i walk down the hall and scan the trash can 🗑️💀\nunsnooze makes you actually get up. link in bio\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b07c4dc07071a6067598d3e",
+     "caption": "Download the Unsnooze app\nmy alarm lives in the trash can now and i have to go scan it 🗑️💀 unsnooze makes you actually get up #unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b07c4ddb96dd8d351908087",
+     "caption": "My alarm only turns off if I scan the trash can 🗑️💀 | Download the Unsnooze app\nhad to walk down the hall and scan the trash can to turn off my alarm 🗑️💀 unsnooze makes you actually get up, it's on the app store\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b07c4dd07071a6067598d9e",
+     "caption": "Download the Unsnooze app\nmy alarm won't shut up until i walk down the hall and scan the trash can 🗑️💀\nunsnooze makes you actually get up. link in bio\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261125-005__v1",
+   "scheduled_at": "2026-11-26T11:00:00-05:00",
+   "time_slot": "11:00",
+   "hashtag_set": "unsnooze-wake",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b07c4e9b8e2338b8592fd0d",
+     "caption": "Download the Unsnooze app\nmy alarm won't stop until i find a couch and take a picture of it 🛋️\nunsnooze makes you actually get up. link in bio\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b07c4eab8e2338b8592fd4d",
+     "caption": "Download the Unsnooze app\nmy alarm sent me on a couch hunt at 3am 🛋️ unsnooze makes you actually get up #unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b07c4eba791bea1b258737d",
+     "caption": "My alarm made me go find a couch 🛋️ | Download the Unsnooze app\nmy alarm won't stop until i find a couch and take a picture of it 🛋️ unsnooze makes you actually get up, it's on the app store\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b07c4ebb8e2338b8592ff99",
+     "caption": "Download the Unsnooze app\nmy alarm won't stop until i find a couch and take a picture of it 🛋️\nunsnooze makes you actually get up. link in bio\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "A20261126-002_v1",
+   "scheduled_at": "2026-11-26T14:30:00-05:00",
+   "time_slot": "14:30",
+   "hashtag_set": "unsnooze-brand",
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b07c4f79f6dda31ccc83223",
+     "caption": "Download the Unsnooze app\nexcuse number one is always five more minutes 🙄\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b07c4f7b8e2338b859304e3",
+     "caption": "Download the Unsnooze app\nme at 6am negotiating with my alarm like a lawyer 🙄 #unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b07c4f89f6dda31ccc83263",
+     "caption": "6 AM. the negotiations begin 🙄 | Download the Unsnooze app\nexcuse number one is always five more minutes 🙄\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b07c4f9b96dd8d35190895e",
+     "caption": "Download the Unsnooze app\nexcuse number one is always five more minutes 🙄\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "A20261126-001_v1",
+   "scheduled_at": "2026-11-26T18:30:00-05:00",
+   "time_slot": "18:30",
+   "hashtag_set": "unsnooze-wake",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b07c50bd4eda4b659def3e3",
+     "caption": "Download the Unsnooze app\nnobody has ever snoozed a fire alarm 🚨\nso i made my alarm work like one. unsnooze makes you actually get up. link in bio\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b07c50cb8e2338b85930877",
+     "caption": "Download the Unsnooze app\nyou've never snoozed a fire alarm 🚨 unsnooze makes you actually get up #unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b07c50da791bea1b258861e",
+     "caption": "You've never snoozed a fire alarm 🚨 | Download the Unsnooze app\nso i made my alarm work like a fire alarm 🚨 unsnooze makes you actually get up, it's on the app store\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b07c50db96dd8d3519090bf",
+     "caption": "Download the Unsnooze app\nnobody has ever snoozed a fire alarm 🚨\nso i made my alarm work like one. unsnooze makes you actually get up. link in bio\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

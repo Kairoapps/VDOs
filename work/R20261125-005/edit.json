@@ -1,0 +1,78 @@
+{
+  "topic": "photo",
+  "format": "pov",
+  "summary": "Phone face down on the table; alarm hits and House Hunt makes her walk around the floor to find and photograph a couch.",
+  "keep": [
+    [
+      24.0,
+      44.0
+    ],
+    [
+      50.5,
+      65.5
+    ]
+  ],
+  "alarm_at": 25.0,
+  "dismiss_at": 63.5,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta find a couch to turn off my alarm 🛋️"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta find a couch to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta find a couch to turn off my alarm 🛋️🔍😩",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm sends you on a couch hunt at 3am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm sends you on a couch hunt at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm sends you on a couch hunt at 3am 💀🛋️🚶",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm made me go find a couch 🙄"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm made me go find a couch",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm made me go find a couch 🙄🛋️😮‍💨",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 24.0
+    },
+    {
+      "type": "bold_claim",
+      "start": 24.0,
+      "text": "my alarm wants furniture"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

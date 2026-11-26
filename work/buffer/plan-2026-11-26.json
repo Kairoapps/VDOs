@@ -1,0 +1,183 @@
+{
+ "date": "2026-11-26",
+ "slots": [
+  {
+   "variant_id": "R20261125-002__v1",
+   "clip_id": "R20261125-002",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-002__v1__d9e74c.mp4",
+   "file": "R20261125-002__v1__d9e74c.mp4",
+   "scheduled_at": "2026-11-26T08:00:00-05:00",
+   "time_slot": "08:00",
+   "hashtag_set": "unsnooze-brand",
+   "hashtags": [
+    "#unsnooze",
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "scan",
+   "format": "pov",
+   "hook_type": "bold_claim",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm lives in the trash can now \ud83e\udd72",
+   "duration_s": 25.4,
+   "summary": "Lying on the couch staring at the ceiling, alarm goes off and she has to walk down the hall to scan the QR code on the trash can.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261125-005__v1",
+   "clip_id": "R20261125-005",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-005__v1__0ff4be.mp4",
+   "file": "R20261125-005__v1__0ff4be.mp4",
+   "scheduled_at": "2026-11-26T11:00:00-05:00",
+   "time_slot": "11:00",
+   "hashtag_set": "unsnooze-wake",
+   "hashtags": [
+    "#unsnooze",
+    "#wakeup",
+    "#heavysleeper",
+    "#snooze"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm made me go find a couch \ud83d\ude44",
+   "duration_s": 25.0,
+   "summary": "Phone face down on the table; alarm hits and House Hunt makes her walk around the floor to find and photograph a couch.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "A20261126-002_v1",
+   "clip_id": "A20261126-002",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/A20261126-002_v1_f4ca36.mp4",
+   "file": "A20261126-002_v1_f4ca36.mp4",
+   "scheduled_at": "2026-11-26T14:30:00-05:00",
+   "time_slot": "14:30",
+   "hashtag_set": "unsnooze-brand",
+   "hashtags": [
+    "#unsnooze",
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "animation",
+   "format": "animation",
+   "hook_type": "story",
+   "overlay_text": "6 AM. the negotiations begin.",
+   "caption_text": "6 AM. the negotiations begin.",
+   "duration_s": 33.933333,
+   "summary": "At 6 AM he runs through his excuses (five more minutes, class is optional, skip breakfast) and ends up late again. So he gives his alarm one rule, no excuses: Unsnooze makes him do 15 squats and a memory game, and he's out the door on time.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "animation",
+   "kind": "animation",
+   "style": "low_poly",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "A20261126-001_v1",
+   "clip_id": "A20261126-001",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/A20261126-001_v1_154bca.mp4",
+   "file": "A20261126-001_v1_154bca.mp4",
+   "scheduled_at": "2026-11-26T18:30:00-05:00",
+   "time_slot": "18:30",
+   "hashtag_set": "unsnooze-wake",
+   "hashtags": [
+    "#unsnooze",
+    "#wakeup",
+    "#heavysleeper",
+    "#snooze"
+   ],
+   "topic": "animation",
+   "format": "animation",
+   "hook_type": "story",
+   "overlay_text": "You've never snoozed a fire alarm",
+   "caption_text": "You've never snoozed a fire alarm",
+   "duration_s": 35.433333,
+   "summary": "Low-poly animated story: nobody snoozes a fire alarm, but he snoozes his 6 AM alarm seven times and is late again. So he makes his alarm work like one with Unsnooze: push-ups, 100 steps, math, memory, shaking the phone. He hasn't been late since.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "animation",
+   "kind": "animation",
+   "style": "low_poly",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "1",
+   "cta": "none",
+   "cta_text": null
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 11,
+  "level": "healthy",
+  "remaining_uses": 47,
+  "active_clips": 19,
+  "clips_needed": 0,
+  "covered_through": "2026-12-06",
+  "first_gap": "2026-12-07",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube",
+  "facebook"
+ ],
+ "animations": {
+  "planned": 2,
+  "ready": 2,
+  "wanted": [
+   1,
+   2
+  ]
+ },
+ "limits": {}
+}

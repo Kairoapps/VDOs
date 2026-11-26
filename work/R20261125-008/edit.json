@@ -1,0 +1,82 @@
+{
+  "topic": "photo",
+  "format": "pov",
+  "summary": "Lying under a lamp, alarm goes off and House Hunt makes her walk the whole hallway to find and photograph a toilet.",
+  "keep": [
+    [
+      37.6,
+      50.0
+    ],
+    [
+      56.0,
+      64.0
+    ],
+    [
+      76.0,
+      89.5
+    ]
+  ],
+  "alarm_at": 38.6,
+  "dismiss_at": 87.0,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta find a toilet to turn off my alarm 🚽"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta find a toilet to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta find a toilet to turn off my alarm 🚽🏃😩",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you photograph a toilet at 3am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you photograph a toilet at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you photograph a toilet at 3am 💀🚽📸",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm sent me to the bathroom 🤡"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm sent me to the bathroom",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm sent me to the bathroom 🤡🚽😮‍💨",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 37.6
+    },
+    {
+      "type": "bold_claim",
+      "start": 37.6,
+      "text": "my alarm needs a toilet pic"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

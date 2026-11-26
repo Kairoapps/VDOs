@@ -1,0 +1,74 @@
+{
+  "topic": "shake",
+  "format": "pov",
+  "summary": "3:30am alarm in the lounge; shakes the phone 53 times like a soda bottle until it's dismissed.",
+  "keep": [
+    [
+      0.0,
+      23.7
+    ]
+  ],
+  "alarm_at": 1.0,
+  "dismiss_at": 21.7,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm 📱"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm 📱😵📳",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 500 times at 3:30am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 500 times at 3:30am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you shake it 500 times at 3:30am 💀📱🔥",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm turned me into a soda shaker 😤"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm turned me into a soda shaker",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm turned me into a soda shaker 😤🥤💀",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 0.0
+    },
+    {
+      "type": "question",
+      "start": 0.0,
+      "text": "How fast can you shake?"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

@@ -1,0 +1,74 @@
+{
+  "topic": "memory",
+  "format": "pov",
+  "summary": "Staring at the ceiling until 3:39am; alarm hits and she has to memorize and repeat a 6-color sequence.",
+  "keep": [
+    [
+      32.5,
+      65.5
+    ]
+  ],
+  "alarm_at": 33.5,
+  "dismiss_at": 63.0,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta memorize 6 colors to turn off my alarm 🧠"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta memorize 6 colors to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta memorize 6 colors to turn off my alarm 🧠🌈😵",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you memorize 60 colors at 3am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you memorize 60 colors at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you memorize 60 colors at 3am 💀🧠⏰",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm gave me a memory test 🫠"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm gave me a memory test",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm gave me a memory test 🫠🧠😩",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 32.5
+    },
+    {
+      "type": "question",
+      "start": 32.5,
+      "text": "Could you remember all 6?"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

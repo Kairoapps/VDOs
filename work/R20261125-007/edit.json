@@ -1,0 +1,74 @@
+{
+  "topic": "tap",
+  "format": "pov",
+  "summary": "3:34am alarm; taps the egg on screen dozens of times until it cracks and the alarm stops.",
+  "keep": [
+    [
+      4.0,
+      27.0
+    ]
+  ],
+  "alarm_at": 5.0,
+  "dismiss_at": 24.8,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta tap an egg 50 times to turn off my alarm 🥚"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap an egg 50 times to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap an egg 50 times to turn off my alarm 🥚👆😩",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you crack an egg 1000 times 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you crack an egg 1000 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you crack an egg 1000 times 💀🥚🔥",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop till the egg cracks 😮‍💨"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop till the egg cracks",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm won't stop till the egg cracks 😮‍💨🥚😵",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 4.0
+    },
+    {
+      "type": "question",
+      "start": 4.0,
+      "text": "How many taps to crack it?"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

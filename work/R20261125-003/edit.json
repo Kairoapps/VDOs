@@ -1,0 +1,74 @@
+{
+  "topic": "tap",
+  "format": "pov",
+  "summary": "Alarm goes off on the couch; she has to pump up a balloon with 70 taps before it stops.",
+  "keep": [
+    [
+      9.8,
+      38.0
+    ]
+  ],
+  "alarm_at": 10.8,
+  "dismiss_at": 35.5,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta tap 70 times to blow up a balloon to turn off my alarm 🎈"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap 70 times to blow up a balloon to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta tap 70 times to blow up a balloon to turn off my alarm 🎈😤💨",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pump a balloon 700 times 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pump a balloon 700 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you pump a balloon 700 times 💀🎈🫠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a balloon inflated 😵"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a balloon inflated",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants a balloon inflated 😵🎈😩",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 9.8
+    },
+    {
+      "type": "text_overlay",
+      "start": 9.8,
+      "text": "3:30am balloon pumping"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

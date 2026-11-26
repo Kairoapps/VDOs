@@ -1,0 +1,74 @@
+{
+  "topic": "shake",
+  "format": "pov",
+  "summary": "Staring at the ceiling, 3:31am alarm hits; shakes the phone 53 times like a salt shaker over an egg.",
+  "keep": [
+    [
+      14.3,
+      38.5
+    ]
+  ],
+  "alarm_at": 15.3,
+  "dismiss_at": 36.0,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm 🧂"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta shake my phone 53 times to turn off my alarm 🧂🍳😤",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you salt an egg 100 times 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you salt an egg 100 times",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you salt an egg 100 times 💀🧂🫠",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants me to season breakfast 🥲"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants me to season breakfast",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm wants me to season breakfast 🥲🍳🧂",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 14.3
+    },
+    {
+      "type": "text_overlay",
+      "start": 14.3,
+      "text": "3:31am seasoning session"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}

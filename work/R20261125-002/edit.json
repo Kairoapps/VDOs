@@ -1,0 +1,74 @@
+{
+  "topic": "scan",
+  "format": "pov",
+  "summary": "Lying on the couch staring at the ceiling, alarm goes off and she has to walk down the hall to scan the QR code on the trash can.",
+  "keep": [
+    [
+      26.2,
+      64.3
+    ]
+  ],
+  "alarm_at": 27.2,
+  "dismiss_at": 62.3,
+  "premise": [
+    {
+      "style": "gotta",
+      "text": "Gotta scan the trash can to turn off my alarm 🗑️"
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta scan the trash can to turn off my alarm",
+      "emoji_test": true
+    },
+    {
+      "style": "gotta",
+      "text": "Gotta scan the trash can to turn off my alarm 🗑️😩📸",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk to the trash at 3am 💀"
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk to the trash at 3am",
+      "emoji_test": true
+    },
+    {
+      "style": "pov",
+      "text": "POV: your alarm makes you walk to the trash at 3am 💀🗑️🚶",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm lives in the trash can now 🥲"
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm lives in the trash can now",
+      "emoji_test": true
+    },
+    {
+      "style": "crashing_out",
+      "text": "crashing out because my alarm lives in the trash can now 🥲🗑️😮‍💨",
+      "emoji_test": true
+    }
+  ],
+  "hooks": [
+    {
+      "type": "mid_action",
+      "start": 26.2
+    },
+    {
+      "type": "bold_claim",
+      "start": 26.2,
+      "text": "my alarm is in the trash"
+    }
+  ],
+  "bed": {
+    "category": "alarm"
+  },
+  "angle": "challenge",
+  "moods": [],
+  "unusable": false
+}
