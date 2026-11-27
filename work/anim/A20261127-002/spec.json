@@ -1,0 +1,187 @@
+{
+ "id": "A20261127-002",
+ "style": "low_poly",
+ "concept": "night-me-vs-morning-me",
+ "title": "night me and morning me are not the same person.",
+ "summary": "Low-poly story: night him sets a 6 AM alarm, but morning him snoozes it three times and ends up late again. So he stops trusting morning him: now Unsnooze won't stop until he solves math and does 10 push-ups, and by then he's actually awake and out the door on time.",
+ "beats": [
+  {
+   "shot": "set_alarm_in_bed",
+   "line": "Night me and morning me are not the same person.",
+   "caption": "night me and morning me\nare *not the same person.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.3,
+     "y": 320
+    }
+   ]
+  },
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "Night me set six A M. Morning me has other plans.",
+   "caption": "night me: *6 AM.*\nmorning me: other plans."
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "Snooze. Snooze. Snooze.",
+   "caption": "*snooze.* snooze. snooze.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×3",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "late_sprint",
+   "line": "[deadpan] And I'm late. Again.",
+   "caption": "and I'm *late.* again.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:47 AM",
+     "accent": "red",
+     "at": 0.05,
+     "x": 480
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.8,
+     "x": 770,
+     "y": 440,
+     "rot": -11
+    }
+   ]
+  },
+  {
+   "shot": "talk",
+   "lift": true,
+   "line": "So I stopped trusting morning me.",
+   "caption": "so I stopped trusting\n*morning me.*"
+  },
+  {
+   "shot": "thinking",
+   "line": "Now he has to solve math before it stops.",
+   "caption": "now he has to *solve math*\nbefore it stops.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "math"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "pushups",
+   "line": "Then do ten push-ups.",
+   "caption": "then do *10 push-ups.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 6,
+     "to": 10,
+     "total": 10,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "By then, morning me is just awake me.",
+   "caption": "by then morning me\nis just *awake me.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "color": "green",
+     "at": 0.9,
+     "y": 460
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Night me says you're welcome.",
+   "caption": "night me says\n*you're welcome.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "color": "green",
+     "at": 0.5,
+     "x": 690,
+     "y": 460
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!",
+ "look": {
+  "name": "gamer room / cap hair",
+  "room": "gamer room",
+  "skin": "#c68a5e",
+  "skinD": "#9a6440",
+  "cheek": "#c86a4a",
+  "hair": "#3a6ad0",
+  "hairStyle": "cap",
+  "glasses": false,
+  "beard": false,
+  "freckles": false,
+  "top": "#f2a03a",
+  "top2": "#d0802a",
+  "pants": "#2e3a5a",
+  "shoe": "#2a2a30",
+  "sole": "#f06a39",
+  "beardColor": "#2a1a12",
+  "pack": "#f06a39",
+  "capColor": "#e8556a",
+  "wall": "#3a3a48",
+  "wallTex": "block",
+  "floorKind": "carpet",
+  "floor": [
+   "#2a2a32",
+   "#26262e"
+  ],
+  "floorLine": "#3a3a46",
+  "quilt": [
+   "#e8556a",
+   "#1a1a22",
+   "#5af08a",
+   "#1a1a22"
+  ],
+  "rug": "#1a1a22",
+  "rugTrim": "#5af08a",
+  "curtain": "#e8556a",
+  "poster": "#5af08a",
+  "wood": "#1a1a22",
+  "frame": "#2a2a32",
+  "sheet": "#c8c8d0",
+  "plant": false,
+  "lights": true,
+  "lightsColor": "#e8556a"
+ },
+ "voice_dir": "vo"
+}

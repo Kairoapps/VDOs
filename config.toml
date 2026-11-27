@@ -21,7 +21,7 @@ organization_id = "6acd0dec0ee270b5947c74de"
 channels = { instagram = "6acd0e54778b240e2fe91763", tiktok = "6acd0e18778b240e2fe9157f", youtube = "6ad5c498778b240e2f557a0c", facebook = "6b0698338541f09ecb99dbf0" }
 
 [posting]
-# 4 slots a day, 1-2 of them animations (Chika, 2026-11-25 9pm; was 3). Every slot goes to TikTok + Instagram Reels +
+# 4 slots a day, 2 of them animations (Chika, 2026-11-27; was 1-2 since 2026-11-25). Every slot goes to TikTok + Instagram Reels +
 # Facebook Page Reels + YouTube Shorts. (A daily slideshow slot was tried on 2026-11-25 and dropped the same night.)
 # Buffer is on a paid plan (2026-11-25). Paid-plan YouTube limit is 5 per rolling 24 h; the planner still enforces it.
 posts_per_day = 4
@@ -122,11 +122,11 @@ default = "alarm-core"
 styles = ["hook_cta", "relatable", "question"]   # 2026-11-25: dropped "comment_cta" (no comment CTAs)
 emojis = ["0", "1", "2-3"]
 
-# Animated videos, made in code by the nightly run (anim/, prompts/animation.md). Each day 1-2 of the slots are animations.
+# Animated videos, made in code by the nightly run (anim/, prompts/animation.md). Each day 2 of the 4 slots are animations (Chika, 2026-11-27; was 1-2).
 [animation]
-min_per_day = 1
+min_per_day = 2
 max_per_day = 2
-two_share = 0.5            # how often a day gets 2 animations instead of 1 (when 2 are ready)
+two_share = 0.5            # unused while min_per_day = max_per_day = 2
 new_per_night = 1          # new animations the nightly run makes
 # Styles Chika allowed (2026-11-25): low poly and zach-3d-films, leaning low poly. The weekly ranking of
 # title_style anim_low_poly / anim_zach_3d nudges this.

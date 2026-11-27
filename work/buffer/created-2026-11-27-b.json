@@ -1,0 +1,42 @@
+{
+ "slots": [
+  {
+   "variant_id": "A20261127-002_v1",
+   "scheduled_at": "2026-11-27T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "heavy-sleeper-5",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b094448658222306cf9101f",
+     "caption": "Download the Unsnooze app\nnight me sets the alarm for 6. morning me snoozes it three times 🌙🫠\nwho wins at your place, night you or morning you?\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b094449658222306cf91055",
+     "caption": "Download the Unsnooze app\nwho wins more, night you or morning you? 🌙🫠 #heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b094449049983dcfba2a7d0",
+     "caption": "Download the Unsnooze app\nnight me sets the alarm, morning me snoozes it. who wins at your place? 🌙🫠\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b09444a049983dcfba2a813",
+     "caption": "Download the Unsnooze app\nnight me sets the alarm for 6. morning me snoozes it three times 🌙🫠\nwho wins at your place, night you or morning you?\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
