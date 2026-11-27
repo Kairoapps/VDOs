@@ -1,6 +1,6 @@
 # Animations
 
-Animated Unsnooze videos made entirely in code. Each day 1-2 of the 4 posting slots are animations (`config.toml` `[animation]`).
+Animated Unsnooze videos made entirely in code. Each day 2 of the 4 posting slots are animations (`config.toml` `[animation]`).
 The nightly run writes a story spec, builds it here, checks the contact sheet and adds it to the library with `vdos anim-add`.
 The procedure for the run is in `prompts/animation.md`; this file documents the tool.
 

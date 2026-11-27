@@ -1,6 +1,6 @@
 # Tonight's animation (part of the daily run)
 
-Each day 1-2 of the 4 slots are animated videos. This step makes one new animation a night so the library never runs dry
+Each day 2 of the 4 slots are animated videos (Chika, 2026-11-27; was 1-2). This step makes one new animation a night so the library never runs dry
 (each animation is used at most 3 times, like a clip). Tool docs: `anim/README.md`. Don't stop to ask questions.
 
 1. `python3 -m vdos anim-status` — `next_style`, `concepts_used`, `in_stock`, `uses_left`. Only `low_poly` is live.
@@ -18,6 +18,14 @@ Each day 1-2 of the 4 slots are animated videos. This step makes one new animati
    the turn ("so I...") -> one or two Unsnooze challenges shown working -> the payoff -> (download card is automatic).
    Good angles: an everyday comparison (things nobody snoozes: a fire alarm, a flight, a kettle), "POV" of the snooze bargain,
    a countdown of excuses, the roommate/mom who used to wake him, first week with the app, one challenge in detail.
+   **The hook decides the video (Chika, 2026-11-27).** Beat 1 is the hook: its caption and voice line must stop the scroll in the
+   first 2 seconds, on their own, before anything is explained. A good hook is a full, specific claim a heavy sleeper instantly
+   agrees with or wants to argue with ("you've never snoozed a fire alarm", "ten alarms. slept through all ten.", "night me and
+   morning me are not the same person."), not a scene-setter ("6 AM.", "so this morning...", "night me sets the alarm"). Keep it
+   <= 9 words, no app name, no greeting, and put the strongest visual of the first act under it (card or stamp on screen by 0.3 s).
+   Write 3 candidate hooks, pick the one that would work as a caption with the sound off, and use it as the `--title` too.
+   Don't reuse a hook shape from the last 3 animations (comparison, number, POV, confession, question...). If the hook is weak on
+   the sheet, rewrite beat 1 before adding the video: a weak hook counts as "not right".
    Rules: first person, casual, lowercase captions (voice per `prompts/voice.md`); one idea per beat; captions <= 9 words;
    only real Unsnooze challenges and plausible numbers (push-ups, squats, walking steps, shake, memory, math, typing, matching,
    house hunt, affirmation; "15+ ways to wake up"); no claims about results the app can't promise; nothing about other apps.

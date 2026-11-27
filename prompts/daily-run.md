@@ -34,7 +34,7 @@ If the weekly review left `work/<clip>/more.json` (`{"n": 2}`), pull that clip's
 ## 1b. Tonight's animation
 
 Follow `prompts/animation.md`: write one new animated story, build it with `anim/build.py`, check the sheet, `vdos anim-add`.
-(4 slots a day, 1-2 of them animations — Chika, 2026-11-25.) If the build can't be made right, skip it and carry on.
+(4 slots a day, 2 of them animations — Chika, 2026-11-27; was 1-2.) If the build can't be made right, skip it and carry on.
 
 ## 2. Publish videos for Buffer
 
@@ -54,7 +54,7 @@ Buffer org `6acd0dec0ee270b5947c74de` ("My organization"); channel IDs are in `c
 ```
 python3 -m vdos plan
 ```
-Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots, 1-2 of them animations (`"kind": "animation"`; the plan's `animations` field shows planned/ready), and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 4 posts a day per platform.** If `animations.planned` is 0, say so in the summary (no animation was ready). No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
+Every `video_url` must answer 200 (`curl -sI`) before you use it. Slots stay between 8:00am and 9:00pm Eastern (config). The plan has **4 slots, 2 of them animations (Chika, 2026-11-27; `"kind": "animation"`; the plan's `animations` field shows planned/ready), and every slot goes to TikTok + Instagram Reels + Facebook Page Reels + YouTube Shorts = 4 posts a day per platform.** If `animations.planned` is less than 2, say so in the summary (not enough animations were ready). No slideshows (dropped 2026-11-25). Post each slot only to the platforms in its `platforms` list. `plan` still checks Buffer's rolling-24h limits (`platform_daily_max`; the plan's `limits` field shows any platform that got fewer slots); if a post fails with "daily posting limit", don't retry it. Schedule only today and skip if today is already scheduled.
 
 Captions in Chika's voice (`prompts/voice.md`, `references/style.md`), using the slot's `summary`, `topic`, `format`, `angle`, `caption_text` (the on-screen title; echo it, don't just repeat it). **Each slot is a caption test — follow it exactly, on every platform in the slot:**
 - **First line on every platform: "Download the Unsnooze app"** (its own line, at the very start of the caption/description; not counted in `post_emoji`). Then the caption.
