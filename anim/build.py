@@ -69,7 +69,7 @@ def elevenlabs(lines, out_dir):
             name = cfg.get("elevenlabs_voice", "")
             for url in (f"https://api.elevenlabs.io/v2/voices?search={urllib.request.quote(name.split(' - ')[0])}", "https://api.elevenlabs.io/v1/voices"):
                 vs = json.loads(call(url)).get("voices", [])
-                hit = [v for v in vs if name.split(" - ")[0].lower() in v.get("name", "").lower()] or vs
+                hit = [v for v in vs if name.split(" - ")[0].lower() in v.get("name", "").lower()]   # never another voice (Chika, 2026-11-27)
                 if hit:
                     vid = hit[0]["voice_id"]; break
         if not vid:

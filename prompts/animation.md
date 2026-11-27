@@ -5,6 +5,10 @@ Each day 2 of the 4 slots are animated videos (Chika, 2026-11-27; was 1-2). This
 
 1. `python3 -m vdos anim-status` — `next_style`, `concepts_used`, `in_stock`, `uses_left`. Only `low_poly` is live.
    If `next_style` is anything else, use `low_poly` and say so in the summary.
+1a. **One voice for every animation (Chika, 2026-11-27).** Always the fire-alarm video's voice: `config.toml` `[animation]`
+   `elevenlabs_voice_id` (Jack John - Conversational and Upbeat) with `elevenlabs_model`. Never set `ELEVENLABS_VOICE_ID`, never
+   change the voice, id or model, and don't give other characters a different voice: one narrator voices everything. Use tone
+   tags lightly (at most 2 lines per video) so he still sounds like the same person. Backup queue stories are the same voice.
 1b. **Fresh story, live voice (Chika, 2026-11-26).** Every night is a brand-new story (step 2) voiced live by ElevenLabs. The key is the
    `ELEVENLABS_API_KEY=` line in the scheduled task's own prompt; use it only as a prefix on the curl check and the build command.
    `work/anim/queue/` holds pre-voiced backup stories: use the lowest-numbered one **only if the live voice check fails** (`git mv` it to
@@ -13,9 +17,28 @@ Each day 2 of the 4 slots are animated videos (Chika, 2026-11-27; was 1-2). This
    skin, hair style/colour, glasses, beard, outfit; room: wall texture/colour, floor, bedding, lights, props) that differs from recent
    animations and saves it in the spec. Check on the sheet that tonight's character and room clearly differ from the last few videos'
    sheets; if not, delete `"look"` from the spec, or set fields by hand, and rebuild. Don't copy a previous spec's `look`.
-2. **Story.** Write a new one, different from every entry in `concepts_used` (different hook AND different middle). 7-12 beats, 18-35 s.
-   Shape: a hook in the first line that names a feeling every heavy sleeper knows -> the snooze spiral or its cost ->
-   the turn ("so I...") -> one or two Unsnooze challenges shown working -> the payoff -> (download card is automatic).
+2. **Story.** Write a new one, different from every entry in `concepts_used` (different hook AND different middle). 7-14 beats,
+   18-44 s: **the finished video must be under 45 seconds** (Chika, 2026-11-27; check `seconds` in the build output and trim if not).
+   **Change it up every night (Chika, 2026-11-27: "it keeps following the same familiar character and sequence... be creative,
+   make different scenarios").** The old formula (asleep -> snooze slaps -> late sprint -> set alarm -> challenge -> stretch ->
+   out the door) is retired as a template. Rules:
+   - Before writing, read the last 4 specs in `work/anim/A*/spec.json` and list their shot sequences. Tonight's video may share
+     **at most 2 shots** with any one of them, and must not open or close on the same shot as the last 3 (`out_the_door` and
+     `stretch_win` endings and `phone_buzz_asleep`/`snooze_slaps`/`late_sprint` middles are overused: avoid them most nights).
+   - **A new scenario each night**: a different situation, place or format, not just a new excuse in the same bedroom morning.
+     Ideas: the alarm/phone narrates ("I've rung 7 times. he hasn't moved."); a sports commentator or nature documentary on a
+     snoozer; the group chat/class/shift/gym/bus/exam he's missing, shown from there; a roommate, mom or sibling as a second
+     character; a courtroom or job interview with his alarm; ranking challenges; a dream that the alarm keeps breaking into;
+     a day told backwards; a nap gone wrong; a heavy sleeper's "setup tour"; two versions of him split-screen in time.
+     The Unsnooze challenge still has to be shown working, but it can come early, late, or be the whole video.
+   - **At least 2 brand-new shots per video**, written into `anim/lowpoly/index.html` (new poses, camera, props or a new place
+     built from low-poly boxes: desk, bus stop, kitchen, hallway, lecture hall, gym...; a second character is `look` with other
+     colours). Document each new shot in the table in `anim/README.md` so later nights can reuse it sparingly. Check new shots
+     with `--snap` (snaps don't count toward the 3 rebuilds).
+   - The character changes too: `build.py` picks the look (step 1c); vary age/role in the story (student, night-shift worker,
+     new parent, athlete, roommate...) and who is talking (not always "I").
+   - Still **low poly only**, voiced, with a strong hook, and the download card last.
+   Shape (loose): hook -> a situation people recognise -> the turn to Unsnooze -> one or two challenges shown working -> payoff.
    Good angles: an everyday comparison (things nobody snoozes: a fire alarm, a flight, a kettle), "POV" of the snooze bargain,
    a countdown of excuses, the roommate/mom who used to wake him, first week with the app, one challenge in detail.
    **The hook decides the video (Chika, 2026-11-27).** Beat 1 is the hook: its caption and voice line must stop the scroll in the

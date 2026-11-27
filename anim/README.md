@@ -31,7 +31,7 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
  ],
  "cta_line": "Download Unsnooze. Link in bio!"}
 ```
-- **beats**: 7-14, in order. Each beat is one shot with one caption. The video ends with the download card (app icon, App Store
+- **beats**: 7-14, in order; the finished video must be under 45 seconds (Chika, 2026-11-27). Each beat is one shot with one caption. The video ends with the download card (app icon, App Store
   listing, badge, "LINK IN BIO"), added automatically.
 - **caption**: lowercase, short; `*stars*` mark the 1-3 words shown in white (the rest is yellow). `\n` breaks lines, otherwise it wraps at ~24 characters.
 - **line**: what the voice says (defaults to the caption). ElevenLabs tone tags like `[groggy]` are allowed.
@@ -62,7 +62,8 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
 | `out_the_door` | walks out with his backpack, smiling | |
 | `store_art` | the real "15+ ways to wake up" App Store screenshot, full screen | no overlays |
 
-A story may need a shot that isn't here. Add `S.<name> = (u, d, k, t) => {...}` to `anim/lowpoly/index.html` by copying the closest
+Every new video needs at least 2 new shots and a new scenario (Chika, 2026-11-27; `prompts/animation.md` step 2): don't rebuild the
+same wake/snooze/late/win sequence from this table. A story may need a shot that isn't here. Add `S.<name> = (u, d, k, t) => {...}` to `anim/lowpoly/index.html` by copying the closest
 one (`pose({...})` sets every joint, `cam(...)` the camera, `mood(...)` the light), add it to `TILTS` if cards sit above his head,
 and check it with `--snap` before building. Shots must depend only on the time arguments.
 
@@ -75,7 +76,7 @@ and check it with `--snap` before building. Shots must depend only on the time a
 Keep overlays in the top third; the character is framed below them. Only show challenges and numbers the app really has.
 
 ## Voice and sound
-- Voice: ElevenLabs, voice and model from `config.toml` `[animation]`. The key comes from `ELEVENLABS_API_KEY`, which the nightly
+- Voice: ElevenLabs, always the same voice (Chika, 2026-11-27): `elevenlabs_voice_id` and model pinned in `config.toml` `[animation]`. The key comes from `ELEVENLABS_API_KEY`, which the nightly
   scheduled task sets on the build command only (never commit it: this repo is public). `api.elevenlabs.io` must be allowed in
   claude.ai Settings > Capabilities > Allowed websites (Cowork sessions; the Claude Code environment's network secret does not reach
   them — found 2026-11-26). Without a voice the build makes a captions-only video, unless `--require-voice` is passed (the nightly

@@ -135,6 +135,9 @@ skill_repo = "https://github.com/artemnovitckii/claude-animation-skills"
 skill_commit = "86f7010"   # pinned: the nightly run executes this code unattended
 voice = "elevenlabs"       # needs ELEVENLABS_API_KEY + api.elevenlabs.io allowed in the cloud; otherwise captions only
 elevenlabs_voice = "Jack John - Conversational and Upbeat"
+# Chika, 2026-11-27: EVERY animation uses this one voice (the fire-alarm video's). The id is pinned so a name search can never
+# pick someone else; don't change voice, id or model without Chika asking.
+elevenlabs_voice_id = "7EzWGsX10sAS4c9m9cPf"
 elevenlabs_model = "eleven_v3"
 
 # Content angles (set per clip in edit.json "angle"); ranked weekly and used to weight which clips post.
