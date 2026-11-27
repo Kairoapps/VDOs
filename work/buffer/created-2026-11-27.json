@@ -1,0 +1,156 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261125-010__v1",
+   "scheduled_at": "2026-11-27T08:00:00-05:00",
+   "time_slot": "08:00",
+   "hashtag_set": "app-challenge",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0911da1fd46e62e7155334",
+     "caption": "Download the Unsnooze app\nmy alarm won't stop until i get on the floor and do push-ups 😮‍💨💪\nunsnooze makes you actually get up. link in bio\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0911dbe94385a8fd76cae3",
+     "caption": "Download the Unsnooze app\nmy alarm is my personal trainer now and i did not sign up for this 😤💪 unsnooze makes you actually get up #alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0911dc776ce21276ea00f0",
+     "caption": "Download the Unsnooze app\npush-ups on the floor just to turn my alarm off 😤💪 unsnooze makes you actually get up, it's on the app store\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0911dc1fd46e62e71553f2",
+     "caption": "Download the Unsnooze app\nmy alarm won't stop until i get on the floor and do push-ups 😮‍💨💪\nunsnooze makes you actually get up. link in bio\n\n#alarmapp #wakeupchallenge #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261125-003__v1",
+   "scheduled_at": "2026-11-27T11:00:00-05:00",
+   "time_slot": "11:00",
+   "hashtag_set": "alarm-core",
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0911f1776ce21276ea0978",
+     "caption": "Download the Unsnooze app\nme tapping 70 times to blow up a balloon before my brain is even on 🎈\n\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0911f2062ed764a8e6f595",
+     "caption": "Download the Unsnooze app\nme speed tapping a balloon 70 times just to make my alarm stop 🎈 #alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0911f3049983dcfb8d7e55",
+     "caption": "Download the Unsnooze app\nme tapping 70 times to blow up a balloon before my brain is even on 🎈\n\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0911f31fd46e62e7156f1a",
+     "caption": "Download the Unsnooze app\nme tapping 70 times to blow up a balloon before my brain is even on 🎈\n\n#alarm #snooze #morningroutine #alarmclock",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "A20261127-001_v1",
+   "scheduled_at": "2026-11-27T14:30:00-05:00",
+   "time_slot": "14:30",
+   "hashtag_set": "unsnooze-brand",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0911f4e94385a8fd76d722",
+     "caption": "Download the Unsnooze app\ni used to set ten alarms and sleep through all of them ⏰😩\nhow many do you set before you actually get up?\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0911f51fd46e62e7156f74",
+     "caption": "Download the Unsnooze app\nhow many alarms do you set before you actually get up? i was at ten ⏰😩 #unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0911f5658222306ce4375c",
+     "caption": "Download the Unsnooze app\nhow many alarms do you set before you actually get up? i was at ten ⏰😩\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0911f6062ed764a8e6f777",
+     "caption": "Download the Unsnooze app\ni used to set ten alarms and sleep through all of them ⏰😩\nhow many do you set before you actually get up?\n\n#unsnooze #alarmapp #alarm #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261125-005__v2",
+   "scheduled_at": "2026-11-27T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "heavy-sleeper-5",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0912021fd46e62e71577f4",
+     "caption": "Download the Unsnooze app\nmy alarm made me walk around and take a picture of a couch before it would stop 🛋️📸\nwhat would yours have to make you find to actually get you up?\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b091202049983dcfb8d8332",
+     "caption": "Download the Unsnooze app\nwhat's the worst thing your alarm could make you go find at 3am? mine picked a couch 🛋️📸 #heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b091203062ed764a8e702ca",
+     "caption": "Download the Unsnooze app\nwhat's the worst thing your alarm could make you go find? mine wanted a couch 🛋️📸\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b091204658222306ce43ea5",
+     "caption": "Download the Unsnooze app\nmy alarm made me walk around and take a picture of a couch before it would stop 🛋️📸\nwhat would yours have to make you find to actually get you up?\n\n#heavysleeper #cantwakeup #alarmclock #snoozebutton #morningroutine",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

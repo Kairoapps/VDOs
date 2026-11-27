@@ -1,0 +1,184 @@
+{
+ "date": "2026-11-27",
+ "slots": [
+  {
+   "variant_id": "R20261125-010__v1",
+   "clip_id": "R20261125-010",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-010__v1__84e59b.mp4",
+   "file": "R20261125-010__v1__84e59b.mp4",
+   "scheduled_at": "2026-11-27T08:00:00-05:00",
+   "time_slot": "08:00",
+   "hashtag_set": "app-challenge",
+   "hashtags": [
+    "#alarmapp",
+    "#wakeupchallenge",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "pushup",
+   "format": "pov",
+   "hook_type": "bold_claim",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm is my personal trainer now \ud83d\ude2e\u200d\ud83d\udca8\ud83d\udcaa\ud83d\ude44",
+   "duration_s": 28.933333,
+   "summary": "3:45am alarm in the lounge; props the phone against the wall and does pushups on the floor until it lets go.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261125-003__v1",
+   "clip_id": "R20261125-003",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-003__v1__7ee7d7.mp4",
+   "file": "R20261125-003__v1__7ee7d7.mp4",
+   "scheduled_at": "2026-11-27T11:00:00-05:00",
+   "time_slot": "11:00",
+   "hashtag_set": "alarm-core",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#morningroutine",
+    "#alarmclock"
+   ],
+   "topic": "tap",
+   "format": "pov",
+   "hook_type": "text_overlay",
+   "overlay_text": null,
+   "caption_text": "Gotta tap 70 times to blow up a balloon to turn off my alarm",
+   "duration_s": 21.7,
+   "summary": "Alarm goes off on the couch; she has to pump up a balloon with 70 taps before it stops.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "relatable",
+   "post_emoji": "1",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "A20261127-001_v1",
+   "clip_id": "A20261127-001",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/A20261127-001_v1_06e1e9.mp4",
+   "file": "A20261127-001_v1_06e1e9.mp4",
+   "scheduled_at": "2026-11-27T14:30:00-05:00",
+   "time_slot": "14:30",
+   "hashtag_set": "unsnooze-brand",
+   "hashtags": [
+    "#unsnooze",
+    "#alarmapp",
+    "#alarm",
+    "#morningroutine"
+   ],
+   "topic": "animation",
+   "format": "animation",
+   "hook_type": "story",
+   "overlay_text": "ten alarms. slept through all ten.",
+   "caption_text": "ten alarms. slept through all ten.",
+   "duration_s": 29.5,
+   "summary": "He used to set ten alarms a night, snooze every one and still wake up late. Now he sets one Unsnooze alarm that won't stop until he shakes his phone 40 times and walks 50 steps, and he's out the door on time.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "animation",
+   "kind": "animation",
+   "style": "low_poly",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261125-005__v2",
+   "clip_id": "R20261125-005",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-005__v2__c1450d.mp4",
+   "file": "R20261125-005__v2__c1450d.mp4",
+   "scheduled_at": "2026-11-27T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "heavy-sleeper-5",
+   "hashtags": [
+    "#heavysleeper",
+    "#cantwakeup",
+    "#alarmclock",
+    "#snoozebutton",
+    "#morningroutine"
+   ],
+   "topic": "photo",
+   "format": "pov",
+   "hook_type": "bold_claim",
+   "overlay_text": null,
+   "caption_text": "POV: your alarm sends you on a couch hunt at 3am \ud83d\udc80",
+   "duration_s": 29.167,
+   "summary": "Phone face down on the table; alarm hits and House Hunt makes her walk around the floor to find and photograph a couch.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 12,
+  "level": "healthy",
+  "remaining_uses": 48,
+  "active_clips": 20,
+  "clips_needed": 0,
+  "covered_through": "2026-12-08",
+  "first_gap": "2026-12-09",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube",
+  "facebook"
+ ],
+ "animations": {
+  "planned": 1,
+  "ready": 3,
+  "wanted": [
+   1,
+   2
+  ]
+ },
+ "limits": {}
+}

@@ -1,0 +1,206 @@
+{
+ "id": "A20261127-001",
+ "style": "low_poly",
+ "concept": "ten-alarms",
+ "title": "ten alarms. slept through all ten.",
+ "summary": "Low-poly story: he used to set ten alarms a night and snooze every one of them, still waking up late. More alarms wasn't the fix, so now he sets one he can't ignore: Unsnooze won't stop until he shakes his phone 40 times and walks 50 steps, and he's up and out the door on time.",
+ "beats": [
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "I set ten alarms. Slept through all ten.",
+   "caption": "ten alarms.\n*slept through* all ten.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM 1 OF 10",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 320
+    }
+   ]
+  },
+  {
+   "shot": "snooze_slaps",
+   "line": "Six oh five, six ten, six fifteen. Snooze.",
+   "caption": "6:05. 6:10. 6:15.\n*snooze.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED ×3",
+     "at": 1.75,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "late_sprint",
+   "line": "[deadpan] Woke up at eight forty-seven anyway.",
+   "caption": "woke up at *8:47* anyway.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:47 AM",
+     "accent": "red",
+     "at": 0.05,
+     "x": 480
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.8,
+     "x": 770,
+     "y": 440,
+     "rot": -11
+    }
+   ]
+  },
+  {
+   "shot": "facepalm",
+   "line": "Turns out more alarms wasn't the fix.",
+   "caption": "more alarms\n*wasn't the fix.*"
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "lift": true,
+   "line": "So now I set one. One I can't ignore.",
+   "caption": "so now I set *one.*\none I can't ignore.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.5,
+     "x": 820,
+     "y": 420,
+     "rot": -6
+    }
+   ]
+  },
+  {
+   "shot": "shake_phone",
+   "line": "It won't stop until I shake my phone forty times.",
+   "caption": "it won't stop until I\n*shake my phone* 40 times.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "shake",
+     "from": 28,
+     "to": 40,
+     "total": 40,
+     "at": 0.15,
+     "x": 830,
+     "y": 440,
+     "scale": 0.62
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Then walk fifty steps. Out of bed.",
+   "caption": "then walk *50 steps.*\nout of bed.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 36,
+     "to": 50,
+     "total": 50,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "line": "One alarm. And I'm actually up.",
+   "caption": "*one alarm.*\nand I'm actually up.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "color": "green",
+     "at": 0.9,
+     "y": 460
+    }
+   ]
+  },
+  {
+   "shot": "out_the_door",
+   "line": "[proud] Deleted the other nine.",
+   "caption": "deleted the *other nine.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARMS SET",
+     "big": "1",
+     "accent": "green",
+     "at": 0.05,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "color": "green",
+     "at": 0.5,
+     "x": 690,
+     "y": 460
+    }
+   ]
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!",
+ "look": {
+  "name": "dorm room / bun hair",
+  "room": "dorm room",
+  "skin": "#7a4a2e",
+  "skinD": "#5a321c",
+  "cheek": "#9a4a32",
+  "hair": "#2a2a2a",
+  "hairStyle": "bun",
+  "glasses": true,
+  "beard": false,
+  "freckles": false,
+  "top": "#b07ae8",
+  "top2": "#8a58c8",
+  "pants": "#2a2a30",
+  "shoe": "#2a2a30",
+  "sole": "#f2f0ea",
+  "beardColor": "#2a2a2a",
+  "pack": "#e8b23a",
+  "capColor": "#e8b23a",
+  "wall": "#d8dce0",
+  "wallTex": "block",
+  "floorKind": "tile",
+  "floor": [
+   "#c8c0b0",
+   "#bcb4a4"
+  ],
+  "floorLine": "#9a9284",
+  "quilt": [
+   "#3a5a9a",
+   "#f2f2f2",
+   "#3a5a9a",
+   "#e8b23a"
+  ],
+  "rug": "#3a5a9a",
+  "rugTrim": "#f2f2f2",
+  "curtain": "#8a9aa8",
+  "poster": "#e8556a",
+  "wood": "#b89a70",
+  "frame": "#9aa4ae",
+  "sheet": "#f4f4f4",
+  "plant": false,
+  "lights": false,
+  "art": "#3a5a9a"
+ },
+ "voice_dir": "vo"
+}
