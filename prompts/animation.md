@@ -37,7 +37,11 @@ Each day 2 of the 4 slots are animated videos (Chika, 2026-11-27; was 1-2). This
      with `--snap` (snaps don't count toward the 3 rebuilds).
    - The character changes too: `build.py` picks the look (step 1c); vary age/role in the story (student, night-shift worker,
      new parent, athlete, roommate...) and who is talking (not always "I").
-   - Still **low poly only**, voiced, with a strong hook, and the download card last.
+   - Still **low poly only**, voiced, with a strong hook.
+   - **The ending never changes (Chika, 2026-11-27): every animation, whatever the scenario, ends with the same CTA** — the
+     automatic download card (app icon, "Download Unsnooze Today", App Store listing, badge, "LINK IN BIO") with the same voice
+     line, `"cta_line": "[excited] Download Unsnooze. Link in bio!"`. Don't reword, shorten, restyle or drop it, don't end on a
+     story beat instead, and check on the sheet that the card is the last frame. The under-45 s limit includes the card.
    Shape (loose): hook -> a situation people recognise -> the turn to Unsnooze -> one or two challenges shown working -> payoff.
    Good angles: an everyday comparison (things nobody snoozes: a fire alarm, a flight, a kettle), "POV" of the snooze bargain,
    a countdown of excuses, the roommate/mom who used to wake him, first week with the app, one challenge in detail.

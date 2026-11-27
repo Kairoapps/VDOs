@@ -32,7 +32,8 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
  "cta_line": "Download Unsnooze. Link in bio!"}
 ```
 - **beats**: 7-14, in order; the finished video must be under 45 seconds (Chika, 2026-11-27). Each beat is one shot with one caption. The video ends with the download card (app icon, App Store
-  listing, badge, "LINK IN BIO"), added automatically.
+  listing, badge, "LINK IN BIO"), added automatically. This CTA is the same on every video (Chika, 2026-11-27):
+  keep `cta_line` as "[excited] Download Unsnooze. Link in bio!" and never remove or restyle the card.
 - **caption**: lowercase, short; `*stars*` mark the 1-3 words shown in white (the rest is yellow). `\n` breaks lines, otherwise it wraps at ~24 characters.
 - **line**: what the voice says (defaults to the caption). ElevenLabs tone tags like `[groggy]` are allowed.
 - **dur** / **min**: fixed or minimum seconds for the beat. Without them a beat lasts as long as its voice line (or reading time).
