@@ -51,6 +51,9 @@ def _cfg():
         return {}
 
 
+SEP = None      # spec["voice_sep"]: what joins the lines in the one-take read ("\n\n" = a pause after every line, " " = run on)
+
+
 def elevenlabs(lines, out_dir):
     """One mp3 per line with the ElevenLabs API. Returns True when every line was made; any failure -> False (captions only)."""
     # The key comes from the ELEVENLABS_API_KEY variable, which the nightly scheduled task sets for the build command only
@@ -81,9 +84,10 @@ def elevenlabs(lines, out_dir):
             # then cut it into beats at the pauses, using the character timestamps the API returns.
             try:
                 import base64, wave as _w
-                m = models[0]; full = "\n\n".join(lines); spans = []; pos = 0
+                sep = cfg.get("elevenlabs_line_sep", "\n\n") if SEP is None else SEP
+                m = models[0]; full = sep.join(lines); spans = []; pos = 0
                 for l in lines:
-                    spans.append((pos, pos + len(l))); pos += len(l) + 2
+                    spans.append((pos, pos + len(l))); pos += len(l) + len(sep)
                 vs = {k: float(v) for k, v in (("stability", cfg.get("elevenlabs_stability")), ("speed", cfg.get("elevenlabs_speed"))) if v is not None}
                 d = json.loads(call(f"https://api.elevenlabs.io/v1/text-to-speech/{vid}/with-timestamps?output_format=mp3_44100_128",
                                     {"text": full, "model_id": m, **({"voice_settings": vs} if vs else {})}))
@@ -179,6 +183,7 @@ def rounded_img(im, rad):
 # sure the text is easy to read"): every theme draws them as bold text with a thick dark outline and a soft shadow.
 # Graphics themes (Chika, 2026-11-28: the videos must not all look alike): caption colours and style, card and stamp style, font.
 # build.py picks one that differs from the last 3 videos and saves it in the spec ("theme"); the download card never changes.
+SOFTR = False      # spec["render"] == "soft": smooth 720x1280 3D frames (see anim/lowpoly/index.html)
 CTA_IN = 0.55      # seconds the download card takes to rise over the last shot
 INTER = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
 THEMES = {
@@ -186,7 +191,25 @@ THEMES = {
     "paper": dict(cap=((255, 255, 255), (255, 176, 64)), cap_style="outline", card="paper", stamp="solid", font=INTER),
     "clean": dict(cap=((255, 255, 255), (120, 235, 165)), cap_style="outline", card="light", stamp="solid", font=INTER),
     "pop": dict(cap=((255, 255, 255), (255, 150, 90)), cap_style="outline", card="accent", stamp="outline", font=BOLD),
+    # the quiet look that goes with "render": "soft": small italic serif captions (one accent word), cards as bare text
+    "serif": dict(cap=((255, 255, 255), (255, 104, 72)), cap_style="quiet", card="bare", stamp="outline", font=BOLD),
 }
+LORA = "/usr/share/fonts/truetype/google-fonts/Lora-Italic-Variable.ttf"
+_qf = {}
+
+
+def QF(size):
+    if size not in _qf:
+        try:
+            f = ImageFont.truetype(LORA, size)
+            try:
+                f.set_variation_by_name("SemiBold Italic")
+            except Exception:
+                pass
+        except Exception:
+            f = F(MED, size)
+        _qf[size] = f
+    return _qf[size]
 THEME = THEMES["classic"]
 
 
@@ -199,6 +222,11 @@ def pick_theme(spec, spec_path, name):
     import zlib, random
     if spec.get("theme") in THEMES:
         return spec["theme"]
+    if spec.get("render") == "soft":
+        spec["theme"] = "serif"
+        if spec_path.name == "spec.json":
+            spec_path.write_text(json.dumps(spec, indent=1, ensure_ascii=False))
+        return "serif"
     used = []
     for f in sorted((HERE.parent / "work" / "anim").glob("A*/spec.json"), key=lambda q: q.stat().st_mtime)[-3:]:
         try:
@@ -207,7 +235,7 @@ def pick_theme(spec, spec_path, name):
         except Exception:
             pass
     rng = random.Random(zlib.crc32(("theme" + name).encode()))
-    th = next((t for t in rng.sample(sorted(THEMES), len(THEMES)) if t not in used), "classic")
+    th = next((t for t in rng.sample(sorted(k for k in THEMES if k != "serif"), len(THEMES) - 1) if t not in used), "classic")
     spec["theme"] = th
     if spec_path.name == "spec.json":
         spec_path.write_text(json.dumps(spec, indent=1, ensure_ascii=False))
@@ -216,6 +244,12 @@ def pick_theme(spec, spec_path, name):
 
 def app_card(label, big, accent=ORANGE, w=None):
     st = THEME["card"]
+    if st == "bare":      # just a small label and a big value, no box
+        fb = F(BOLD, 92); d0 = ImageDraw.Draw(Image.new("RGB", (1, 1))); tw = int(max(d0.textlength(big, font=fb), d0.textlength(label, font=F(BOLD, 30)))) + 40
+        c = Image.new("RGBA", (tw, 170), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
+        d.text((14, 8), label, font=F(BOLD, 30), fill=(*accent, 255), stroke_width=3, stroke_fill=(0, 0, 0, 170))
+        d.text((12, 46), big, font=fb, fill=(255, 255, 255, 255), stroke_width=4, stroke_fill=(0, 0, 0, 170))
+        return c
     f = F(TF(), 98); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(big, font=f))
     w = w or max(520, tw + 110)
     fill, lab, txt, rad = {"dark": ((28, 28, 30, 250), accent, (255, 255, 255), 46), "light": ((250, 250, 246, 252), accent, (24, 24, 28), 46),
@@ -351,6 +385,19 @@ def draw_caption(im, beat, t):
     if not beat.get("caption"):
         return
     lines = C(("cap", beat["i"]), lambda: parse_caption(beat["caption"]))
+    if THEME["cap_style"] == "quiet":      # small italic serif, the whole line at once; "cap_pos": "top" = the big hook line at the top
+        top = beat.get("cap_pos") == "top"; font = QF(92 if top else 62); d = ImageDraw.Draw(im); sp = d.textlength(" ", font=font)
+        if t < beat["line_at"]:
+            return
+        y = int(H * (0.085 if top else 0.655)); main, hlc = THEME["cap"]
+        for ln in lines:
+            x = (W - (sum(d.textlength(w, font=font) for w, _ in ln) + sp * (len(ln) - 1))) / 2
+            for w, hl in ln:
+                d.text((x + 2, y + 4), w, font=font, fill=(0, 0, 0, 150), stroke_width=5, stroke_fill=(0, 0, 0, 150))
+                d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255), stroke_width=3, stroke_fill=(14, 14, 22, 235))
+                x += d.textlength(w, font=font) + sp
+            y += 112 if top else 80
+        return
     font = F(TF(), 60); d = ImageDraw.Draw(im); sp = d.textlength(" ", font=font)
     main, hlc = THEME["cap"]; style = THEME["cap_style"]
     nchar = sum(len(w) for ln in lines for w, _ in ln) or 1
@@ -413,7 +460,52 @@ def cta_layers():
     return L
 
 
+END = None      # spec["end"]: a per-video end card (tagline + two big lines) instead of the App Store listing card
+
+
+def end_layers():
+    L = C("cta", cta_layers); E = {}
+    g = np.linspace(0, 1, H)[:, None]; top, bot = np.array([253, 243, 230]), np.array([247, 200, 164])
+    E["bg"] = Image.fromarray((top * (1 - g) + bot * g)[:, None, :].repeat(W, 1).reshape(H, W, 3).astype("uint8")).convert("RGBA")
+
+    def text(s, font, fill, track=0):
+        d0 = ImageDraw.Draw(Image.new("RGB", (1, 1))); w = int(sum(d0.textlength(ch, font=font) + track for ch in s)) + 20
+        im = Image.new("RGBA", (w, int(font.size * 1.45)), (0, 0, 0, 0)); d = ImageDraw.Draw(im); x = 10
+        for ch in s:
+            d.text((x, 4), ch, font=font, fill=fill); x += d.textlength(ch, font=font) + track
+        return im
+
+    def fit(s, path, size, fill):
+        d0 = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+        while size > 60 and d0.textlength(s, font=F(path, size)) > W - 150:
+            size -= 6
+        return text(s, F(path, size), fill)
+    blk = INTER if os.path.exists(INTER) else BOLD
+    E["name"] = text("Unsnooze", F(BOLD, 84), (226, 84, 36, 255)); E["tag"] = fit(END.get("tagline", "").upper(), BOLD, 38, (24, 30, 64, 255))
+    big = (END.get("big") or ["GET UP.", "FOR REAL."])[:2]
+    E["b1"] = fit(big[0].upper(), blk, 190, (24, 30, 64, 255)); E["b2"] = fit(big[-1].upper(), blk, 190, (226, 84, 36, 255))
+    lb = text("LINK IN BIO", F(BOLD, 60), (24, 30, 64, 255)); l2 = Image.new("RGBA", (lb.width + 90, 110), (0, 0, 0, 0)); l2.alpha_composite(lb, (0, 10)); l2.alpha_composite(emoji("👇", 70), (lb.width + 6, 18)); E["bio"] = l2
+    E["icon"], E["badge"] = L["icon"], L["badge"]
+    return E
+
+
+def end_card(t, t0):
+    E = C("end", end_layers); im = E["bg"].copy(); u = t - t0
+
+    def fade(key, y, at, rise=26):
+        if u > at:
+            p = eo((u - at) / 0.35); l = E[key].copy(); l.putalpha(l.getchannel("A").point(lambda v: int(v * p))); im.alpha_composite(l, (int((W - l.width) / 2), int(y + rise * (1 - p))))
+    pop(im, E["icon"], W / 2, 400, t, t0, 0.3, scale=0.9)
+    fade("name", 560, 0.12); fade("tag", 700, 0.3); fade("b1", 800, 0.45); fade("b2", 800 + E["b1"].height - 30, 0.6)
+    yb = 800 + E["b1"].height + E["b2"].height + 70
+    pop(im, E["badge"], W / 2, yb + 74, t, t0 + 0.95, 0.3, scale=1 + 0.03 * math.sin(max(0, u - 1.3) * 6.0))
+    fade("bio", yb + 190, 1.2, 10)
+    return im
+
+
 def cta(t, t0):
+    if END:
+        return end_card(t, t0)
     L = C("cta", cta_layers); im = L["bg"].copy(); u = t - t0; card_h = L["card"].height; y_card = 640 + card_h / 2 - 60
     pop(im, L["icon"], W / 2, 200, t, t0, 0.3)
     if u > 0.12:
@@ -677,9 +769,13 @@ def main():
     LOOK = pick_look(spec, spec_path, name); print("look:", LOOK.get("name", "custom"))
     global THEME
     th = pick_theme(spec, spec_path, name); THEME = THEMES[th]; print("theme:", th)
+    global END, SOFTR
+    END = spec.get("end"); SOFTR = spec.get("render") == "soft"
     for b in beats:
         if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
             sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")
+    global SEP
+    SEP = spec.get("voice_sep")
     cta_line = spec.get("cta_line", "Download Unsnooze. Link in bio!")
     lines = [b.get("line") or re.sub(r"[*\n]", " ", b.get("caption", "")) for b in beats] + [cta_line]
     # voice: pre-made lines in spec["voice_dir"], else ElevenLabs, else captions only
@@ -703,7 +799,7 @@ def main():
     for b, v in zip(beats, vos[:-1]):
         txt = re.sub(r"\[[a-z ]+\]|[*]", "", b.get("line") or b.get("caption", ""))
         ld = len(v) / SR if v is not None else max(0.9, len(txt) * 0.062)
-        dur = max(float(b.get("min", 1.3)), ld + (0.06 if cont else 0.3 if v is not None else 0.75)) if "dur" not in b else float(b["dur"])
+        dur = max(float(b.get("min", 1.0 if cont else 1.3)), ld + (0.06 if cont else 0.3 if v is not None else 0.75)) if "dur" not in b else float(b["dur"])
         b.update(t0=round(t, 3), t1=round(t + dur, 3), line_at=round(t + (0.0 if cont else 0.12), 3), line_dur=ld, vo=v); t += dur
     cta0 = round(t, 3); cta_dur = max(3.6, (len(vos[-1]) / SR + 1.9) if vos[-1] is not None else 3.6); total = round(cta0 + cta_dur, 2)
     shots = []
@@ -713,7 +809,7 @@ def main():
         else:
             shots.append(dict(name=b["shot"], t0=b["t0"], t1=b["t1"], p=b.get("p", {})))
     (work / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots), indent=1)) if spec_path.name != "spec.json" else None
-    rdir = work / "render"; rdir.mkdir(exist_ok=True); (rdir / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots, id=name, look=LOOK), indent=1))
+    rdir = work / "render"; rdir.mkdir(exist_ok=True); (rdir / "spec.json").write_text(json.dumps(dict(fps=FPS, total=cta0, shots=shots, id=name, look=LOOK, render=spec.get("render", "ps1")), indent=1))
     lp = HERE / "lowpoly"
     if not (lp / "node_modules" / "playwright-core").exists():
         subprocess.run(["npm", "install", "--silent", "--no-audit", "--no-fund"], cwd=lp, check=True)
@@ -756,7 +852,9 @@ def main():
             im = fr.convert("RGBA")
         else:
             k = min(int(round(t * FPS)), nfr - 1)
-            im = Image.open(rdir / "frames" / f"f_{k:05d}.png").convert("RGB").resize((W, H), Image.NEAREST).convert("RGBA")
+            im = Image.open(rdir / "frames" / f"f_{k:05d}.png").convert("RGB").resize((W, H), Image.LANCZOS if SOFTR else Image.NEAREST).convert("RGBA")
+            if SOFTR:      # gentle vignette
+                im.alpha_composite(C("vig", lambda: Image.fromarray(np.dstack([np.zeros((H, W, 3), "uint8"), (np.clip((np.hypot(*(np.mgrid[0:H, 0:W] - np.array([H / 2, W / 2])[:, None, None]) / np.array([H * 0.62, W * 0.62])[:, None, None]) - 0.55) / 0.75, 0, 1) ** 1.6 * 150).astype("uint8")]), "RGBA")))
             draw_overlays(im, b, t)
         if cap:
             draw_caption(im, b, t)

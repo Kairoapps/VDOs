@@ -1,0 +1,302 @@
+{
+ "id": "A20261128-006",
+ "style": "low_poly",
+ "render": "soft",
+ "theme": "serif",
+ "voice_sep": " ",
+ "concept": "your-dog-never-lets-you-snooze",
+ "title": "your dog has never let you snooze.",
+ "summary": "Your dog has never let you snooze: at six a.m., on four hours of sleep, you get up anyway, because it won't stop until you do. Your alarm stops with one tap, so you go back to sleep. Unsnooze rings until you're actually up: walk 50 steps, do 10 push-ups or shake it 40 times. Make your alarm as stubborn as your dog.",
+ "beats": [
+  {
+   "shot": "dog_wake",
+   "min": 2.6,
+   "cap_pos": "top",
+   "line": "Your dog has never let you snooze.",
+   "caption": "your dog has *never*\nlet you snooze."
+  },
+  {
+   "shot": "dog_wake",
+   "p": {
+    "mode": "paw"
+   },
+   "line": "It's six A M.",
+   "caption": "it's six a.m.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "6:00 AM",
+     "at": 0.05,
+     "x": 260,
+     "y": 170
+    }
+   ]
+  },
+  {
+   "shot": "dog_up",
+   "line": "You slept four hours.",
+   "caption": "you slept four hours.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "LAST NIGHT'S SLEEP",
+     "big": "4 HRS",
+     "at": 0.05,
+     "x": 260,
+     "y": 170
+    }
+   ]
+  },
+  {
+   "shot": "dog_door",
+   "line": "You get up anyway.",
+   "caption": "you get up anyway.",
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 1.0,
+     "vol": 0.6
+    }
+   ]
+  },
+  {
+   "shot": "dog_door",
+   "p": {
+    "close": true
+   },
+   "line": "Because it won't stop until you do.",
+   "caption": "because it won't stop until you do."
+  },
+  {
+   "shot": "phone_buzz_asleep",
+   "line": "Your alarm?",
+   "caption": "your alarm?"
+  },
+  {
+   "shot": "bed_top",
+   "p": {
+    "slap": true,
+    "once": true
+   },
+   "min": 1.7,
+   "line": "One tap, and it's gone.",
+   "caption": "one tap, and it's gone.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED",
+     "at": 0.6,
+     "x": 690,
+     "y": 330
+    }
+   ]
+  },
+  {
+   "shot": "bed_top",
+   "p": {
+    "quiet": true
+   },
+   "line": "So you go back to sleep.",
+   "caption": "so you go back to sleep."
+  },
+  {
+   "shot": "set_alarm_in_bed",
+   "lift": true,
+   "min": 1.8,
+   "line": "Unsnooze fixes that.",
+   "caption": "*unsnooze* fixes that.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.15,
+     "x": 540,
+     "y": 370,
+     "rot": 0,
+     "scale": 0.62
+    }
+   ],
+   "sfx": [
+    {
+     "name": "sparkle",
+     "at": 0.15,
+     "vol": 0.7
+    }
+   ]
+  },
+  {
+   "shot": "dog_up",
+   "p": {
+    "ring": true
+   },
+   "line": "It rings until you're actually up.",
+   "caption": "it rings until you're actually up."
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Walk fifty steps.",
+   "caption": "walk fifty steps.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 31,
+     "to": 50,
+     "total": 50,
+     "at": 0.05,
+     "x": 540,
+     "y": 370,
+     "rot": 0,
+     "scale": 0.58
+    }
+   ],
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 1.2,
+     "vol": 0.6
+    }
+   ]
+  },
+  {
+   "shot": "pushups",
+   "line": "Do ten push-ups.",
+   "caption": "do ten push-ups.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 6,
+     "to": 10,
+     "total": 10,
+     "at": 0.05,
+     "x": 540,
+     "y": 370,
+     "rot": 0,
+     "scale": 0.58
+    }
+   ]
+  },
+  {
+   "shot": "shake_phone",
+   "line": "Or shake it forty times.",
+   "caption": "or shake it forty times.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "shake",
+     "from": 26,
+     "to": 40,
+     "total": 40,
+     "at": 0.05,
+     "x": 540,
+     "y": 370,
+     "rot": 0,
+     "scale": 0.58
+    }
+   ]
+  },
+  {
+   "shot": "stretch_win",
+   "min": 1.9,
+   "line": "No tap. No snooze.",
+   "caption": "no tap. no snooze.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "DISMISSED",
+     "accent": "green",
+     "at": 0.9,
+     "x": 330,
+     "y": 170
+    }
+   ]
+  },
+  {
+   "shot": "dog_walk",
+   "min": 2.2,
+   "line": "Now you're both up.",
+   "caption": "now you're both up.",
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 1.8,
+     "vol": 0.5
+    }
+   ]
+  },
+  {
+   "shot": "dog_end",
+   "min": 2.8,
+   "line": "Make your alarm as stubborn as your dog.",
+   "caption": "make your alarm as *stubborn* as your dog."
+  }
+ ],
+ "end": {
+  "tagline": "An alarm as stubborn as your dog.",
+  "big": [
+   "Get up.",
+   "For real."
+  ]
+ },
+ "cta_line": "Download Unsnooze. Link in bio.",
+ "look": {
+  "name": "cozy bedroom / bun hair",
+  "room": "cozy bedroom",
+  "skin": "#5a3520",
+  "skinD": "#3e2414",
+  "cheek": "#7a3a26",
+  "hair": "#15100e",
+  "hairStyle": "bun",
+  "glasses": false,
+  "beard": false,
+  "freckles": false,
+  "top": "#e8556a",
+  "top2": "#c03a50",
+  "pants": "#3a3a40",
+  "shoe": "#e8556a",
+  "sole": "#f2f0ea",
+  "beardColor": "#15100e",
+  "pack": "#3a9a6a",
+  "capColor": "#3a5a9a",
+  "wall": "#b9c8f0",
+  "wallTex": "plain",
+  "floorKind": "wood",
+  "floor": [
+   "#9a6a42",
+   "#8a5c38",
+   "#a37046",
+   "#91633c"
+  ],
+  "floorLine": "#5a3a22",
+  "quilt": [
+   "#d9534a",
+   "#3f6fb5",
+   "#e8b23a",
+   "#4fa07a",
+   "#9a5fb0",
+   "#f0e6d0"
+  ],
+  "rug": "#d9603a",
+  "rugTrim": "#f2dcae",
+  "curtain": "#5568c0",
+  "poster": "#f06a39",
+  "wood": "#7a4a28",
+  "frame": "#e8e2d4",
+  "sheet": "#eeeae0",
+  "plant": true,
+  "lights": false,
+  "tall": 0.9,
+  "wide": 1.24,
+  "headS": 1.0,
+  "sleeves": "short",
+  "shorts": false,
+  "acc": "headphones"
+ },
+ "voice_dir": "vo"
+}

@@ -9,7 +9,8 @@ import * as THREE from "three";
 // PS1-style technique (360x640 render, vertex snapping, 15-bit dither, pixel textures drawn in code)
 // after the /low-poly skill in artemnovitckii/claude-animation-skills. window.renderAt(t) draws global time t.
 const SPEC = await (await fetch('spec.json?' + Date.now())).json();
-const RW = 360, RH = 640;
+const SOFT = SPEC.render === 'soft';   // 'soft' (2026-11-28): smooth rounded shapes, soft shadows, clean textures, 720x1280. Default = the pixelated PS1 look
+const RW = SOFT ? 720 : 360, RH = SOFT ? 1280 : 640;
 // LOOK: per-video character + room (chosen in build.py, stored in spec.look). Defaults = the original bedroom.
 const LOOK = Object.assign({
   skin: 0xa5673f, skinD: 0x7a4a2c, cheek: 0xc0603f, hair: 0x15100e, hairStyle: 'curly', glasses: false, beard: false, freckles: false,
@@ -28,7 +29,8 @@ const sm = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t
 const lerp = (a, b, k) => a + (b - a) * k;
 const D = Math.PI / 180, TAU = Math.PI * 2;
 
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: false, preserveDrawingBuffer: true });
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: SOFT, preserveDrawingBuffer: true });
+if (SOFT) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; }
 renderer.setPixelRatio(1); renderer.setSize(RW, RH, false);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x101428); scene.fog = new THREE.Fog(0x101428, 9, 22);
@@ -37,6 +39,7 @@ const camera = new THREE.PerspectiveCamera(50, RW / RH, 0.08, 60);
 // ---------------------------------------------------------------- PS1 shader patch
 const SNX = (RW / 2).toFixed(1), SNY = (RH / 2).toFixed(1);
 function ps1(m) {
+  if (SOFT) return m;
   m.onBeforeCompile = (sh) => {
     sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
       if (gl_Position.w > 0.0) { vec2 sn = vec2(${SNX}, ${SNY});
@@ -50,22 +53,22 @@ function ps1(m) {
   m.customProgramCacheKey = () => 'ps1';
   return m;
 }
-const lam = (o) => ps1(new THREE.MeshLambertMaterial(Object.assign({ flatShading: true }, o)));
+const lam = (o) => ps1(new THREE.MeshLambertMaterial(Object.assign({ flatShading: !SOFT }, o)));
 const basic = (o) => ps1(new THREE.MeshBasicMaterial(o));
 
 // ---------------------------------------------------------------- pixel textures
 function tex(w, h, draw) {
-  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-  const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; draw(g, w, h);
+  const K = SOFT ? 8 : 1, cv = document.createElement('canvas'); cv.width = w * K; cv.height = h * K;
+  const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.scale(K, K); draw(g, w, h);
   const t = new THREE.CanvasTexture(cv);
-  t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
+  t.magFilter = SOFT ? THREE.LinearFilter : THREE.NearestFilter; t.minFilter = SOFT ? THREE.LinearFilter : THREE.NearestFilter; t.generateMipmaps = false;
   t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
 const rgbOf = (h) => [(h >> 16) & 255, (h >> 8) & 255, h & 255];
 const col = (h, k = 1) => { const [r, g, b] = rgbOf(h); return `rgb(${clamp(r * k, 0, 255) | 0},${clamp(g * k, 0, 255) | 0},${clamp(b * k, 0, 255) | 0})`; };
 const px = (g, x, y, c, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
-const noise = (g, x0, y0, w, h, base, j) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) px(g, x, y, col(base, 1 + (rnd() * 2 - 1) * j)); };
+const noise = (g, x0, y0, w, h, base, j) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) px(g, x, y, col(base, 1 + (rnd() * 2 - 1) * (SOFT ? 0 : j))); };
 function uvs(geo, sx, sy) { const a = geo.attributes.uv; for (let i = 0; i < a.count; i++) a.setXY(i, a.getX(i) * sx, a.getY(i) * sy); return geo; }
 const GL = {
   '0': ['.###.', '#...#', '#..##', '#.#.#', '##..#', '#...#', '.###.'], '1': ['..#..', '.##..', '..#..', '..#..', '..#..', '..#..', '.###.'],
@@ -80,7 +83,7 @@ function bitText(g, str, x, y, s, c) { for (const ch of str) { const gl = GL[ch]
 
 const T = {};
 T.floor = tex(32, 32, (g) => {
-  for (let y = 0; y < 32; y++) { const b = LOOK.floor[((y / 8) | 0) % LOOK.floor.length]; for (let x = 0; x < 32; x++) px(g, x, y, col(b, .92 + rnd() * .12)); }
+  for (let y = 0; y < 32; y++) { const b = LOOK.floor[((y / 8) | 0) % LOOK.floor.length]; for (let x = 0; x < 32; x++) px(g, x, y, col(b, SOFT ? 1 : .92 + rnd() * .12)); }
   if (LOOK.floorKind === 'tile') { for (let y = 0; y < 32; y += 8) px(g, 0, y, col(LOOK.floorLine), 32, 1); for (let x = 0; x < 32; x += 8) px(g, x, 0, col(LOOK.floorLine), 1, 32); }
   else if (LOOK.floorKind === 'carpet') { for (let k = 0; k < 40; k++) px(g, rnd() * 32 | 0, rnd() * 32 | 0, col(LOOK.floorLine)); }
   else { for (let y = 7; y < 32; y += 8) for (let x = 0; x < 32; x++) px(g, x, y, col(LOOK.floorLine));
@@ -139,10 +142,42 @@ const F = {
   pant: face((g) => { eye(g, 3, 1); eye(g, 10, 1); brow(g, 3, 'worry', 1); brow(g, 10, 'worry', -1); px(g, 6, 11, col(0x2a0e0a), 4, 3); px(g, 7, 13, col(0xd0605a), 2, 1); }),
 };
 
+if (SOFT) {      // soft look: round dot eyes and simple mouths drawn smooth, instead of the 16x16 pixel faces
+  const softFace = (name) => { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const g = cv.getContext('2d'); const c = (h) => col(h);
+    g.fillStyle = c(SKIN); g.fillRect(0, 0, 128, 128); g.globalAlpha = 0.55; g.fillStyle = c(LOOK.cheek); for (const x of [24, 104]) { g.beginPath(); g.arc(x, 84, 12, 0, TAU); g.fill(); } g.globalAlpha = 1;
+    if (LOOK.beard) { g.fillStyle = c(LOOK.beardColor || LOOK.hair); g.fillRect(0, 100, 128, 28); g.fillRect(0, 84, 14, 30); g.fillRect(114, 84, 14, 30); }
+    const dark = '#1a100a', closed = ['sleep', 'blink', 'effort', 'yawn'].includes(name), big = name === 'shock';
+    for (const [x, sgn] of [[40, 1], [88, -1]]) { g.strokeStyle = dark; g.fillStyle = dark; g.lineWidth = 5; g.lineCap = 'round';
+      if (closed) { g.beginPath(); g.arc(x, name === 'sleep' ? 56 : 62, 9, name === 'sleep' ? 0.15 * Math.PI : 1.15 * Math.PI, name === 'sleep' ? 0.85 * Math.PI : 1.85 * Math.PI); g.stroke(); }
+      else { if (big) { g.fillStyle = '#fff'; g.beginPath(); g.arc(x, 58, 15, 0, TAU); g.fill(); g.fillStyle = dark; }
+        const ex = name === 'think' ? x - 3 : x, ey = name === 'think' ? 54 : 58; g.beginPath(); g.arc(ex, ey, big ? 7 : 9, 0, TAU); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(ex + 3, ey - 3, 2.5, 0, TAU); g.fill();
+        if (name === 'groggy') { g.fillStyle = c(SKIN); g.fillRect(x - 12, 44, 24, 13); g.strokeStyle = dark; g.lineWidth = 3; g.beginPath(); g.moveTo(x - 10, 57); g.lineTo(x + 10, 57); g.stroke(); } }
+      g.strokeStyle = dark; g.lineWidth = 4;
+      if (name === 'determined' || name === 'effort') { g.beginPath(); g.moveTo(x - 12 * sgn, 38); g.lineTo(x + 10 * sgn, 45); g.stroke(); }
+      if (name === 'groggy' || name === 'pant') { g.beginPath(); g.moveTo(x - 12 * sgn, 42); g.lineTo(x + 10 * sgn, 36); g.stroke(); }
+      if (name === 'shock' || name === 'happy' || name === 'yawn') { g.beginPath(); g.moveTo(x - 10, 36); g.lineTo(x + 10, 36); g.stroke(); } }
+    g.strokeStyle = '#3a1a12'; g.fillStyle = '#3a1a12'; g.lineWidth = 5; g.lineCap = 'round';
+    if (name === 'happy') { g.beginPath(); g.arc(64, 88, 16, 0.1 * Math.PI, 0.9 * Math.PI); g.stroke(); }
+    else if (name === 'shock' || name === 'pant') { g.beginPath(); g.ellipse(64, 98, 10, name === 'pant' ? 9 : 13, 0, 0, TAU); g.fill(); }
+    else if (name === 'yawn') { g.beginPath(); g.ellipse(64, 98, 13, 17, 0, 0, TAU); g.fill(); }
+    else if (name === 'effort') { g.beginPath(); g.moveTo(48, 98); g.lineTo(80, 98); g.stroke(); g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.moveTo(50, 98); g.lineTo(78, 98); g.stroke(); }
+    else if (name === 'sleep') { g.beginPath(); g.ellipse(64, 98, 5, 4, 0, 0, TAU); g.fill(); }
+    else { g.beginPath(); g.moveTo(54, 98); g.lineTo(74, name === 'determined' ? 95 : 98); g.stroke(); }
+    if (LOOK.glasses) { g.strokeStyle = '#1a1a22'; g.lineWidth = 4; for (const x of [40, 88]) { g.beginPath(); g.arc(x, 58, 18, 0, TAU); g.stroke(); } g.beginPath(); g.moveTo(58, 58); g.lineTo(70, 58); g.stroke(); }
+    const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; };
+  for (const k of Object.keys(F)) F[k] = softFace(k);
+}
+
 // ---------------------------------------------------------------- helpers
-const box = (parent, w, h, d, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); parent.add(m); return m; };
+function rgeo(w, h, d, k = 0.28) {      // a box with rounded edges and smooth normals (soft look)
+  const g = new THREE.BoxGeometry(w, h, d, 4, 4, 4), r = Math.min(w, h, d) * k, p = g.attributes.position, n = g.attributes.normal, hx = w / 2 - r, hy = h / 2 - r, hz = d / 2 - r;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), cx = clamp(x, -hx, hx), cy = clamp(y, -hy, hy), cz = clamp(z, -hz, hz);
+    let dx = x - cx, dy = y - cy, dz = z - cz; const l = Math.hypot(dx, dy, dz); if (l > 1e-6) { dx /= l; dy /= l; dz /= l; p.setXYZ(i, cx + dx * r, cy + dy * r, cz + dz * r); n.setXYZ(i, dx, dy, dz); } }
+  return g;
+}
+const box = (parent, w, h, d, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(SOFT ? rgeo(w, h, d) : new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); parent.add(m); return m; };
 const plane = (parent, w, h, mat, x, y, z, rx = 0, ry = 0, sx = 1, sy = 1, sgx = 1, sgy = 1) => { const m = new THREE.Mesh(uvs(new THREE.PlaneGeometry(w, h, sgx, sgy), sx, sy), mat); m.position.set(x, y, z); m.rotation.set(rx, ry, 0); parent.add(m); return m; };
-const frustum = (parent, wt, wb, h, dz, mat, x, y, z) => { const geo = new THREE.CylinderGeometry(wt / Math.SQRT2, wb / Math.SQRT2, h, 4, 1); geo.rotateY(Math.PI / 4); geo.scale(1, 1, dz); const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); parent.add(m); return m; };
+const frustum = (parent, wt, wb, h, dz, mat, x, y, z) => { if (SOFT) { const m = new THREE.Mesh(rgeo((wt + wb) / 2, h, (wt + wb) / 2 * dz, 0.36), mat); m.position.set(x, y, z); parent.add(m); return m; } const geo = new THREE.CylinderGeometry(wt / Math.SQRT2, wb / Math.SQRT2, h, 4, 1); geo.rotateY(Math.PI / 4); geo.scale(1, 1, dz); const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); parent.add(m); return m; };
 const grp = (parent, x = 0, y = 0, z = 0) => { const g = new THREE.Group(); g.position.set(x, y, z); parent.add(g); return g; };
 
 // ---------------------------------------------------------------- lights
@@ -214,7 +249,7 @@ frustum(torso, 0.5, 0.44, 0.5, 0.62, C.hood, 0, 0.27, 0); box(torso, 0.26, 0.12,
 box(torso, 0.02, 0.12, 0.02, C.shoe, -0.05, 0.4, 0.16); box(torso, 0.02, 0.12, 0.02, C.shoe, 0.05, 0.4, 0.16);
 const pack = grp(torso, 0, 0.28, -0.26); box(pack, 0.4, 0.44, 0.18, C.pack, 0, 0, 0); box(pack, 0.26, 0.16, 0.04, C.pack2, 0, -0.08, -0.1); pack.visible = false;
 const neck = grp(torso, 0, 0.56, 0), head = grp(neck, 0, 0.02, 0);
-{ const sk = C.skin; const m = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.4, 0.38), [sk, sk, sk, sk, faceMat, sk]); m.position.set(0, 0.2, 0.02); head.add(m);
+{ const sk = C.skin; const m = new THREE.Mesh(SOFT ? rgeo(0.42, 0.4, 0.38, 0.4) : new THREE.BoxGeometry(0.42, 0.4, 0.38), [sk, sk, sk, sk, faceMat, sk]); m.position.set(0, 0.2, 0.02); head.add(m);
   const hs = LOOK.hairStyle;
   if (hs === 'buzz') { box(head, 0.44, 0.06, 0.4, C.hair, 0, 0.42, 0.0); box(head, 0.44, 0.22, 0.06, C.hair, 0, 0.3, -0.17); }
   else if (hs === 'cap') { box(head, 0.46, 0.14, 0.42, C.cap, 0, 0.43, 0.0); box(head, 0.4, 0.03, 0.2, C.cap, 0, 0.37, 0.27); box(head, 0.46, 0.2, 0.1, C.hair, 0, 0.27, -0.17); }
@@ -248,7 +283,7 @@ function pose(o = {}) {       // angles in degrees; arms/legs: [shoulderX, shoul
   for (const [L, v] of [[aL, d.aL], [aR, d.aR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
   for (const [L, v] of [[lL, d.lL], [lR, d.lR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
   faceMat.map = F[d.face];
-  shadow.visible = d.shadow; shadow.position.set(d.x, 0.012, d.z); const k = clamp(1.3 - (d.y - STAND_Y) * 1.2, 0.5, 1.3); shadow.scale.setScalar(k);
+  shadow.visible = d.shadow && !SOFT; shadow.position.set(d.x, 0.012, d.z); const k = clamp(1.3 - (d.y - STAND_Y) * 1.2, 0.5, 1.3); shadow.scale.setScalar(k);
 }
 const blinkAt = (u, f, times) => times.some((b) => u > b && u < b + 0.1) ? 'blink' : f;
 
@@ -268,6 +303,7 @@ function cam(p0, t0, p1, t1, k, fov = 50, shake = 0, t = 0) {
   camera.position.set(lerp(p0[0], p1[0], e) + shake * Math.sin(t * 61), lerp(p0[1], p1[1], e) + shake * Math.sin(t * 47 + 1), lerp(p0[2], p1[2], e));
   camera.fov = fov; camera.updateProjectionMatrix();
   camera.lookAt(lerp(t0[0], t1[0], e), lerp(t0[1], t1[1], e), lerp(t0[2], t1[2], e));
+  if (SOFT) { const a = lerp(t0[0], t1[0], e), b = lerp(t0[1], t1[1], e), c = lerp(t0[2], t1[2], e); key.target.position.set(a, b, c); key.position.set(a + 3, b + 6.5, c + 5); key.target.updateMatrixWorld(); }
   camera.rotateX(TILT * D);      // tilt up: pushes the subject down the frame, leaving the top for UI cards
 }
 let PARAM = {};
@@ -275,7 +311,7 @@ function setClock(s) { M.clockFace.map = clockFor(PARAM.clock || s); }
 function resetProps() {
   for (const m of [...ringsR, ...ringsO, ...zs, bang, ...drops]) m.visible = false;
   phone.position.set(-2.0, 0.565, -1.22); phone.rotation.set(0, 0.3, 0); phoneScr.material = M.screen; M.screen.color.set(0x333333); phoneGlow.intensity = 0;
-  handPhone.visible = false; pack.visible = false; pal.visible = false; apron.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
+  handPhone.visible = false; pack.visible = false; pal.visible = false; apron.visible = false; dog.visible = false; leash.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
 }
 const LIE = { x: -1.55, y: 0.66, z: -2.2, yaw: 90, pitch: -90, shadow: false };
 const SIT = { x: -1.75, y: 0.7, z: -2.2, yaw: 90, shadow: false, lL: [-90, 0, 0], lR: [-90, 0, 0] };
@@ -654,19 +690,80 @@ S.cafe_talk = (u, d, k, t) => {      // in front of the counter, talking to the 
 };
 S.bed_top = (u, d, k, t) => {        // seen from the ceiling: starfished asleep, phone lit up by his head. p.slap: his hand flops onto it (0.7, 1.6 s) without him waking
   mood('night', 0); setClock('6:00');
-  const hits = [0.7, 1.6]; let lift = 0, since = 9;
+  const hits = PARAM.once ? [0.6] : [0.7, 1.6]; let lift = 0, since = 9;
   if (PARAM.slap) for (const h of hits) { if (u > h) since = u - h; lift = Math.max(lift, sm(h - 0.3, h - 0.1, u) * (1 - sm(h - 0.07, h, u))); }
-  const lit = since > 0.35 && !(PARAM.slap && u > 1.6), bz = Math.sin(u * 44);
+  const lit = since > 0.35 && !(PARAM.slap && u > (PARAM.once ? 0.6 : 1.6)) && !PARAM.quiet, bz = Math.sin(u * 44);
   phone.position.set(-2.05 + (lit ? 0.01 * bz : 0), 0.62, -1.72); phone.rotation.set(0, 0.5 + (lit ? 0.1 * bz : 0), 0); M.screen.color.set(lit ? 0xffffff : 0x333333);
   if (lit) { rings(ringsO, new THREE.Vector3(-2.05, 0.66, -1.72), t, 2.2, 0.1, 0.4); phoneGlow.position.set(-2.05, 0.9, -1.72); phoneGlow.intensity = 1.6; }
   pose({ ...LIE, face: 'sleep', head: [0, 0, 10], aL: [lerp(0, -40, lift), -128 - 8 * lift, -20 * lift], aR: [0, 62, 0], lL: [0, -16, 0], lR: [0, 22, 0] });
   quilt.position.set(0.6, 0.62, 0.15); quilt.rotation.set(0, 0.25, 0.08);
   camera.up.set(-1, 0, 0); cam([-1.35, 3.05, -1.95], [-1.4, 0.6, -2.05], [-1.45, 2.8, -1.95], [-1.5, 0.6, -2.05], k, 52, 0.02 * Math.exp(-since * 14), t); camera.up.set(0, 1, 0);
 };
+// --- a dog (2026-11-28): built from boxes, faces +z, origin on the ground between its paws
+const dogM = { fur: lam({ color: 0xd9a05b }), dark: lam({ color: 0x8a5a2e }), white: lam({ color: 0xf4ead8 }), nose: lam({ color: 0x1a1412 }), red: lam({ color: 0xd9433a }) };
+const dog = grp(scene, 0, -5, 0), dogB = grp(dog, 0, 0.3, 0);
+box(dogB, 0.26, 0.24, 0.56, dogM.fur, 0, 0.02, 0.0); box(dogB, 0.2, 0.16, 0.2, dogM.white, 0, -0.04, 0.2); box(dogB, 0.28, 0.05, 0.08, dogM.red, 0, 0.1, 0.24);
+const dogNeck = grp(dogB, 0, 0.14, 0.26), dogHead = grp(dogNeck, 0, 0.08, 0.06);
+box(dogHead, 0.26, 0.24, 0.24, dogM.fur, 0, 0.06, 0); box(dogHead, 0.15, 0.12, 0.16, dogM.white, 0, 0.0, 0.17); box(dogHead, 0.07, 0.05, 0.05, dogM.nose, 0, 0.05, 0.25);
+for (const sx of [-1, 1]) { box(dogHead, 0.07, 0.2, 0.12, dogM.dark, sx * 0.15, 0.06, -0.02, 0, 0, sx * 0.25); box(dogHead, 0.045, 0.05, 0.02, dogM.nose, sx * 0.07, 0.1, 0.125); }
+const dogLeash = box(dogHead, 0.05, 0.3, 0.05, dogM.red, 0.06, -0.14, 0.2, 0, 0, 0.2);
+const dogTail = grp(dogB, 0, 0.1, -0.28); box(dogTail, 0.07, 0.07, 0.26, dogM.fur, 0, 0.06, -0.1, -0.6, 0, 0);
+const dogLegs = [[-0.09, 0.2], [0.09, 0.2], [-0.09, -0.2], [0.09, -0.2]].map(([x, z]) => { const l = grp(dogB, x, -0.08, z); box(l, 0.08, 0.24, 0.08, dogM.fur, 0, -0.12, 0); box(l, 0.09, 0.05, 0.11, dogM.white, 0, -0.23, 0.015); return l; });
+const leash = box(scene, 0.025, 0.025, 1, dogM.red, 0, -5, 0); leash.visible = false; dog.visible = false;
+function dogAt(x, y, z, yawD, o = {}) {   // o: sit 0..1, wag (seconds), hop, head [pitch, yaw, roll], walk (phase), leash (in its mouth), s (scale)
+  dog.visible = true; dog.position.set(x, y + (o.hop || 0), z); dog.rotation.set(0, yawD * D, 0); dog.scale.setScalar(o.s || 1);
+  const sit = o.sit || 0; dogB.rotation.x = -32 * D * sit; dogB.position.y = 0.3 - 0.06 * sit;
+  dogLegs.forEach((l, i) => { const w = o.walk !== undefined ? Math.sin(o.walk + (i === 1 || i === 2 ? Math.PI : 0)) * 32 : 0; l.rotation.x = ((i < 2 ? 32 : -50) * sit + w) * D; });
+  dogTail.rotation.y = Math.sin((o.wag || 0) * 14) * 0.7; dogTail.rotation.x = 0.3 * sit;
+  const h = o.head || [0, 0, 0]; dogNeck.rotation.set((h[0] + 28 * sit) * D, h[1] * D, h[2] * D); dogLeash.visible = !!o.leash;
+}
+S.dog_wake = (u, d, k, t) => {       // the dog on the bed while he sleeps. p.mode 'stare' (default): sits and stares at the camera, head tilting; 'paw': turns and noses his face until he stirs
+  mood('night', 0); setClock('6:00');
+  const paw = PARAM.mode === 'paw', nudge = Math.max(0, Math.sin(u * 9)), stir = paw ? sm(0.5, 1.1, u) : 0;
+  pose({ ...LIE, z: paw ? -2.12 : -2.42, face: stir > 0.5 ? 'groggy' : 'sleep', head: [0, 0, 14 * stir], aL: [0, -8, 0], aR: [0, 8 + 30 * stir, 0] }); if (!paw) zzz(new THREE.Vector3(-2.2, 1.1, -2.4), t);
+  if (paw) dogAt(-2.02, 0.73, -2.66, 14, { sit: 0.2, wag: u, hop: 0.03 * nudge, head: [26 + 16 * nudge, 0, 6 * Math.sin(u * 5)] });
+  else dogAt(-1.2, 0.73, -1.95, 32, { sit: 1, wag: u, head: [0, 0, 16 * Math.sin(u * 2.2)] });
+  if (paw) cam([-1.2, 1.4, -0.45], [-2.0, 0.98, -2.35], [-1.35, 1.3, -0.75], [-2.02, 0.98, -2.35], k, 44);
+  else cam([-0.35, 1.3, 0.25], [-1.35, 0.98, -2.05], [-0.5, 1.22, -0.1], [-1.35, 0.98, -2.05], k, 42);
+};
+S.dog_up = (u, d, k, t) => {         // he sits up in bed, yawning. Default: the dog bounces on the floor beside the bed; p.ring: no dog, the phone on the nightstand keeps ringing and he stares at it
+  mood(PARAM.ring ? 'dawn' : 'night', 0); setClock('6:01');
+  const up = sm(0.0, 0.5, u), y = Math.sin(u * 3);
+  pose({ ...SIT, pitch: -90 * (1 - up), lL: [-90 * up, 0, 0], lR: [-90 * up, 0, 0], face: PARAM.ring ? 'groggy' : (u > 0.5 ? 'yawn' : 'groggy'), head: [6, PARAM.ring ? -34 : -24, 0], torso: [4 + 2 * y, 0, 0],
+    aL: [0, -10, 0], aR: PARAM.ring ? [0, 10, 0] : [-150 * up, 30, -40 * up] });
+  quilt.position.x = 0.33 + 0.25 * up; quilt.scale.x = 1 - 0.3 * up;
+  if (PARAM.ring) { const b = Math.sin(u * 44); phone.rotation.y = 0.3 + 0.12 * b; M.screen.color.set(0xffffff); phoneGlow.position.set(-2.0, 0.8, -1.2); phoneGlow.intensity = 2; rings(ringsO, new THREE.Vector3(-2.0, 0.6, -1.22), t, 2.2, 0.1, 0.42);
+    cam([-0.5, 1.35, 0.1], [-1.85, 0.95, -1.85], [-0.7, 1.3, -0.1], [-1.85, 0.95, -1.85], k, 46); }
+  else { dogAt(-0.55, 0, -1.0, -70 + 30 * Math.sin(u * 5), { wag: u, hop: 0.16 * Math.abs(Math.sin(u * 8)), head: [-20, 0, 0] }); cam([0.7, 1.35, 1.1], [-1.0, 0.62, -1.6], [0.5, 1.3, 0.8], [-1.0, 0.62, -1.6], k, 48); }
+};
+S.dog_door = (u, d, k, t) => {       // the dog waits at the bedroom door, leash in its mouth, tail going; he shuffles over. p.close: close on the dog
+  mood('night', 0); setClock('6:02'); quilt.position.set(0.7, 0.62, 0.3); quilt.rotation.set(0, 0.5, 0.12);
+  const st = Math.sin(u * 7), x = lerp(0.5, 1.55, sm(0, d, u));
+  dogAt(2.35, 0, 0.9, -62, { sit: 1, wag: u, leash: true, hop: 0.03 * Math.abs(Math.sin(u * 6)), head: [-8, 0, 10 * Math.sin(u * 2.5)] });
+  pose({ x, y: STAND_Y + 0.03 * Math.abs(st), z: 0.5, yaw: 78, face: 'groggy', torso: [10, 0, 4 * st], head: [12, -16, 6 * st], aL: [20 * st, -6, -8], aR: [-20 * st, 6, -8], lL: [-24 * st, 0, 26 * Math.max(0, st)], lR: [24 * st, 0, 26 * Math.max(0, -st)] });
+  if (PARAM.close) cam([1.1, 0.55, 2.2], [2.3, 0.42, 0.9], [1.25, 0.5, 2.0], [2.3, 0.42, 0.9], k, 44);
+  else cam([1.0, 1.15, 3.9], [1.75, 0.72, 0.7], [1.2, 1.05, 3.5], [1.8, 0.72, 0.7], k, 50);
+};
+S.dog_walk = (u, d, k, t) => {       // PLACE: the street at sunrise. He walks the dog, both wide awake
+  mood('dawn', 0); setSky(0xf7c6a0); bus.position.x = 80;
+  const ph = u * 2.2 * TAU, sw = Math.sin(ph), co = Math.cos(ph), x = lerp(-1.4, 0.6, k);
+  pose({ x: BX + x, y: STAND_Y + 0.05 * Math.abs(co), z: 0.3, yaw: 80, face: blinkAt(u, 'happy', [0.6]), torso: [-2, 0, 6 * sw], head: [-4, -40, -3 * sw], aL: [36 * sw, -10, -20], aR: [-34, 8, -30],
+    lL: [-36 * sw, 0, 46 * Math.max(0, co)], lR: [36 * sw, 0, 46 * Math.max(0, -co)], sq: 0.04 * (1 - Math.abs(co)) });
+  const dx = BX + x + 0.95; dogAt(dx, 0, 0.55, 90, { wag: u, walk: u * 16, hop: 0.02 * Math.abs(Math.sin(u * 16)), head: [-10, -30, 0] });
+  yaw.updateMatrixWorld(true); const a = new THREE.Vector3(); aR.h.getWorldPosition(a); const b = new THREE.Vector3(dx - 0.2, 0.42, 0.55);
+  leash.visible = true; leash.position.copy(a).add(b).multiplyScalar(0.5); leash.scale.set(1, 1, a.distanceTo(b)); leash.lookAt(b);
+  cam([BX + x + 0.45, 1.05, 5.0], [BX + x + 0.55, 0.8, 0.4], [BX + x + 0.45, 1.05, 5.0], [BX + x + 0.55, 0.8, 0.4], 0, 46);
+};
+S.dog_end = (u, d, k, t) => {        // street at sunrise, low and close on the dog sitting, looking up at the camera; he stands behind it
+  mood('dawn', 0); setSky(0xf7c6a0); bus.position.x = 80;
+  pose({ x: BX - 0.35, z: -0.25, yaw: 10, face: 'happy', aL: [0, -8, 0], aR: [0, 8, 0] });
+  dogAt(BX + 0.15, 0, 0.55, 8, { sit: 1, wag: u, s: 1.15, head: [-16, 0, 14 * Math.sin(u * 2.4)] });
+  cam([BX + 0.55, 0.6, 2.5], [BX + 0.1, 0.55, 0.5], [BX + 0.45, 0.55, 2.15], [BX + 0.1, 0.55, 0.5], k, 44);
+};
 // story-friendly names for the shots (specs use these)
 const ALIAS = { asleep_smoke_alarm: 's01', bolt_upright: 's02', smoke_alarm_swat: 's03', phone_buzz_asleep: 's04', snooze_slaps: 's05', late_sprint: 's06', set_alarm_in_bed: 's07',
   pushups: 's08', walk_steps: 's09', stretch_win: 's10', floor_ping: 's11', thinking: 's12a', shake_phone: 's12b', out_the_door: 's14', store_art: 'ways' };
-const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6, bus_stop: 12, class_late: 10, class_desk: 4, across_room_go: 10, back_to_bed: 8, cafe_late: 10, cafe_work: -1, cafe_talk: 15 };
+const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6, bus_stop: 12, class_late: 10, class_desk: 4, across_room_go: 10, back_to_bed: 8, cafe_late: 10, cafe_work: -1, cafe_talk: 15, dog_wake: 10, dog_up: 10, dog_door: 10, dog_walk: 12, dog_end: 2 };
 window.renderAt = (t) => {
   const sh = SPEC.shots.find((s) => t >= s.t0 && t < s.t1) || SPEC.shots[SPEC.shots.length - 1];
   resetProps();
@@ -674,8 +771,14 @@ window.renderAt = (t) => {
   const name = ALIAS[sh.name] || sh.name; PARAM = sh.p || {};
   TILT = (PARAM.tilt !== undefined ? PARAM.tilt : TILTS[name]) || 0;
   S[name](u, d, clamp(u / d, 0, 1), t);
+  if (SOFT) shadow.visible = false;
   camera.updateMatrixWorld(); renderer.render(scene, camera);
   return true;
 };
+if (SOFT) {      // soft shadows from the key light; flat room planes only receive
+  key.castShadow = true; key.shadow.mapSize.set(2048, 2048); const sc = key.shadow.camera; sc.left = -7; sc.right = 7; sc.top = 7; sc.bottom = -7; sc.near = 0.5; sc.far = 40;
+  key.shadow.bias = -0.0015; key.shadow.normalBias = 0.03; key.shadow.radius = 5; scene.add(key.target);
+  scene.traverse((m) => { if (!m.isMesh) return; const lit = [].concat(m.material).every((x) => x.isMeshLambertMaterial && !x.transparent); m.receiveShadow = lit; m.castShadow = lit && m.geometry.type !== 'PlaneGeometry'; });
+}
 window.ready = true;
 </script></body></html>

@@ -69,7 +69,12 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
 | `cafe_late` | PLACE: a cafe (his job). He bursts in through the door, late; the boss behind the counter turns to look | added 2026-11-28; needs >= 3 s |
 | `cafe_work` | behind the cafe counter in an apron. `p.mode` `tired` (default): nodding off next to the boss; `early`: alone, awake, wiping the counter | added 2026-11-28 |
 | `cafe_talk` | in front of the counter, talking to the camera. `p.phone` holds his phone up, `p.boss` the boss stares, `p.view` `close` | added 2026-11-28 |
-| `bed_top` | bedroom from the ceiling: starfished asleep, phone lit up by his head. `p.slap`: his hand flops onto it (0.7, 1.6 s) | added 2026-11-28; good under `bubble` texts |
+| `bed_top` | bedroom from the ceiling: starfished asleep, phone lit up by his head. `p.slap`: his hand flops onto it (0.7, 1.6 s); with `p.once` one tap at 0.6 s and the phone stays dark; `p.quiet`: phone dark | added 2026-11-28; good under `bubble` texts |
+| `dog_wake` | a dog on the bed while he sleeps. `p.mode` `stare` (default): sits staring at the camera, head tilting; `paw`: leans over and noses his face | added 2026-11-28 |
+| `dog_up` | he sits up in bed yawning while the dog bounces beside the bed. `p.ring`: no dog, the phone keeps ringing and he stares at it | added 2026-11-28 |
+| `dog_door` | the dog waits at the bedroom door, leash in its mouth; he shuffles over. `p.close`: close on the dog | added 2026-11-28 |
+| `dog_walk` | PLACE: the street at sunrise; he walks the dog on a leash | added 2026-11-28; needs >= 2 s |
+| `dog_end` | street at sunrise, low and close on the dog sitting, looking up; he stands behind | added 2026-11-28 |
 | `store_art` | the real "15+ ways to wake up" App Store screenshot, full screen | no overlays |
 | `alarm_slapped` | the alarm itself (a phone with a face) rears up ringing on the nightstand and gets slapped flat at 0.75 / 1.5 / 2.25 s; he sleeps on | added 2026-11-28; needs >= 3 s; stamp at 0.75 |
 | `alarm_talk` | the alarm talks to the camera from the nightstand | added 2026-11-28; `p`: `face` annoyed/dead/determined/happy, `bg` asleep/gone/made, `view` 0 close / 1 wide with the bed / 2 low hero, plus `mood`, `clock` |
@@ -117,3 +122,14 @@ track is picked from the video's id, so it changes from video to video but repea
   `steps`, `scratch`, `sad`, `tick`, `flop`, `sparkle`, `thud` (all synthesised in `build.py`). Cuts get a whoosh and cards a pop automatically.
 - **Music level**: `music_gain` in `config.toml` `[animation]` (0.48; ducked to half under the voice).
 - **Voice**: `elevenlabs_stability` in `config.toml` (1.0 = steadiest, calmest).
+
+## Soft look, quiet captions, per-video end card (2026-11-28, modelled on a Renno video Chika likes)
+
+- `"render": "soft"` in the spec: every box gets rounded edges and smooth shading, textures are drawn clean (no pixel noise), faces are
+  round dot eyes and simple mouths, the key light casts soft shadows, frames render at 720x1280 and get a gentle vignette. Without it
+  the build is the pixelated PS1 look, unchanged. All shots work in both.
+- `"theme": "serif"` (picked automatically with `render: soft`): captions in small italic serif, white with one accent word, the whole
+  line at once; `"cap_pos": "top"` on a beat draws it large at the top (the hook). `card` overlays become bare text (small label + big value).
+- `"end": {"tagline": "An alarm as stubborn as your dog.", "big": ["Get up.", "For real."]}`: replaces the App Store listing card with
+  icon, name, the tagline (the story's callback), two big lines, the App Store badge and LINK IN BIO.
+- `"voice_sep": " "`: the one-take voice read joins the lines with a space (flowing short lines) instead of a pause after each.
