@@ -123,13 +123,12 @@ track is picked from the video's id, so it changes from video to video but repea
 - **Music level**: `music_gain` in `config.toml` `[animation]` (0.48; ducked to half under the voice).
 - **Voice**: `elevenlabs_stability` in `config.toml` (1.0 = steadiest, calmest).
 
-## Soft look, quiet captions, per-video end card (2026-11-28, modelled on a Renno video Chika likes)
+## Soft look and quiet captions (2026-11-28, modelled on a Renno video Chika likes; approved, now the default for new videos)
 
 - `"render": "soft"` in the spec: every box gets rounded edges and smooth shading, textures are drawn clean (no pixel noise), faces are
   round dot eyes and simple mouths, the key light casts soft shadows, frames render at 720x1280 and get a gentle vignette. Without it
   the build is the pixelated PS1 look, unchanged. All shots work in both.
 - `"theme": "serif"` (picked automatically with `render: soft`): captions in small italic serif, white with one accent word, the whole
   line at once; `"cap_pos": "top"` on a beat draws it large at the top (the hook). `card` overlays become bare text (small label + big value).
-- `"end": {"tagline": "An alarm as stubborn as your dog.", "big": ["Get up.", "For real."]}`: replaces the App Store listing card with
-  icon, name, the tagline (the story's callback), two big lines, the App Store badge and LINK IN BIO.
+- The ending is always the original download card. A per-video end card was tried once and Chika rejected it (2026-11-28); `"end"` in a spec is ignored.
 - `"voice_sep": " "`: the one-take voice read joins the lines with a space (flowing short lines) instead of a pause after each.

@@ -770,7 +770,7 @@ def main():
     global THEME
     th = pick_theme(spec, spec_path, name); THEME = THEMES[th]; print("theme:", th)
     global END, SOFTR
-    END = spec.get("end"); SOFTR = spec.get("render") == "soft"
+    END = None; SOFTR = spec.get("render") == "soft"      # the ending is ALWAYS the original download card (Chika, 2026-11-28: "you changed the original CTA graphic at the end... please don't do that"); spec["end"] is ignored
     for b in beats:
         if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
             sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")

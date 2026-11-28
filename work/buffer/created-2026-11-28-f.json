@@ -1,0 +1,42 @@
+{
+ "slots": [
+  {
+   "variant_id": "A20261128-006_v1",
+   "scheduled_at": "2026-11-28T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0aa05aeb08204b2e9ddb7f",
+     "caption": "Download the Unsnooze app\nyour dog has never once let you snooze. your alarm lets you every single morning 🐶⏰\nwho actually gets you out of bed, your alarm or your pet?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0aa05ace824d71b0ab6f2d",
+     "caption": "Download the Unsnooze app\nwho gets you out of bed faster, your alarm or your dog? 🐶⏰ #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0aa05b166388cd1f396cf0",
+     "caption": "Download the Unsnooze app\nyour dog never lets you snooze. so why does your alarm? 🐶⏰\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0aa05cae4c52c1cb567834",
+     "caption": "Download the Unsnooze app\nyour dog has never once let you snooze. your alarm lets you every single morning 🐶⏰\nwho actually gets you out of bed, your alarm or your pet?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}
