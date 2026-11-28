@@ -1,0 +1,10 @@
+{
+  "topic": "animation",
+  "format": "animation",
+  "angle": "animation",
+  "summary": "Your alarm tells its side: you set five alarms, put the phone across the room, got up, turned it off and went straight back to bed. Five more minutes became forty, you missed the bus and walked into class late. You're not lazy, the alarm is just too easy to turn off, so now it won't stop until you do 20 squats, walk 60 steps or solve math.",
+  "style": "low_poly",
+  "concept": "alarm-narrates-across-the-room",
+  "title": "i'm your alarm. you hit me every single morning.",
+  "voice": "elevenlabs"
+}

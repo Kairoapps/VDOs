@@ -76,6 +76,38 @@ def elevenlabs(lines, out_dir):
             print("voice: no ElevenLabs voice found -> captions only"); return False
         out_dir.mkdir(parents=True, exist_ok=True)
         models = [m for m in (cfg.get("elevenlabs_model"), "eleven_multilingual_v2") if m]
+        if cfg.get("elevenlabs_continuous", True):
+            # Chika, 2026-11-28: line-by-line takes sounded fast and choppy. Read the whole script in ONE take so the voice flows,
+            # then cut it into beats at the pauses, using the character timestamps the API returns.
+            try:
+                import base64, wave as _w
+                m = models[0]; full = "\n\n".join(lines); spans = []; pos = 0
+                for l in lines:
+                    spans.append((pos, pos + len(l))); pos += len(l) + 2
+                vs = {k: float(v) for k, v in (("stability", cfg.get("elevenlabs_stability")), ("speed", cfg.get("elevenlabs_speed"))) if v is not None}
+                d = json.loads(call(f"https://api.elevenlabs.io/v1/text-to-speech/{vid}/with-timestamps?output_format=mp3_44100_128",
+                                    {"text": full, "model_id": m, **({"voice_settings": vs} if vs else {})}))
+                al = d["alignment"]; st, en = al["character_start_times_seconds"], al["character_end_times_seconds"]
+                if len(al["characters"]) != len(full):
+                    raise ValueError("alignment length differs from the text")
+                tmp = out_dir / "_full.mp3"; tmp.write_bytes(base64.b64decode(d["audio_base64"])); x = load_audio(tmp); tmp.unlink()
+
+                def first(a, b):      # first spoken character of a line (skips a leading [tone tag])
+                    k = a
+                    while k < b and (full[k] == "[" or full[k].isspace()):
+                        k = full.index("]", k) + 1 if full[k] == "[" else k + 1
+                    return min(k, b - 1)
+                cuts = [0.0] + [(en[spans[i][1] - 1] + st[first(*spans[i + 1])]) / 2 for i in range(len(lines) - 1)] + [len(x) / SR]
+                for f in glob.glob(str(out_dir / "l[0-9][0-9].*")):
+                    os.remove(f)
+                for i in range(len(lines)):
+                    seg = x[int(cuts[i] * SR):int(cuts[i + 1] * SR)]
+                    with _w.open(str(out_dir / f"l{i + 1:02d}.wav"), "wb") as w:
+                        w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.clip(seg, -1, 1) * 32767).astype("<i2").tobytes())
+                (out_dir / "continuous.json").write_text(json.dumps({"continuous": True, "model": m, "seconds": round(len(x) / SR, 2)}))
+                return True
+            except Exception as e:
+                print(f"voice: one-take read failed ({str(e)[:140]}) -> line by line")
         for i, text in enumerate(lines):
             for m in models:
                 try:
@@ -145,6 +177,7 @@ def rounded_img(im, rad):
 
 # Graphics themes (Chika, 2026-11-28: the videos must not all look alike): caption colours and style, card and stamp style, font.
 # build.py picks one that differs from the last 3 videos and saves it in the spec ("theme"); the download card never changes.
+CTA_IN = 0.55      # seconds the download card takes to rise over the last shot
 INTER = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
 THEMES = {
     "classic": dict(cap=((255, 242, 26), (255, 255, 255)), cap_style="outline", card="dark", stamp="outline", font=BOLD),
@@ -614,7 +647,7 @@ def build_audio(path, beats, total, cta0, voice):
         for o in b.get("overlay", []):
             if o["type"] == "stamp":
                 thud(t0 + float(o.get("at", 0.1)))
-    chime(cta0, (523, 659, 784, 1047), 0.07)
+    sfx("whoosh", cta0 - 0.05, 1.3, 0.6); chime(cta0 + CTA_IN - 0.1, (523, 659, 784, 1047), 0.05)
     a *= 0.6
     vo = np.zeros(n)
     for b in beats:
@@ -654,15 +687,22 @@ def main():
         voice = have() or (elevenlabs(lines, vdir) and have())
     if "--require-voice" in sys.argv and not snap and not voice:
         sys.exit("voice: REQUIRED but missing -> no video built (fix ElevenLabs access, or skip tonight's animation)")
-    vos = [trim(load_audio(glob.glob(str(vdir / f"l{i + 1:02d}.*"))[0])) for i in range(len(lines))] if voice else [None] * len(lines)
-    vos = [None if v is None else v / (np.abs(v).max() + 1e-9) for v in vos]
+    cont = voice and (vdir / "continuous.json").exists()      # one take cut at the pauses: keep its own pacing and levels
+    if cont:
+        vos = [load_audio(glob.glob(str(vdir / f"l{i + 1:02d}.*"))[0]) for i in range(len(lines))]
+        pk = max(np.abs(v).max() for v in vos) + 1e-9; vos = [v / pk for v in vos]
+        for v in vos:      # tiny fades so no cut can click
+            k = min(len(v) // 2, int(0.03 * SR)); v[:k] *= np.linspace(0, 1, k); v[-k:] *= np.linspace(1, 0, k)
+    else:
+        vos = [trim(load_audio(glob.glob(str(vdir / f"l{i + 1:02d}.*"))[0])) for i in range(len(lines))] if voice else [None] * len(lines)
+        vos = [None if v is None else v / (np.abs(v).max() + 1e-9) for v in vos]
     t = 0.0
     for b, v in zip(beats, vos[:-1]):
         txt = re.sub(r"\[[a-z ]+\]|[*]", "", b.get("line") or b.get("caption", ""))
         ld = len(v) / SR if v is not None else max(0.9, len(txt) * 0.062)
-        dur = max(float(b.get("min", 1.3)), ld + (0.3 if v is not None else 0.75)) if "dur" not in b else float(b["dur"])
-        b.update(t0=round(t, 3), t1=round(t + dur, 3), line_at=round(t + 0.12, 3), line_dur=ld, vo=v); t += dur
-    cta0 = round(t, 3); cta_dur = max(3.4, (len(vos[-1]) / SR + 1.4) if vos[-1] is not None else 3.4); total = round(cta0 + cta_dur, 2)
+        dur = max(float(b.get("min", 1.3)), ld + (0.06 if cont else 0.3 if v is not None else 0.75)) if "dur" not in b else float(b["dur"])
+        b.update(t0=round(t, 3), t1=round(t + dur, 3), line_at=round(t + (0.0 if cont else 0.12), 3), line_dur=ld, vo=v); t += dur
+    cta0 = round(t, 3); cta_dur = max(3.6, (len(vos[-1]) / SR + 1.9) if vos[-1] is not None else 3.6); total = round(cta0 + cta_dur, 2)
     shots = []
     for b in beats:
         if b.get("then"):      # {"shot": "thinking", "then": {"shot": "shake_phone", "at": 1.6}}
@@ -688,10 +728,21 @@ def main():
         sys.exit(f"3D render failed ({nfr} frames):\n{r.stdout[-1500:]}\n{r.stderr[-1500:]}")
     art = None
 
+    last = {}
+
     def frame(t):
         nonlocal art
-        if t >= cta0:
-            return cta(t, cta0).convert("RGB")
+        if t >= cta0:      # the card rises over the last shot (0.55 s) instead of cutting to it (Chika, 2026-11-28)
+            u = t - cta0; card = cta(t, cta0 + CTA_IN * 0.5).convert("RGB")
+            if u >= CTA_IN:
+                return card
+            if "im" not in last:
+                last["im"] = scene(cta0 - 1.0 / FPS, False)
+            pr = eo(u / CTA_IN); im = Image.eval(last["im"], lambda v: int(v * (1 - 0.45 * pr))); im.paste(card, (0, int(H * (1 - pr)))); return im
+        return scene(t, True)
+
+    def scene(t, cap):
+        nonlocal art
         b = next((x for x in beats if x["t0"] <= t < x["t1"]), beats[-1])
         if b["shot"] == "store_art":      # the real "15+ ways to wake up" App Store screenshot, slow scroll
             art = art or Image.open(ASSETS / "shot3_hi.png").convert("RGB").resize((1188, 2580), Image.LANCZOS)
@@ -704,9 +755,10 @@ def main():
             k = min(int(round(t * FPS)), nfr - 1)
             im = Image.open(rdir / "frames" / f"f_{k:05d}.png").convert("RGB").resize((W, H), Image.NEAREST).convert("RGBA")
             draw_overlays(im, b, t)
-        draw_caption(im, b, t)
+        if cap:
+            draw_caption(im, b, t)
         return im.convert("RGB")
-    wav = work / f"{name}.wav"; build_audio(wav, beats + [dict(shot="cta", t0=cta0, t1=total, line_at=cta0 + 0.12, vo=vos[-1])], total, cta0, voice)
+    wav = work / f"{name}.wav"; build_audio(wav, beats + [dict(shot="cta", t0=cta0, t1=total, line_at=cta0 + CTA_IN + 0.1, vo=vos[-1])], total, cta0, voice)
     out = work / f"{name}.mp4"
     p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", str(wav),
                           "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)

@@ -1,0 +1,385 @@
+{
+ "id": "A20261128-003",
+ "style": "low_poly",
+ "concept": "alarm-narrates-across-the-room",
+ "title": "i'm your alarm. you hit me every single morning.",
+ "summary": "Your alarm tells its side: you set five alarms, put the phone across the room, got up, turned it off and went straight back to bed. Five more minutes became forty, you missed the bus and walked into class late. You're not lazy, the alarm is just too easy to turn off, so now it won't stop until you do 20 squats, walk 60 steps or solve math, and you make the bus.",
+ "beats": [
+  {
+   "shot": "alarm_slapped",
+   "min": 3.1,
+   "line": "I'm your alarm. You hit me every single morning.",
+   "caption": "i'm your alarm. you *hit me*\nevery single morning.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "SNOOZED",
+     "at": 0.75,
+     "x": 700,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "annoyed",
+    "bg": "asleep",
+    "view": 0
+   },
+   "line": "You set five of me, six, six oh five, six ten.",
+   "caption": "you set *five of me.*\n6:00. 6:05. 6:10.",
+   "sfx": [
+    {
+     "name": "tick",
+     "at": 0.2,
+     "dur": 2.5
+    }
+   ]
+  },
+  {
+   "shot": "across_room_go",
+   "min": 3.3,
+   "line": "Then you put me across the room, which was smart.",
+   "caption": "then you put me\n*across the room.* smart.",
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 2.0,
+     "vol": 0.7
+    }
+   ]
+  },
+  {
+   "shot": "back_to_bed",
+   "min": 3.3,
+   "line": "Except you got up, turned me off, and went straight back to bed.",
+   "caption": "you got up. turned me off.\n*went back to bed.*",
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 1.4,
+     "vol": 0.7
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "dead",
+    "bg": "asleep",
+    "view": 1,
+    "mood": "day",
+    "clock": "8:10"
+   },
+   "line": "Five more minutes turned into forty.",
+   "caption": "*five more minutes*\nturned into forty.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:10 AM",
+     "accent": "red",
+     "at": 0.05,
+     "x": 470,
+     "y": 290
+    },
+    {
+     "type": "bubble",
+     "from": "group chat",
+     "text": "where are you??",
+     "at": 0.9,
+     "x": 640,
+     "y": 520
+    }
+   ]
+  },
+  {
+   "shot": "bus_stop",
+   "min": 3.2,
+   "line": "So we watched the bus leave, together.",
+   "caption": "so we watched the bus\n*leave.* together.",
+   "sfx": [
+    {
+     "name": "bus",
+     "at": 0.0,
+     "dur": 2.8
+    },
+    {
+     "name": "steps",
+     "at": 0.0,
+     "dur": 1.2
+    },
+    {
+     "name": "sad",
+     "at": 1.6,
+     "vol": 0.8
+    }
+   ]
+  },
+  {
+   "shot": "class_late",
+   "min": 3.0,
+   "line": "And we walked into class late, and everyone looked.",
+   "caption": "walked into class *late.*\neveryone looked.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.6,
+     "x": 330,
+     "y": 330,
+     "rot": -9
+    }
+   ],
+   "sfx": [
+    {
+     "name": "scratch",
+     "at": 0.35
+    }
+   ]
+  },
+  {
+   "shot": "class_desk",
+   "line": "You're not lazy. I'm just too easy to turn off.",
+   "caption": "you're not lazy. i'm just\n*too easy to turn off.*"
+  },
+  {
+   "shot": "alarm_talk",
+   "lift": true,
+   "p": {
+    "face": "determined",
+    "bg": "asleep",
+    "view": 2
+   },
+   "line": "So I stopped being easy.",
+   "caption": "so i stopped\n*being easy.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.4,
+     "x": 830,
+     "y": 360,
+     "rot": -6,
+     "scale": 0.5
+    }
+   ]
+  },
+  {
+   "shot": "squats",
+   "line": "Now I don't stop until you do twenty squats,",
+   "caption": "now i don't stop until\nyou do *20 squats.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "squats",
+     "from": 15,
+     "to": 20,
+     "total": 20,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "or walk sixty steps away from the bed,",
+   "caption": "or walk *60 steps.*\naway from the bed.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 44,
+     "to": 60,
+     "total": 60,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ],
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 2.2,
+     "vol": 0.6
+    }
+   ]
+  },
+  {
+   "shot": "thinking",
+   "line": "or solve math at six in the morning.",
+   "caption": "or solve *math.*\nat 6 a.m.",
+   "overlay": [
+    {
+     "type": "tiles",
+     "names": [
+      "math"
+     ],
+     "ats": [
+      0.1
+     ]
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "happy",
+    "bg": "made",
+    "view": 0,
+    "mood": "day",
+    "clock": "6:04"
+   },
+   "line": "You can't do that half asleep, and that's the point.",
+   "caption": "you can't do that\n*half asleep.* that's the point.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 290
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "color": "green",
+     "at": 0.8,
+     "y": 450
+    }
+   ],
+   "sfx": [
+    {
+     "name": "sparkle",
+     "at": 0.8
+    }
+   ]
+  },
+  {
+   "shot": "bus_stop",
+   "min": 2.8,
+   "p": {
+    "mode": "catch"
+   },
+   "line": "Now we make the bus.",
+   "caption": "now we *make* the bus.",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "ON TIME",
+     "color": "green",
+     "at": 1.5,
+     "x": 640,
+     "y": 360
+    }
+   ],
+   "sfx": [
+    {
+     "name": "bus",
+     "at": 0.0,
+     "dur": 2.4,
+     "vol": 0.8
+    }
+   ]
+  },
+  {
+   "shot": "class_desk",
+   "p": {
+    "mode": "early"
+   },
+   "line": "And you're early. It's weird, but I like it.",
+   "caption": "and you're *early.*\nit's weird, but i like it.",
+   "sfx": [
+    {
+     "name": "bell",
+     "at": 0.1,
+     "vol": 0.7
+    }
+   ]
+  },
+  {
+   "shot": "class_desk",
+   "p": {
+    "mode": "early",
+    "view": "close",
+    "face": "happy"
+   },
+   "line": "I'm Unsnooze, by the way.",
+   "caption": "i'm *unsnooze,* by the way.",
+   "sfx": [
+    {
+     "name": "sparkle",
+     "at": 0.3,
+     "vol": 0.7
+    }
+   ]
+  }
+ ],
+ "cta_line": "Download Unsnooze. Link in bio.",
+ "look": {
+  "name": "pastel room / afro hair",
+  "room": "pastel room",
+  "skin": "#a5673f",
+  "skinD": "#7a4a2c",
+  "cheek": "#c0603f",
+  "hair": "#3a2416",
+  "hairStyle": "afro",
+  "glasses": false,
+  "beard": false,
+  "freckles": false,
+  "top": "#7fe0b4",
+  "top2": "#5cc49a",
+  "pants": "#5a5d6a",
+  "shoe": "#e8556a",
+  "sole": "#f2f0ea",
+  "beardColor": "#3a2416",
+  "pack": "#e8b23a",
+  "capColor": "#f06a39",
+  "wall": "#f8c8d8",
+  "wallTex": "dots",
+  "floorKind": "carpet",
+  "floor": [
+   "#f0e4dc",
+   "#e8dcd4"
+  ],
+  "floorLine": "#d8c4b8",
+  "quilt": [
+   "#ffb0c8",
+   "#b0e0f0",
+   "#fff0b0",
+   "#c8b0f0"
+  ],
+  "rug": "#b0e0f0",
+  "rugTrim": "#ffffff",
+  "curtain": "#ffffff",
+  "poster": "#9a7ae8",
+  "wood": "#e8d0b8",
+  "frame": "#ffffff",
+  "sheet": "#ffffff",
+  "plant": true,
+  "lights": true,
+  "lightsColor": "#ffb0d0",
+  "tall": 1.0,
+  "wide": 0.86,
+  "headS": 1.0,
+  "sleeves": "long",
+  "shorts": false,
+  "acc": "none"
+ },
+ "theme": "clean",
+ "voice_dir": "vo"
+}

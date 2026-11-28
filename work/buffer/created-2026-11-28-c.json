@@ -1,0 +1,42 @@
+{
+ "slots": [
+  {
+   "variant_id": "A20261128-003_v1",
+   "scheduled_at": "2026-11-28T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a7bb8d089f5457194e5fd",
+     "caption": "Download the Unsnooze app\nyour alarm has notes. five alarms, phone across the room, and you still went back to bed ⏰🫠\nbe honest, who else gets up, turns it off and lies right back down?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a7bb9cf6d91773008331c",
+     "caption": "Download the Unsnooze app\nwho else walks across the room, turns the alarm off and gets back in bed? ⏰🫠 #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a7bbafe7140cdac980abe",
+     "caption": "Download the Unsnooze app\nif your alarm could talk, what would it say about you? ⏰🫠\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a7bbad7e53b12ebe58b36",
+     "caption": "Download the Unsnooze app\nyour alarm has notes. five alarms, phone across the room, and you still went back to bed ⏰🫠\nbe honest, who else gets up, turns it off and lies right back down?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

@@ -140,6 +140,8 @@ elevenlabs_voice = "Jack John - Conversational and Upbeat"
 elevenlabs_voice_id = "7EzWGsX10sAS4c9m9cPf"
 elevenlabs_model = "eleven_v3"
 elevenlabs_stability = 1.0   # Chika, 2026-11-28: the voice sounded too enthusiastic -> same voice, steadiest delivery (0.0 expressive, 0.5 natural, 1.0 steady)
+elevenlabs_continuous = true # Chika, 2026-11-28: line-by-line takes sounded fast and choppy -> the whole script is read in one take, cut at the pauses
+elevenlabs_speed = 0.9       # a little slower (1.0 = the voice's normal pace)
 music_gain = 0.48            # Chika, 2026-11-28: background music a bit louder (was 0.34)
 
 # Content angles (set per clip in edit.json "angle"); ranked weekly and used to weight which clips post.
