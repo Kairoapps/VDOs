@@ -35,10 +35,12 @@
   rises over that shot (automatic) and the ending line follows. Never cut from the middle of the story straight to the card.
 - **Captions: no background box** ("we don't really need a white background, just make sure the text is easy to read"): captions
   are bold outlined text in every theme. On the sheet, check each caption reads clearly against its scene.
-- **Soft look (sample made 2026-11-28, waiting for Chika's verdict; use it only if a later note here says she approved it):**
-  `"render": "soft"` (smooth rounded shapes, soft shadows, round dot eyes, 720x1280) with `"theme": "serif"` (small italic serif
-  captions, whole line at once; `"cap_pos": "top"` puts the hook big at the top; cards become bare text) and a per-video end card
-  `"end": {"tagline": "...", "big": ["GET UP.", "FOR REAL."]}` whose tagline is the callback line. Details in `anim/README.md`.
+- **Soft look: approved (Chika, 2026-11-28: "I like the sample").** Build every new animation with `"render": "soft"` (smooth rounded
+  shapes, soft shadows, round dot eyes; still low poly) and the `serif` theme it picks (small italic serif captions, the whole line at
+  once; `"cap_pos": "top"` on beat 1 puts the hook large at the top; cards become bare text). Details in `anim/README.md`.
+- **The ending card never changes (Chika, 2026-11-28: "you changed the original CTA graphic at the end... please don't do that").**
+  Every video ends on the original download card (app icon, "Download Unsnooze Today", App Store listing, badge, LINK IN BIO). No
+  per-video end card, tagline card or restyle; `build.py` ignores `"end"` in a spec. The callback line belongs in the last story beat.
 - **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
   least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
 
