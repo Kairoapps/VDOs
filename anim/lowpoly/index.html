@@ -275,7 +275,7 @@ function setClock(s) { M.clockFace.map = clockFor(PARAM.clock || s); }
 function resetProps() {
   for (const m of [...ringsR, ...ringsO, ...zs, bang, ...drops]) m.visible = false;
   phone.position.set(-2.0, 0.565, -1.22); phone.rotation.set(0, 0.3, 0); phoneScr.material = M.screen; M.screen.color.set(0x333333); phoneGlow.intensity = 0;
-  handPhone.visible = false; pack.visible = false; pal.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
+  handPhone.visible = false; pack.visible = false; pal.visible = false; apron.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
 }
 const LIE = { x: -1.55, y: 0.66, z: -2.2, yaw: 90, pitch: -90, shadow: false };
 const SIT = { x: -1.75, y: 0.7, z: -2.2, yaw: 90, shadow: false, lL: [-90, 0, 0], lR: [-90, 0, 0] };
@@ -604,10 +604,69 @@ S.back_to_bed = (u, d, k, t) => {    // ...then shuffles straight back and face-
   if (k > 0.72) zzz(new THREE.Vector3(-1.0, 1.0, -2.3), t);
   cam([0.9, 1.6, 1.9], [-0.6, 0.8, -1.9], [0.5, 1.5, 1.3], [-0.8, 0.75, -2.0], k, 50, 0.03 * b, t);
 };
+// --- cafe (his job): counter along x at z -1, back wall z -3, door on the right wall, the boss stands behind the counter (2026-11-28)
+const FZ = 40, cafe = grp(scene, 0, 0, FZ), boss = grp(cafe, -1.15, 0, -1.75), bossHead = grp(boss, 0, 1.42, 0);
+const apron = box(torso, 0.38, 0.44, 0.03, lam({ color: 0x2e3a34 }), 0, 0.2, 0.17); apron.visible = false;
+{ const g = cafe, wallM = lam({ map: flatTex(0xf0e2c8) }), dark = lam({ color: 0x2a2a30 }), steel = lam({ color: 0xb8bcc4 }), woodM = lam({ map: T.wood, color: 0xd8b890 });
+  plane(g, 8, 8, lam({ map: tex(16, 16, (c) => { for (let y = 0; y < 16; y += 8) for (let x = 0; x < 16; x += 8) noise(c, x, y, 8, 8, ((x + y) / 8) % 2 ? 0xe8e0d0 : 0x5a6a62, .04); }) }), 0, 0, 0, -Math.PI / 2, 0, 4, 4, 8, 8);
+  plane(g, 8, 3.4, wallM, 0, 1.7, -3, 0, 0, 4, 2, 8, 4); plane(g, 8, 3.4, wallM, -3.6, 1.7, 0, 0, Math.PI / 2, 4, 2, 8, 4); plane(g, 8, 3.4, wallM, 3.6, 1.7, 0, 0, -Math.PI / 2, 4, 2, 8, 4);
+  box(g, 8, 1.1, 0.05, lam({ color: LOOK.rug }), 0, 0.55, -2.97);
+  box(g, 4.6, 1.0, 0.7, woodM, -0.2, 0.5, -1.0); box(g, 4.8, 0.07, 0.86, lam({ color: 0xf4efe6 }), -0.2, 1.03, -1.0);
+  box(g, 0.7, 0.55, 0.5, steel, 1.2, 1.34, -1.05); box(g, 0.5, 0.12, 0.3, dark, 1.2, 1.66, -1.05); box(g, 0.1, 0.2, 0.1, dark, 1.05, 1.16, -0.82); box(g, 0.1, 0.2, 0.1, dark, 1.35, 1.16, -0.82);
+  for (const x of [-0.5, -0.2, 0.1]) box(g, 0.14, 0.18, 0.14, lam({ color: 0xffffff }), x, 1.16, -0.85);
+  box(g, 2.6, 0.06, 0.3, woodM, -0.6, 2.0, -2.85); for (let k = 0; k < 7; k++) box(g, 0.16, 0.2, 0.16, lam({ color: [0xffffff, 0xe8556a, 0xf2d24a, 0x5a8af0][k % 4] }), -1.7 + k * 0.36, 2.13, -2.85);
+  box(g, 1.5, 0.9, 0.05, dark, 1.6, 2.2, -2.96); for (let k = 0; k < 4; k++) box(g, 1.0 - 0.15 * (k % 2), 0.05, 0.06, lam({ color: 0xf4efe6 }), 1.55, 2.5 - k * 0.19, -2.94);
+  box(g, 0.56, 0.56, 0.05, lam({ color: 0xffffff }), -2.6, 2.4, -2.96); box(g, 0.04, 0.2, 0.06, dark, -2.6, 2.47, -2.94); box(g, 0.16, 0.04, 0.06, dark, -2.53, 2.4, -2.94);
+  box(g, 0.06, 2.2, 1.0, lam({ color: 0x9ad0f0 }), 3.57, 1.1, 0.4); box(g, 0.08, 2.3, 0.08, dark, 3.55, 1.15, -0.12); box(g, 0.08, 2.3, 0.08, dark, 3.55, 1.15, 0.92);
+  for (const x of [-1.6, 0.4]) { box(g, 0.03, 0.8, 0.03, dark, x, 2.95, -0.6); frustum(g, 0.16, 0.42, 0.3, 1, basic({ color: 0xffd9a0 }), x, 2.45, -0.6); }
+  const sk = lam({ color: 0xe0ac84 }), bt = lam({ color: 0x4a6a9a });
+  box(boss, 0.5, 0.7, 0.3, lam({ color: 0x3a3a44 }), 0, 0.35, 0); box(boss, 0.52, 0.66, 0.32, bt, 0, 1.06, 0); box(boss, 0.4, 0.5, 0.03, lam({ color: 0x2e3a34 }), 0, 0.98, 0.17);
+  box(boss, 0.16, 0.5, 0.2, bt, -0.2, 1.0, 0.2, -0.5, 0, 0.9); box(boss, 0.16, 0.5, 0.2, bt, 0.2, 1.0, 0.2, -0.5, 0, -0.9);     // arms crossed
+  const fm = lam({ map: tex(8, 8, (c) => { noise(c, 0, 0, 8, 8, 0xe0ac84, .03); px(c, 1, 3, col(0xffffff), 2, 2); px(c, 5, 3, col(0xffffff), 2, 2); px(c, 2, 3, col(0x1a100a), 1, 2); px(c, 6, 3, col(0x1a100a), 1, 2); px(c, 1, 2, col(0x1a100a), 2, 1); px(c, 5, 2, col(0x1a100a), 2, 1); px(c, 2, 6, col(0x3a1a12), 4, 1); px(c, 2, 5, col(0x6a6a6a), 4, 1); }) });
+  const m = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.38, 0.36), [sk, sk, sk, sk, fm, sk]); m.position.y = 0.19; bossHead.add(m); box(bossHead, 0.44, 0.1, 0.4, lam({ color: 0x8a8a8a }), 0, 0.41, 0); box(bossHead, 0.44, 0.2, 0.08, lam({ color: 0x8a8a8a }), 0, 0.28, -0.19);
+}
+const bossLook = (hx, hz, on = true, bx = -1.15) => { boss.visible = true; boss.position.x = bx; bossHead.rotation.y = on ? clamp(Math.atan2(hx - bx, hz + 1.75), -1.5, 1.5) : 0; };
+S.cafe_late = (u, d, k, t) => {      // bursts in through the cafe door, late for his shift; the boss, arms crossed, turns to look
+  mood('day', 0); setSky(0xe8dcc8);
+  const v = clamp(u / 1.1, 0, 1), stop = sm(0.8, 1, v), run = Math.sin(u * 22) * (1 - stop), x = lerp(3.3, 0.3, sm(0, 1, v)), pant = Math.sin(u * 12) * stop;
+  bossLook(x, 0.4, u > 0.3);
+  pose({ x, y: STAND_Y + 0.07 * Math.abs(run), z: FZ + 0.4, yaw: -90 + 62 * stop, face: stop > 0.5 ? 'pant' : 'shock', torso: [16 * (1 - stop) + 12 * stop + 2 * pant, 0, 0], head: [-6, -10 * stop, 0],
+    aL: [(-60 * run - 20) * (1 - stop) + 20 * stop, -30 * (1 - stop) - 10, -70 * (1 - stop) - 20 * stop], aR: [(60 * run - 20) * (1 - stop) + 20 * stop, 30 * (1 - stop) + 10, -70 * (1 - stop) - 20 * stop],
+    lL: [-55 * run, 0, 60 * Math.max(0, run)], lR: [55 * run, 0, 60 * Math.max(0, -run)], sq: 0.04 * stop });
+  cam([0.2, 1.5, FZ + 4.0], [-0.35, 1.15, FZ - 1], [-0.1, 1.42, FZ + 3.4], [-0.35, 1.15, FZ - 1], k, 52, 0.012 * (1 - stop), t);
+};
+S.cafe_work = (u, d, k, t) => {      // behind the counter in his apron. p.mode 'tired' (default): half asleep at the machine, the boss watching; 'early': alone, wide awake, wiping the counter
+  mood(PARAM.mode === 'early' ? 'dawn' : 'day', 0); setSky(0xe8dcc8); apron.visible = true;
+  const early = PARAM.mode === 'early', b = Math.sin(u * 2.4), wipe = Math.sin(u * 6);
+  if (early) { boss.visible = false; pose({ x: 0.25, z: FZ - 1.75, yaw: 0, face: blinkAt(u, 'happy', [1.2]), torso: [14, 6 * wipe, 0], head: [-8, 6 * wipe, 0], aR: [-58, 10 + 26 * wipe, -40], aL: [-30, -14, -70], shadow: false }); }
+  else { bossLook(0.25, -1.75, true, -0.75); const nod = sm(0.2, 1.2, u % 2.4) * (1 - sm(1.3, 1.5, u % 2.4));
+    pose({ x: 0.25, z: FZ - 1.75, yaw: 12, face: nod > 0.6 ? 'sleep' : 'yawn', torso: [4 + 8 * nod, 0, 3 * b], head: [2 + 14 * nod, 0, 6 * b], aR: [-50, 18, -60 - 8 * b], aL: [-14, -8, -10], shadow: false }); if (nod > 0.6) zzz(new THREE.Vector3(0.0, 1.9, FZ - 1.6), t); }
+  cam([0.25, 1.6, FZ + 1.7], [-0.1, 1.38, FZ - 1.7], [0.2, 1.55, FZ + 1.4], [-0.1, 1.38, FZ - 1.7], k, 48);
+};
+S.cafe_talk = (u, d, k, t) => {      // in front of the counter, talking to the camera. p.phone: holds his phone up; p.boss: the boss stares at him; p.view 'close'
+  mood('day', 0); setSky(0xe8dcc8); apron.visible = true; bossLook(0.3, 0.3, !!PARAM.boss);
+  const g = Math.sin(u * 5.2), g2 = Math.sin(u * 3.1 + 1), ph = !!PARAM.phone;
+  pose({ x: 0.3, z: FZ + 0.3, yaw: -6, face: blinkAt(u, g2 > 0.2 ? 'happy' : 'neutral', [0.7, 2.3, 3.9]), head: [-4 + 3 * g2, 6 * g, 2 * g], torso: [-2, 3 * g, 0],
+    aR: ph ? [-70 + 3 * g, 4, -74] : [-52 - 14 * g, 22, -96 + 16 * g], aL: [-46 + 12 * g2, -24, -92 - 14 * g2], lL: [0, -4, 0], lR: [0, 4, 0] });
+  handPhone.visible = ph;
+  if (PARAM.view === 'close') cam([0.55, 1.4, FZ + 2.0], [0.32, 1.25, FZ + 0.3], [0.5, 1.4, FZ + 1.75], [0.32, 1.26, FZ + 0.3], k, 42);
+  else cam([0.75, 1.4, FZ + 3.1], [0.1, 1.15, FZ + 0.1], [0.6, 1.4, FZ + 2.7], [0.1, 1.17, FZ + 0.1], k, 46);
+};
+S.bed_top = (u, d, k, t) => {        // seen from the ceiling: starfished asleep, phone lit up by his head. p.slap: his hand flops onto it (0.7, 1.6 s) without him waking
+  mood('night', 0); setClock('6:00');
+  const hits = [0.7, 1.6]; let lift = 0, since = 9;
+  if (PARAM.slap) for (const h of hits) { if (u > h) since = u - h; lift = Math.max(lift, sm(h - 0.3, h - 0.1, u) * (1 - sm(h - 0.07, h, u))); }
+  const lit = since > 0.35 && !(PARAM.slap && u > 1.6), bz = Math.sin(u * 44);
+  phone.position.set(-2.05 + (lit ? 0.01 * bz : 0), 0.62, -1.72); phone.rotation.set(0, 0.5 + (lit ? 0.1 * bz : 0), 0); M.screen.color.set(lit ? 0xffffff : 0x333333);
+  if (lit) { rings(ringsO, new THREE.Vector3(-2.05, 0.66, -1.72), t, 2.2, 0.1, 0.4); phoneGlow.position.set(-2.05, 0.9, -1.72); phoneGlow.intensity = 1.6; }
+  pose({ ...LIE, face: 'sleep', head: [0, 0, 10], aL: [lerp(0, -40, lift), -128 - 8 * lift, -20 * lift], aR: [0, 62, 0], lL: [0, -16, 0], lR: [0, 22, 0] });
+  quilt.position.set(0.6, 0.62, 0.15); quilt.rotation.set(0, 0.25, 0.08);
+  camera.up.set(-1, 0, 0); cam([-1.35, 3.05, -1.95], [-1.4, 0.6, -2.05], [-1.45, 2.8, -1.95], [-1.5, 0.6, -2.05], k, 52, 0.02 * Math.exp(-since * 14), t); camera.up.set(0, 1, 0);
+};
 // story-friendly names for the shots (specs use these)
 const ALIAS = { asleep_smoke_alarm: 's01', bolt_upright: 's02', smoke_alarm_swat: 's03', phone_buzz_asleep: 's04', snooze_slaps: 's05', late_sprint: 's06', set_alarm_in_bed: 's07',
   pushups: 's08', walk_steps: 's09', stretch_win: 's10', floor_ping: 's11', thinking: 's12a', shake_phone: 's12b', out_the_door: 's14', store_art: 'ways' };
-const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6, bus_stop: 12, class_late: 10, class_desk: 4, across_room_go: 10, back_to_bed: 8 };
+const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6, bus_stop: 12, class_late: 10, class_desk: 4, across_room_go: 10, back_to_bed: 8, cafe_late: 10, cafe_work: -1, cafe_talk: 15 };
 window.renderAt = (t) => {
   const sh = SPEC.shots.find((s) => t >= s.t0 && t < s.t1) || SPEC.shots[SPEC.shots.length - 1];
   resetProps();

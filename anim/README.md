@@ -66,6 +66,10 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
 | `bus_stop` | PLACE: a street with a bus stop. `p.mode` `miss` (default): he sprints after the bus as it pulls away, turns back, sags; `catch`: he waits with his backpack and waves as the bus pulls in | added 2026-11-28; needs >= 2.8 s |
 | `class_late` | PLACE: a classroom. He tiptoes in through the back door and every classmate turns to look | added 2026-11-28 |
 | `class_desk` | classroom, at his desk with the alarm standing on it. `p.mode` `slump` (default): asleep on the desk; `early`: awake, smiling, empty room. `p.face` = the alarm's face | added 2026-11-28 |
+| `cafe_late` | PLACE: a cafe (his job). He bursts in through the door, late; the boss behind the counter turns to look | added 2026-11-28; needs >= 3 s |
+| `cafe_work` | behind the cafe counter in an apron. `p.mode` `tired` (default): nodding off next to the boss; `early`: alone, awake, wiping the counter | added 2026-11-28 |
+| `cafe_talk` | in front of the counter, talking to the camera. `p.phone` holds his phone up, `p.boss` the boss stares, `p.view` `close` | added 2026-11-28 |
+| `bed_top` | bedroom from the ceiling: starfished asleep, phone lit up by his head. `p.slap`: his hand flops onto it (0.7, 1.6 s) | added 2026-11-28; good under `bubble` texts |
 | `store_art` | the real "15+ ways to wake up" App Store screenshot, full screen | no overlays |
 | `alarm_slapped` | the alarm itself (a phone with a face) rears up ringing on the nightstand and gets slapped flat at 0.75 / 1.5 / 2.25 s; he sleeps on | added 2026-11-28; needs >= 3 s; stamp at 0.75 |
 | `alarm_talk` | the alarm talks to the camera from the nightstand | added 2026-11-28; `p`: `face` annoyed/dead/determined/happy, `bg` asleep/gone/made, `view` 0 close / 1 wide with the bed / 2 low hero, plus `mood`, `clock` |
@@ -107,7 +111,7 @@ track is picked from the video's id, so it changes from video to video but repea
 - **Theme**: `"theme"` in the spec (`classic`, `paper`, `clean`, `pop`): caption colours and style, card and stamp style, font.
   `build.py` picks one the last 3 videos didn't use and saves it; the download card is never themed.
 - **Build**: `look` also has `tall` (0.9-1.08), `wide` (0.86-1.24), `headS` (0.9-1.2), `sleeves` long/short, `shorts`, `acc` none/headphones/scarf.
-- **Places**: other sets stand far from the bedroom in the same scene (`BX` bus stop, `CX` classroom); a shot poses him there, moves
+- **Places**: other sets stand far from the bedroom in the same scene (`BX` bus stop, `CX` classroom, `FZ` cafe); a shot poses him there, moves
   the camera and calls `setSky(...)`. Copy that pattern for a new place.
 - **Sound effects**: a beat's `"sfx": [{"name": "bus", "at": 0.0, "dur": 2.8, "vol": 1}]`. Names: `whoosh`, `pop`, `ding`, `bell`, `bus`,
   `steps`, `scratch`, `sad`, `tick`, `flop`, `sparkle`, `thud` (all synthesised in `build.py`). Cuts get a whoosh and cards a pop automatically.
