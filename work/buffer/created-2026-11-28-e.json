@@ -1,0 +1,42 @@
+{
+ "slots": [
+  {
+   "variant_id": "A20261128-005_v1",
+   "scheduled_at": "2026-11-28T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "snooze-pov",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a99f7166388cd1f3709ca",
+     "caption": "Download the Unsnooze app\nlate so often my boss stopped asking why 😬☕\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a99f8ce824d71b0a8c9d0",
+     "caption": "Download the Unsnooze app\nthe opening shift does not care about your snooze button 😬☕ unsnooze makes you actually get up #pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a99f99caa4fb9ca96f92a",
+     "caption": "Download the Unsnooze app\nsnoozed in my sleep, missed the bus, late to open the shop. again 😬☕ unsnooze makes you actually get up, it's on the app store\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a99faeb08204b2e9b750f",
+     "caption": "Download the Unsnooze app\nlate so often my boss stopped asking why 😬☕\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

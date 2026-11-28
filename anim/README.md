@@ -108,7 +108,7 @@ track is picked from the video's id, so it changes from video to video but repea
 
 ## Themes, builds and sound effects (2026-11-28)
 
-- **Theme**: `"theme"` in the spec (`classic`, `paper`, `clean`, `pop`): caption colours and style, card and stamp style, font.
+- **Theme**: `"theme"` in the spec (`classic`, `paper`, `clean`, `pop`): caption colours, card and stamp style, font. Captions are always outlined text with no background box (Chika, 2026-11-28).
   `build.py` picks one the last 3 videos didn't use and saves it; the download card is never themed.
 - **Build**: `look` also has `tall` (0.9-1.08), `wide` (0.86-1.24), `headS` (0.9-1.2), `sleeves` long/short, `shorts`, `acc` none/headphones/scarf.
 - **Places**: other sets stand far from the bedroom in the same scene (`BX` bus stop, `CX` classroom, `FZ` cafe); a shot poses him there, moves

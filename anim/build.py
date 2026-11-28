@@ -175,15 +175,17 @@ def rounded_img(im, rad):
     ImageDraw.Draw(m).rounded_rectangle((0, 0, im.width - 1, im.height - 1), rad, fill=255); im.putalpha(m); return im
 
 
+# Captions never sit on a white (or any) background box (Chika, 2026-11-28: "we don't really need a white background, just make
+# sure the text is easy to read"): every theme draws them as bold text with a thick dark outline and a soft shadow.
 # Graphics themes (Chika, 2026-11-28: the videos must not all look alike): caption colours and style, card and stamp style, font.
 # build.py picks one that differs from the last 3 videos and saves it in the spec ("theme"); the download card never changes.
 CTA_IN = 0.55      # seconds the download card takes to rise over the last shot
 INTER = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
 THEMES = {
     "classic": dict(cap=((255, 242, 26), (255, 255, 255)), cap_style="outline", card="dark", stamp="outline", font=BOLD),
-    "paper": dict(cap=((255, 255, 255), (255, 176, 64)), cap_style="box", card="paper", stamp="solid", font=INTER),
+    "paper": dict(cap=((255, 255, 255), (255, 176, 64)), cap_style="outline", card="paper", stamp="solid", font=INTER),
     "clean": dict(cap=((255, 255, 255), (120, 235, 165)), cap_style="outline", card="light", stamp="solid", font=INTER),
-    "pop": dict(cap=((22, 22, 26), (226, 84, 36)), cap_style="pill", card="accent", stamp="outline", font=BOLD),
+    "pop": dict(cap=((255, 255, 255), (255, 150, 90)), cap_style="outline", card="accent", stamp="outline", font=BOLD),
 }
 THEME = THEMES["classic"]
 
@@ -363,7 +365,8 @@ def draw_caption(im, beat, t):
         for w, hl in ln:
             if t >= a + acc / nchar * dur * 0.85:
                 if style == "outline":
-                    d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255), stroke_width=6, stroke_fill=(0, 0, 0, 255))
+                    d.text((x + 3, y + 5), w, font=font, fill=(0, 0, 0, 150), stroke_width=9, stroke_fill=(0, 0, 0, 150))      # soft shadow: readable on bright scenes too
+                    d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255), stroke_width=8, stroke_fill=(0, 0, 0, 255))
                 else:
                     d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255))
             acc += len(w); x += d.textlength(w, font=font) + sp

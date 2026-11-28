@@ -1,0 +1,360 @@
+{
+ "id": "A20261128-005",
+ "style": "low_poly",
+ "concept": "late-for-the-opening-shift",
+ "title": "late so often my boss stopped asking why.",
+ "summary": "He opens a cafe at seven and was late so often his boss stopped asking why: the alarm and the boss's texts went off at six, he snoozed in his sleep, missed the bus and worked half asleep. The problem was never hearing the alarm, it was that turning it off took one tap. Now it won't stop until he does 10 push-ups, walks 50 steps or shakes his phone 40 times, and he's the one unlocking the shop.",
+ "beats": [
+  {
+   "shot": "cafe_late",
+   "min": 3.2,
+   "line": "I was late so often my boss stopped asking why.",
+   "caption": "late so often my boss\n*stopped asking why.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "SHIFT STARTS 7:00",
+     "big": "7:24 AM",
+     "accent": "red",
+     "at": 0.1,
+     "y": 290
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 1.1,
+     "x": 720,
+     "y": 460
+    }
+   ],
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.0,
+     "dur": 1.0
+    },
+    {
+     "name": "bell",
+     "at": 0.05,
+     "dur": 0.5,
+     "vol": 0.5
+    }
+   ]
+  },
+  {
+   "shot": "bed_top",
+   "min": 3.6,
+   "line": "My alarm would go off at six, and so would my boss's texts.",
+   "caption": "my alarm went off at six.\nso did *my boss's texts.*",
+   "overlay": [
+    {
+     "type": "bubble",
+     "from": "boss",
+     "text": "you're opening today, right?",
+     "at": 1.2,
+     "x": 380,
+     "y": 300
+    },
+    {
+     "type": "bubble",
+     "from": "boss",
+     "text": "hello??",
+     "at": 2.4,
+     "x": 300,
+     "y": 520
+    }
+   ]
+  },
+  {
+   "shot": "bed_top",
+   "p": {
+    "slap": true
+   },
+   "min": 2.8,
+   "line": "And I'd hit snooze without even waking up.",
+   "caption": "i'd hit snooze\n*without even waking up.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "SNOOZED",
+     "at": 0.7,
+     "x": 700,
+     "y": 330
+    }
+   ],
+   "sfx": [
+    {
+     "name": "thud",
+     "at": 1.6
+    }
+   ]
+  },
+  {
+   "shot": "bus_stop",
+   "min": 3.2,
+   "line": "Then I'd run for a bus that had already left.",
+   "caption": "then run for a bus\nthat had *already left.*",
+   "sfx": [
+    {
+     "name": "bus",
+     "at": 0.0,
+     "dur": 2.8
+    },
+    {
+     "name": "steps",
+     "at": 0.0,
+     "dur": 1.2
+    },
+    {
+     "name": "sad",
+     "at": 1.7,
+     "vol": 0.8
+    }
+   ]
+  },
+  {
+   "shot": "cafe_work",
+   "line": "And spend the whole shift half asleep, making coffee for everyone except me.",
+   "caption": "worked every shift\n*half asleep.*"
+  },
+  {
+   "shot": "cafe_talk",
+   "line": "I tried louder alarms, more alarms, and an alarm across the room.",
+   "caption": "louder alarms. more alarms.\n*across the room.*",
+   "overlay": [
+    {
+     "type": "stamp",
+     "text": "LOUDER",
+     "at": 0.5,
+     "x": 330,
+     "y": 260,
+     "rot": -6
+    },
+    {
+     "type": "stamp",
+     "text": "MORE",
+     "at": 1.5,
+     "x": 740,
+     "y": 360,
+     "rot": 5
+    },
+    {
+     "type": "stamp",
+     "text": "FARTHER",
+     "at": 2.5,
+     "x": 420,
+     "y": 500,
+     "rot": -4
+    }
+   ]
+  },
+  {
+   "shot": "cafe_talk",
+   "p": {
+    "view": "close"
+   },
+   "line": "But the problem was never hearing it. Turning it off only took one tap.",
+   "caption": "the problem was never hearing it.\nturning it off took *one tap.*"
+  },
+  {
+   "shot": "cafe_talk",
+   "lift": true,
+   "p": {
+    "phone": true
+   },
+   "line": "So I switched to one that makes me earn it.",
+   "caption": "so i switched to one\nthat makes me *earn it.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.4,
+     "x": 830,
+     "y": 380,
+     "rot": -6,
+     "scale": 0.52
+    }
+   ]
+  },
+  {
+   "shot": "pushups",
+   "line": "It doesn't stop until I've done ten push-ups,",
+   "caption": "it doesn't stop until\ni've done *10 push-ups,*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "pushups",
+     "from": 6,
+     "to": 10,
+     "total": 10,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "or walked fifty steps,",
+   "caption": "or walked *50 steps,*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 38,
+     "to": 50,
+     "total": 50,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ],
+   "sfx": [
+    {
+     "name": "steps",
+     "at": 0.1,
+     "dur": 1.6,
+     "vol": 0.6
+    }
+   ]
+  },
+  {
+   "shot": "shake_phone",
+   "line": "or shaken my phone forty times.",
+   "caption": "or shaken my phone\n*40 times.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "shake",
+     "from": 29,
+     "to": 40,
+     "total": 40,
+     "at": 0.15,
+     "x": 830,
+     "y": 440,
+     "scale": 0.62
+    }
+   ]
+  },
+  {
+   "shot": "bus_stop",
+   "min": 2.9,
+   "p": {
+    "mode": "catch"
+   },
+   "line": "By then I'm awake, so I just catch the earlier bus.",
+   "caption": "by then i'm awake, so i catch\nthe *earlier bus.*",
+   "sfx": [
+    {
+     "name": "bus",
+     "at": 0.0,
+     "dur": 2.4,
+     "vol": 0.8
+    }
+   ]
+  },
+  {
+   "shot": "cafe_work",
+   "p": {
+    "mode": "early"
+   },
+   "line": "Now I'm the one unlocking the shop.",
+   "caption": "now i'm the one\n*unlocking the shop.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "SHIFT STARTS 7:00",
+     "big": "6:52 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 290
+    },
+    {
+     "type": "stamp",
+     "text": "EARLY",
+     "color": "green",
+     "at": 0.9,
+     "y": 450
+    }
+   ],
+   "sfx": [
+    {
+     "name": "sparkle",
+     "at": 0.9
+    }
+   ]
+  },
+  {
+   "shot": "cafe_talk",
+   "p": {
+    "boss": true
+   },
+   "line": "My boss asked if everything's okay at home.",
+   "caption": "my boss asked if everything's\n*okay at home.*"
+  },
+  {
+   "shot": "cafe_talk",
+   "p": {
+    "phone": true,
+    "view": "close"
+   },
+   "line": "It's called Unsnooze, by the way.",
+   "caption": "it's called *unsnooze,*\nby the way."
+  }
+ ],
+ "cta_line": "Download Unsnooze. Link in bio.",
+ "look": {
+  "name": "brick loft / cap hair",
+  "room": "brick loft",
+  "skin": "#7a4a2e",
+  "skinD": "#5a321c",
+  "cheek": "#9a4a32",
+  "hair": "#2a2a2a",
+  "hairStyle": "cap",
+  "glasses": true,
+  "beard": false,
+  "freckles": false,
+  "top": "#f2d24a",
+  "top2": "#d0b030",
+  "pants": "#3a4a3a",
+  "shoe": "#5a8af0",
+  "sole": "#f2f0ea",
+  "beardColor": "#2a2a2a",
+  "pack": "#3a9a6a",
+  "capColor": "#e8b23a",
+  "wall": "#e0a088",
+  "wallTex": "brick",
+  "floorKind": "wood",
+  "floor": [
+   "#5a3a28",
+   "#4e3222",
+   "#62402c"
+  ],
+  "floorLine": "#2e1c12",
+  "quilt": [
+   "#2e3a4a",
+   "#d8d0c0",
+   "#8a2e2a",
+   "#2e3a4a"
+  ],
+  "rug": "#3a4a5a",
+  "rugTrim": "#d8d0c0",
+  "curtain": "#2e2e34",
+  "poster": "#e8c04a",
+  "wood": "#3a2a20",
+  "frame": "#2a2a2e",
+  "sheet": "#d8d0c0",
+  "plant": false,
+  "lights": true,
+  "lightsColor": "#ffd27a",
+  "tall": 1.08,
+  "wide": 0.86,
+  "headS": 0.9,
+  "sleeves": "short",
+  "shorts": true,
+  "acc": "headphones"
+ },
+ "theme": "pop",
+ "voice_dir": "vo"
+}
