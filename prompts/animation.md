@@ -23,6 +23,8 @@
 - **No jump to the download card** ("don't just jump directly to download unsnooze"): the last story beat must hand over to it:
   it names the app for the first time in the character's own words ("i'm unsnooze, by the way.") on a calm close shot. The card then
   rises over that shot (automatic) and the ending line follows. Never cut from the middle of the story straight to the card.
+- **Captions: no background box** ("we don't really need a white background, just make sure the text is easy to read"): captions
+  are bold outlined text in every theme. On the sheet, check each caption reads clearly against its scene.
 - **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
   least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
 
