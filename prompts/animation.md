@@ -16,6 +16,13 @@
 - **Calmer voice.** Same pinned voice, but dry and conversational: `elevenlabs_stability = 1.0` in `config.toml`, no `[excited]`,
   `[proud]` or other hype tags (`[deadpan]` at most twice), no exclamation marks. The ending line is now
   `"cta_line": "Download Unsnooze. Link in bio."` (no tag). Backup queue stories still have the old excited ending recorded.
+- **One flowing voice take** (the line-by-line takes sounded "fast and choppy, the parts don't flow"): `build.py` now reads the whole
+  script in one ElevenLabs take (`elevenlabs_continuous`, `elevenlabs_speed = 0.9`) and cuts it at the pauses. Write the lines as one
+  continuous piece of talking: full sentences that lead into each other ("then...", "except...", "so...", "or..."), commas rather than
+  clipped fragments ("Six. Six oh five. Six ten." was choppy), no tone tags. Read the script top to bottom before building.
+- **No jump to the download card** ("don't just jump directly to download unsnooze"): the last story beat must hand over to it:
+  it names the app for the first time in the character's own words ("i'm unsnooze, by the way.") on a calm close shot. The card then
+  rises over that shot (automatic) and the ending line follows. Never cut from the middle of the story straight to the card.
 - **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
   least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
 
