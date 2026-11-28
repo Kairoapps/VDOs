@@ -1,7 +1,17 @@
 # Tonight's animation (part of the daily run)
 
 **Chika, 2026-11-28 ("all animations still look the exact same... the voice sounds too enthusiastic"). These override anything older below:**
-- **Length: 45-60 seconds** (was under 45), 14-18 beats. Check `seconds` in the build output; add or trim beats until it is in range.
+- **Length: 30-50 seconds** (Chika, later on 2026-11-28; was 45-60), 10-16 beats. Check `seconds` in the build output; add or trim beats until it is in range.
+- **Talk to the viewer (Chika, 2026-11-28, after studying a Renno video she likes).** Write to "you", not about "I" or "he": the viewer is the
+  one who snoozes ("you slept four hours." "you get up anyway."). The structure that works:
+  1. **One idea carried all the way through.** Open on a comparison or claim the viewer instantly recognises ("your dog has never let
+     you snooze."), make the case with it, and END on a callback to it ("make your alarm as stubborn as your dog."). Not a story that
+     switches topic to an app at the end.
+  2. **Very short lines**: 3-7 words, one thought each ("it's six a.m." "you slept four hours." "you get up anyway."), one line per beat.
+  3. **The app arrives at the midpoint** by name ("unsnooze fixes that."), then three quick lines on how it works, each with the real
+     app screen shown large and centred above the character (`phone` overlay, `x` 540, `y` 370, `scale` 0.58-0.62, `rot` 0).
+  4. Set `"voice_sep": " "` in the spec so the one-take voice runs the short lines together instead of pausing after each.
+  Reference build: `work/anim/A20261128-006/spec.json` (33 s).
 - **A real pain point.** Build the story on something heavy sleepers actually go through, shown specifically: phone across the room and
   back to bed anyway, five stacked alarms, "five more minutes" turning into forty, missing the bus, walking in late with everyone
   looking, the group chat asking where you are, a partner or roommate woken instead of you. Name the pain before the app appears.
@@ -25,6 +35,10 @@
   rises over that shot (automatic) and the ending line follows. Never cut from the middle of the story straight to the card.
 - **Captions: no background box** ("we don't really need a white background, just make sure the text is easy to read"): captions
   are bold outlined text in every theme. On the sheet, check each caption reads clearly against its scene.
+- **Soft look (sample made 2026-11-28, waiting for Chika's verdict; use it only if a later note here says she approved it):**
+  `"render": "soft"` (smooth rounded shapes, soft shadows, round dot eyes, 720x1280) with `"theme": "serif"` (small italic serif
+  captions, whole line at once; `"cap_pos": "top"` puts the hook big at the top; cards become bare text) and a per-video end card
+  `"end": {"tagline": "...", "big": ["GET UP.", "FOR REAL."]}` whose tagline is the callback line. Details in `anim/README.md`.
 - **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
   least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
 
