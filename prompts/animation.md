@@ -6,7 +6,7 @@
   back to bed anyway, five stacked alarms, "five more minutes" turning into forty, missing the bus, walking in late with everyone
   looking, the group chat asking where you are, a partner or roommate woken instead of you. Name the pain before the app appears.
 - **Different places.** At most a third of the beats in the bedroom; at least 2 other places per video, and every night at least one
-  place the last 3 videos didn't use. Sets so far: `bus_stop` (outdoors), classroom (`class_late`, `class_desk`). Build a new set in
+  place the last 3 videos didn't use. Sets so far: `bus_stop` (outdoors), classroom (`class_late`, `class_desk`), cafe (`cafe_late`, `cafe_work`, `cafe_talk`). Build a new set in
   `anim/lowpoly/index.html` when needed (kitchen, office, gym, train, shop, car...), the way those two are built, and list it in `anim/README.md`.
 - **Different characters.** `build.py` now also picks body build (`tall`, `wide`, `headS`), short sleeves / shorts and an accessory.
   On the sheet the figure's silhouette must differ from the last video's, not just its colours. A non-human narrator (the alarm
