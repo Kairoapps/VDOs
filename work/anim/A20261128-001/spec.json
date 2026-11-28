@@ -1,0 +1,215 @@
+{
+ "id": "A20261128-001",
+ "style": "low_poly",
+ "concept": "alarm-narrates",
+ "title": "i'm your alarm. you hit me every single morning.",
+ "summary": "The alarm itself tells the story: it gets slapped, snoozed and thrown across the room every morning, and you're still late. So it learned new tricks with Unsnooze: now it won't stop until you do 20 squats or walk 60 steps, and you're up before it rings twice.",
+ "beats": [
+  {
+   "shot": "alarm_slapped",
+   "min": 3.1,
+   "line": "I'm your alarm. You hit me every single morning.",
+   "caption": "i'm your alarm. you *hit me*\nevery single morning.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "SNOOZED",
+     "at": 0.75,
+     "x": 700,
+     "y": 480
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "annoyed",
+    "bg": "asleep",
+    "view": 0
+   },
+   "line": "[deadpan] I ring. You hit me. I wait nine minutes.",
+   "caption": "i ring. you hit me.\ni wait *nine minutes.*"
+  },
+  {
+   "shot": "alarm_thrown",
+   "min": 2.6,
+   "line": "You've thrown me across the room. Twice.",
+   "caption": "you've thrown me\n*across the room.* twice."
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "dead",
+    "bg": "gone",
+    "view": 1,
+    "mood": "day",
+    "clock": "8:47"
+   },
+   "line": "And we're still late. Both of us.",
+   "caption": "and we're *still late.*\nboth of us.",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "RIGHT NOW",
+     "big": "8:47 AM",
+     "accent": "red",
+     "at": 0.05,
+     "x": 480,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "LATE",
+     "at": 0.7,
+     "x": 770,
+     "y": 440,
+     "rot": -11
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "lift": true,
+   "p": {
+    "face": "determined",
+    "bg": "asleep",
+    "view": 2
+   },
+   "line": "So I learned some new tricks.",
+   "caption": "so i learned\nsome *new tricks.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "grid",
+     "at": 0.4,
+     "x": 830,
+     "y": 360,
+     "rot": -6,
+     "scale": 0.5
+    }
+   ]
+  },
+  {
+   "shot": "squats",
+   "line": "Now I don't stop until you do twenty squats.",
+   "caption": "now i don't stop until\nyou do *20 squats.*",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "squats",
+     "from": 15,
+     "to": 20,
+     "total": 20,
+     "at": 0.15,
+     "x": 810,
+     "y": 450,
+     "scale": 0.64
+    }
+   ]
+  },
+  {
+   "shot": "walk_steps",
+   "line": "Or walk sixty steps. With me.",
+   "caption": "or walk *60 steps.*\nwith me.",
+   "overlay": [
+    {
+     "type": "phone",
+     "screen": "walk",
+     "from": 46,
+     "to": 60,
+     "total": 60,
+     "at": 0.1,
+     "x": 840,
+     "rot": 5
+    }
+   ]
+  },
+  {
+   "shot": "alarm_talk",
+   "p": {
+    "face": "happy",
+    "bg": "made",
+    "view": 0,
+    "mood": "day",
+    "clock": "6:02"
+   },
+   "line": "Now you're up before I ring twice.",
+   "caption": "now you're up before\ni ring *twice.*",
+   "overlay": [
+    {
+     "type": "card",
+     "label": "ALARM",
+     "big": "6:00 AM",
+     "accent": "green",
+     "at": 0.1,
+     "y": 300
+    },
+    {
+     "type": "stamp",
+     "text": "DISMISSED",
+     "color": "green",
+     "at": 0.8,
+     "y": 460
+    }
+   ]
+  },
+  {
+   "shot": "alarm_held",
+   "line": "And you pick me up gently. Growth.",
+   "caption": "and you pick me up\n*gently.* growth."
+  }
+ ],
+ "cta_line": "[excited] Download Unsnooze. Link in bio!",
+ "look": {
+  "name": "sunny apartment / spiky hair",
+  "room": "sunny apartment",
+  "skin": "#5a3520",
+  "skinD": "#3e2414",
+  "cheek": "#7a3a26",
+  "hair": "#a8442a",
+  "hairStyle": "spiky",
+  "glasses": true,
+  "beard": false,
+  "freckles": false,
+  "top": "#ff8ab0",
+  "top2": "#e06a92",
+  "pants": "#f4f0e6",
+  "shoe": "#e8556a",
+  "sole": "#f06a39",
+  "beardColor": "#a8442a",
+  "pack": "#f06a39",
+  "capColor": "#3a5a9a",
+  "wall": "#fbe6b0",
+  "wallTex": "plain",
+  "floorKind": "tile",
+  "floor": [
+   "#e8d8c0",
+   "#dccab0"
+  ],
+  "floorLine": "#c0ac90",
+  "quilt": [
+   "#f2a03a",
+   "#ffffff",
+   "#5a8af0",
+   "#ffffff"
+  ],
+  "rug": "#5a8af0",
+  "rugTrim": "#fbe6b0",
+  "curtain": "#f2a03a",
+  "poster": "#5a8af0",
+  "wood": "#d8b080",
+  "frame": "#ffffff",
+  "sheet": "#ffffff",
+  "plant": true,
+  "lights": false,
+  "art": "#5a8af0"
+ },
+ "voice_dir": "vo"
+}

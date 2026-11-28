@@ -1,0 +1,182 @@
+{
+ "date": "2026-11-28",
+ "slots": [
+  {
+   "variant_id": "R20261125-006__v1",
+   "clip_id": "R20261125-006",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-006__v1__8fa214.mp4",
+   "file": "R20261125-006__v1__8fa214.mp4",
+   "scheduled_at": "2026-11-28T09:00:00-05:00",
+   "time_slot": "09:00",
+   "hashtag_set": "minimal-3",
+   "hashtags": [
+    "#alarm",
+    "#snooze",
+    "#wakeup"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "mid_action",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm wants me to season breakfast",
+   "duration_s": 19.366667,
+   "summary": "Staring at the ceiling, 3:31am alarm hits; shakes the phone 53 times like a salt shaker over an egg.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "relatable",
+   "post_emoji": "0",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "A20261128-001_v1",
+   "clip_id": "A20261128-001",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/A20261128-001_v1_145820.mp4",
+   "file": "A20261128-001_v1_145820.mp4",
+   "scheduled_at": "2026-11-28T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "wake-up",
+   "hashtags": [
+    "#wakeup",
+    "#morningroutine",
+    "#heavysleeper",
+    "#alarm"
+   ],
+   "topic": "animation",
+   "format": "animation",
+   "hook_type": "story",
+   "overlay_text": "i'm your alarm. you hit me every single morning.",
+   "caption_text": "i'm your alarm. you hit me every single morning.",
+   "duration_s": 28.0,
+   "summary": "The alarm itself tells the story: it gets slapped, snoozed and thrown across the room every morning, and you're still late. So it learned new tricks: now it won't stop until you do 20 squats or walk 60 steps, and you're up before it rings twice.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "animation",
+   "kind": "animation",
+   "style": "low_poly",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "R20261125-004__v1",
+   "clip_id": "R20261125-004",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/R20261125-004__v1__4f71f6.mp4",
+   "file": "R20261125-004__v1__4f71f6.mp4",
+   "scheduled_at": "2026-11-28T17:00:00-05:00",
+   "time_slot": "17:00",
+   "hashtag_set": "unsnooze-wake",
+   "hashtags": [
+    "#unsnooze",
+    "#wakeup",
+    "#heavysleeper",
+    "#snooze"
+   ],
+   "topic": "shake",
+   "format": "pov",
+   "hook_type": "question",
+   "overlay_text": null,
+   "caption_text": "crashing out because my alarm turned me into a soda shaker",
+   "duration_s": 18.966667,
+   "summary": "3:30am alarm in the lounge; shakes the phone 53 times like a soda bottle until it's dismissed.",
+   "transcript": "",
+   "use_number": 1,
+   "cap": 3,
+   "angle": "challenge",
+   "kind": "clip",
+   "style": null,
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  },
+  {
+   "variant_id": "A20261127-001_v1",
+   "clip_id": "A20261127-001",
+   "video_url": "https://raw.githubusercontent.com/Kairoapps/VDOs/publish/A20261127-001_v1_06e1e9.mp4",
+   "file": "A20261127-001_v1_06e1e9.mp4",
+   "scheduled_at": "2026-11-28T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "snooze-pov",
+   "hashtags": [
+    "#pov",
+    "#snooze",
+    "#alarm",
+    "#relatable"
+   ],
+   "topic": "animation",
+   "format": "animation",
+   "hook_type": "story",
+   "overlay_text": "ten alarms. slept through all ten.",
+   "caption_text": "ten alarms. slept through all ten.",
+   "duration_s": 29.5,
+   "summary": "He used to set ten alarms a night, snooze every one and still wake up late. Now he sets one Unsnooze alarm that won't stop until he shakes his phone 40 times and walks 50 steps, and he's out the door on time.",
+   "transcript": "",
+   "use_number": 2,
+   "cap": 3,
+   "angle": "animation",
+   "kind": "animation",
+   "style": "low_poly",
+   "platforms": [
+    "instagram",
+    "tiktok",
+    "youtube",
+    "facebook"
+   ],
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "cta": "none",
+   "cta_text": null
+  }
+ ],
+ "shortfall": 0,
+ "inventory": {
+  "days": 12,
+  "level": "healthy",
+  "remaining_uses": 50,
+  "active_clips": 22,
+  "clips_needed": 0,
+  "covered_through": "2026-12-09",
+  "first_gap": "2026-12-10",
+  "available_now": 0
+ },
+ "platforms": [
+  "instagram",
+  "tiktok",
+  "youtube",
+  "facebook"
+ ],
+ "animations": {
+  "planned": 2,
+  "ready": 5,
+  "wanted": [
+   2,
+   2
+  ]
+ },
+ "limits": {}
+}

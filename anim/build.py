@@ -455,6 +455,13 @@ def build_audio(path, beats, total, cta0, voice):
         if s == "snooze_slaps":
             for r0, r1 in ((t0, t0 + 0.4), (t0 + 0.68, t0 + 1.05), (t0 + 1.33, t0 + 1.6)):
                 ring_span(r0, r1); thud(r1)
+        if s == "alarm_slapped":      # rings, gets slapped quiet at 0.75 / 1.5 / 2.25 s, starts again
+            for r0, r1 in ((t0, t0 + 0.75), (t0 + 0.97, t0 + 1.5), (t0 + 1.72, t0 + 2.25), (t0 + 2.47, t1)):
+                ring_span(r0, min(r1, t1))
+                if r1 < t1 and r1 > t0 + 0.8:
+                    thud(r1)
+        if s == "alarm_thrown":
+            thud(t0 + 0.8); ring_span(t0 + 1.6, t1)
         if s == "floor_ping":
             chime(t0 + 0.38, (1319, 1760), 0.12); ring_span(t0 + 0.6, t1)
         if s == "stretch_win":

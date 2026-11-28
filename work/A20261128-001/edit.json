@@ -1,0 +1,10 @@
+{
+  "topic": "animation",
+  "format": "animation",
+  "angle": "animation",
+  "summary": "The alarm itself tells the story: it gets slapped, snoozed and thrown across the room every morning, and you're still late. So it learned new tricks: now it won't stop until you do 20 squats or walk 60 steps, and you're up before it rings twice.",
+  "style": "low_poly",
+  "concept": "alarm-narrates",
+  "title": "i'm your alarm. you hit me every single morning.",
+  "voice": "elevenlabs"
+}

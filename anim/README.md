@@ -62,6 +62,10 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
 | `talk` | talks to the camera with his hands | any line |
 | `out_the_door` | walks out with his backpack, smiling | |
 | `store_art` | the real "15+ ways to wake up" App Store screenshot, full screen | no overlays |
+| `alarm_slapped` | the alarm itself (a phone with a face) rears up ringing on the nightstand and gets slapped flat at 0.75 / 1.5 / 2.25 s; he sleeps on | added 2026-11-28; needs >= 3 s; stamp at 0.75 |
+| `alarm_talk` | the alarm talks to the camera from the nightstand | added 2026-11-28; `p`: `face` annoyed/dead/determined/happy, `bg` asleep/gone/made, `view` 0 close / 1 wide with the bed / 2 low hero, plus `mood`, `clock` |
+| `alarm_thrown` | he throws the alarm across the room; it lands on the rug (0.8 s), lies there, then rings again (1.6 s) | added 2026-11-28; needs >= 2.4 s |
+| `alarm_held` | up and smiling, he holds the happy alarm up to the camera | added 2026-11-28; day |
 
 Every new video needs at least 2 new shots and a new scenario (Chika, 2026-11-27; `prompts/animation.md` step 2): don't rebuild the
 same wake/snooze/late/win sequence from this table. A story may need a shot that isn't here. Add `S.<name> = (u, d, k, t) => {...}` to `anim/lowpoly/index.html` by copying the closest

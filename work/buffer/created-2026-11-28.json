@@ -1,0 +1,156 @@
+{
+ "slots": [
+  {
+   "variant_id": "R20261125-006__v1",
+   "scheduled_at": "2026-11-28T09:00:00-05:00",
+   "time_slot": "09:00",
+   "hashtag_set": "minimal-3",
+   "post_caption_style": "relatable",
+   "post_emoji": "0",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a649070e80ae8f1d4e96a",
+     "caption": "Download the Unsnooze app\nme at 3:31am shaking my phone 53 times like i'm seasoning an egg just so the alarm shuts up\n\n#alarm #snooze #wakeup",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a6491eada83daa6c99655",
+     "caption": "Download the Unsnooze app\nshaking my phone 53 times like a salt shaker because my alarm said so #alarm #snooze #wakeup",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a649170e80ae8f1d4e9f7",
+     "caption": "Download the Unsnooze app\nmy alarm really has me seasoning the air 53 times before it lets me go\n\n#alarm #snooze #wakeup",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a649241454797eaf21d0c",
+     "caption": "Download the Unsnooze app\nme at 3:31am shaking my phone 53 times like i'm seasoning an egg just so the alarm shuts up\n\n#alarm #snooze #wakeup",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "A20261128-001_v1",
+   "scheduled_at": "2026-11-28T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a6493eada83daa6c996fe",
+     "caption": "Download the Unsnooze app\nyour alarm has been slapped, snoozed and thrown across the room. it has thoughts ⏰🫠\nbe honest, what's the worst thing you've done to your alarm?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a649341454797eaf21d91",
+     "caption": "Download the Unsnooze app\nwhat's the worst thing you've ever done to your alarm? ⏰🫠 #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a649441454797eaf21dc9",
+     "caption": "Download the Unsnooze app\nif your alarm could talk, what would it say about you? ⏰🫠\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a6494eab081a3f526e11d",
+     "caption": "Download the Unsnooze app\nyour alarm has been slapped, snoozed and thrown across the room. it has thoughts ⏰🫠\nbe honest, what's the worst thing you've done to your alarm?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261125-004__v1",
+   "scheduled_at": "2026-11-28T17:00:00-05:00",
+   "time_slot": "17:00",
+   "hashtag_set": "unsnooze-wake",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a64aa2a2e4f66ca008205",
+     "caption": "Download the Unsnooze app\n3:30am and my alarm has me shaking my phone 53 times like a soda bottle 🥤😤\nwould you rather shake 53 times or do 10 push-ups to turn yours off?\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a64abeab081a3f526e770",
+     "caption": "Download the Unsnooze app\nshake 53 times or 10 push-ups, which one are you picking at 3:30am? 🥤😤 #unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a64ab23fb5b77002048a9",
+     "caption": "Download the Unsnooze app\nshaking my phone 53 times like a soda bottle. would you pick this or push-ups? 🥤😤\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a64aceab081a3f526e7b8",
+     "caption": "Download the Unsnooze app\n3:30am and my alarm has me shaking my phone 53 times like a soda bottle 🥤😤\nwould you rather shake 53 times or do 10 push-ups to turn yours off?\n\n#unsnooze #wakeup #heavysleeper #snooze",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "A20261127-001_v1",
+   "scheduled_at": "2026-11-28T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "snooze-pov",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a64aceada83daa6c9a3a6",
+     "caption": "Download the Unsnooze app\nten alarms set. ten alarms slept through 💀⏰\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a64ad23fb5b7700204921",
+     "caption": "Download the Unsnooze app\nten alarms and i still woke up late 💀⏰ unsnooze makes you actually get up #pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a64ae70e80ae8f1d4fa41",
+     "caption": "Download the Unsnooze app\nset ten alarms, slept through every one 💀⏰ unsnooze makes you actually get up, it's on the app store\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a64ae2a2e4f66ca008318",
+     "caption": "Download the Unsnooze app\nten alarms set. ten alarms slept through 💀⏰\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

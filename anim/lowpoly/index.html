@@ -270,7 +270,7 @@ function setClock(s) { M.clockFace.map = clockFor(PARAM.clock || s); }
 function resetProps() {
   for (const m of [...ringsR, ...ringsO, ...zs, bang, ...drops]) m.visible = false;
   phone.position.set(-2.0, 0.565, -1.22); phone.rotation.set(0, 0.3, 0); phoneScr.material = M.screen; M.screen.color.set(0x333333); phoneGlow.intensity = 0;
-  handPhone.visible = false; pack.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
+  handPhone.visible = false; pack.visible = false; pal.visible = false; quilt.position.set(0.33, 0.66, 0); quilt.rotation.set(0, 0, 0); quilt.scale.set(1, 1, 1); quilt.visible = true;
 }
 const LIE = { x: -1.55, y: 0.66, z: -2.2, yaw: 90, pitch: -90, shadow: false };
 const SIT = { x: -1.75, y: 0.7, z: -2.2, yaw: 90, shadow: false, lL: [-90, 0, 0], lR: [-90, 0, 0] };
@@ -424,10 +424,81 @@ S.facepalm = (u, d, k, t) => {   // hand over the face
   pose({ x: 0.3, z: 0.1, yaw: -6, face: up > 0.5 ? 'groggy' : 'shock', head: [16 * up, 4 * sh, 0], torso: [6 * up, 0, 0], aR: [-64 * up, -16 * up + 6, -138 * up], aL: [0, -6, 0] });
   cam([0.6, 1.3, 2.6], [0.32, 1.12, 0.1], [0.5, 1.3, 2.3], [0.32, 1.14, 0.1], k, 44);
 };
+// ---------------------------------------------------------------- the alarm as a character ("pal"): a phone with a face on its screen (2026-11-28)
+const PF = (bg, fn) => tex(16, 32, (g) => { px(g, 0, 0, col(bg), 16, 32); px(g, 6, 2, col(bg === 0xf06a39 ? 0xfff4e0 : 0xf06a39), 4, 1); fn(g, col(0xfff4e0), col(0x1a100a)); });
+const pEyes = (g, c, dk, kind) => { for (const x of [2, 10]) {
+  if (kind === 'open') { px(g, x, 9, c, 4, 5); px(g, x + 1, 11, dk, 2, 2); }
+  if (kind === 'wide') { px(g, x, 8, c, 4, 6); px(g, x + 1, 10, dk, 2, 2); }
+  if (kind === 'half') { px(g, x, 11, c, 4, 3); px(g, x + 1, 11, dk, 2, 2); }
+  if (kind === 'line') px(g, x, 12, c, 4, 1);
+  if (kind === 'arc') { px(g, x, 12, c, 1, 2); px(g, x + 1, 11, c, 2, 1); px(g, x + 3, 12, c, 1, 2); }
+  if (kind === 'x') for (const [i, j] of [[0, 0], [3, 0], [1, 1], [2, 1], [1, 2], [2, 2], [0, 3], [3, 3]]) px(g, x + i, 10 + j, c); } };
+const pBrows = (g, c) => { px(g, 2, 6, c, 2, 1); px(g, 4, 7, c, 2, 1); px(g, 12, 6, c, 2, 1); px(g, 10, 7, c, 2, 1); };
+const P = {
+  ring: PF(0xf06a39, (g, c, dk) => { pEyes(g, c, dk, 'open'); pBrows(g, c); px(g, 5, 19, c, 6, 6); px(g, 6, 20, dk, 4, 4); }),
+  shock: PF(0xf06a39, (g, c, dk) => { pEyes(g, c, dk, 'wide'); px(g, 6, 19, c, 4, 4); px(g, 7, 20, dk, 2, 2); }),
+  annoyed: PF(0x1c1c22, (g, c, dk) => { pEyes(g, c, dk, 'half'); px(g, 5, 21, c, 6, 1); }),
+  blink: PF(0x1c1c22, (g, c, dk) => { pEyes(g, c, dk, 'line'); px(g, 5, 21, c, 6, 1); }),
+  dead: PF(0x1c1c22, (g, c, dk) => { pEyes(g, c, dk, 'x'); px(g, 4, 21, c, 2, 1); px(g, 6, 22, c, 2, 1); px(g, 8, 21, c, 2, 1); px(g, 10, 22, c, 2, 1); }),
+  determined: PF(0x1c1c22, (g, c, dk) => { pEyes(g, c, dk, 'open'); pBrows(g, c); px(g, 5, 21, c, 6, 1); px(g, 11, 20, c, 1, 1); }),
+  happy: PF(0xf06a39, (g, c, dk) => { pEyes(g, c, dk, 'arc'); px(g, 4, 19, c, 1, 2); px(g, 11, 19, c, 1, 2); px(g, 5, 21, c, 6, 1); }),
+};
+const palMat = basic({ map: P.annoyed });
+const pal = grp(scene, 0, -5, 0), palIn = grp(pal); box(palIn, 0.13, 0.24, 0.02, M.phone, 0, 0.12, 0); plane(palIn, 0.112, 0.216, palMat, 0, 0.12, 0.0112); pal.visible = false;
+function palAt(x, y, z, yawD, f, o = {}) {   // pivot = bottom edge. lean -90 = flat on its back (face up), 0 = upright
+  phone.position.set(0, -5, 0); pal.visible = true; pal.position.set(x, y + (o.hop || 0), z); pal.rotation.set(0, yawD * D, 0); pal.scale.setScalar(o.s || 1.25);
+  palIn.rotation.set((o.lean || 0) * D, 0, (o.tilt || 0) * D); palIn.scale.set(1 + (o.sq || 0) * 0.6, 1 - (o.sq || 0), 1); palMat.map = P[f] || P.annoyed;
+}
+const NSP = [-2.0, 0.555, -1.08];   // the alarm's spot on the nightstand
+S.alarm_slapped = (u, d, k, t) => {   // the alarm rears up to ring and gets slapped flat (0.75, 1.5, 2.25 s); he never wakes
+  mood('night', 0); setClock('6:00');
+  const hits = [0.75, 1.5, 2.25]; let lift = 0, since = 9;
+  for (const h of hits) { if (u > h) since = u - h; lift = Math.max(lift, sm(h - 0.26, h - 0.08, u) * (1 - sm(h - 0.06, h, u))); }
+  const flat = since < 0.22, next = hits.find((h) => h > u), duck = next ? sm(next - 0.07, next, u) : 0;
+  const up = (since === 9 ? 1 : flat ? 0 : sm(0.22, 0.42, since)) * (1 - duck);
+  const jolt = hits.reduce((a, h) => a + (u > h ? Math.exp(-(u - h) * 14) : 0), 0);
+  palAt(NSP[0], NSP[1], NSP[2], 20, flat ? 'shock' : 'ring', { lean: -90 + 64 * up, hop: 0.02 * up * Math.abs(Math.sin(u * 30)), tilt: 5 * up * Math.sin(u * 44), sq: 0.25 * Math.exp(-since * 16) });
+  if (!flat) { rings(ringsO, new THREE.Vector3(NSP[0], NSP[1] + 0.2, NSP[2] - 0.08), t, 2.2, 0.1, 0.42, false); phoneGlow.position.set(-2.0, 0.9, -1.0); phoneGlow.intensity = 1.8; }
+  pose({ ...LIE, z: -1.98, face: 'sleep', head: [0, 0, -14], aL: [lerp(-8, -62, lift), lerp(-112, -122, lift), -30 * lift], aR: [0, 8, 0] });
+  cam([-1.2, 1.5, -0.1], [-2.0, 0.7, -1.4], [-1.35, 1.4, -0.25], [-2.0, 0.7, -1.4], k, 46, 0.02 * jolt, t);
+};
+S.alarm_talk = (u, d, k, t) => {      // the alarm talks to the camera from the nightstand. p: face (annoyed|dead|determined|happy), bg (asleep|gone|made), view (0 close, 1 wide with the bed, 2 low hero), mood, clock
+  mood('night', 0); setClock('6:09');
+  const f = PARAM.face || 'annoyed', bg = PARAM.bg || 'asleep', v = PARAM.view || 0;
+  const talk = Math.abs(Math.sin(u * 8.5)), sway = Math.sin(u * 2.6);
+  const face = f !== 'dead' && f !== 'happy' && [0.8, 2.4].some((b) => u > b && u < b + 0.1) ? 'blink' : f;
+  palAt(NSP[0], NSP[1], NSP[2], v === 1 ? 40 : 32, face, { lean: -8 + 3 * sway, hop: 0.012 * talk, tilt: 6 * sway, sq: 0.04 * talk });
+  if (bg === 'asleep') { pose({ ...LIE, face: 'sleep' }); zzz(new THREE.Vector3(-2.0, 1.05, -2.1), t); }
+  else { pose({ x: 0, y: -5, shadow: false }); if (bg === 'gone') { quilt.position.set(0.7, 0.62, 0.3); quilt.rotation.set(0, 0.5, 0.12); } }
+  if (v === 1) cam([-0.8, 1.2, 0.45], [-1.95, 0.75, -1.2], [-0.95, 1.1, 0.2], [-1.95, 0.75, -1.2], k, 46);
+  else if (v === 2) cam([-1.6, 0.62, -0.3], [-2.0, 0.74, -1.1], [-1.7, 0.64, -0.4], [-2.0, 0.76, -1.1], k, 44);
+  else cam([-1.4, 0.95, -0.25], [-2.0, 0.72, -1.1], [-1.5, 0.9, -0.4], [-2.0, 0.72, -1.1], k, 44);
+};
+S.alarm_thrown = (u, d, k, t) => {    // thrown across the room: lands on the rug at 0.8 s, lies there... and rings again (1.6 s)
+  mood('night', 0); setClock('6:18');
+  const fly = clamp(u / 0.8, 0, 1), land = u > 0.8, since = u - 0.8, again = sm(1.5, 1.75, u);
+  const p0 = [-1.5, 1.25, -1.9], p1 = [0.75, 0.03, 0.35];
+  const y = lerp(p0[1], p1[1], fly) + 1.1 * fly * (1 - fly) + (land ? 0.12 * Math.abs(Math.sin(since * 9)) * Math.exp(-since * 5) : 0);
+  palAt(lerp(p0[0], p1[0], fly), y, lerp(p0[2], p1[2], fly), 25, !land ? 'shock' : again > 0.5 ? 'ring' : 'dead',
+    { lean: land ? -90 + 62 * again : -90 + u * 900, tilt: land ? 4 * again * Math.sin(u * 44) : u * 400, hop: 0.02 * again * Math.abs(Math.sin(u * 30)), s: 1.5 });
+  if (again > 0.5) rings(ringsO, new THREE.Vector3(p1[0], 0.3, p1[2]), t, 2.2, 0.1, 0.5, false);
+  const arm = 1 - sm(0.3, 0.9, u);
+  pose({ ...SIT, face: u < 1.7 ? 'groggy' : 'shock', torso: [10, 0, 0], head: [0, -50, 0], aR: [-80 * arm - 10, 20, -10], aL: [0, -8, 0] });
+  quilt.position.x = 0.58; quilt.scale.x = 0.7;
+  cam([1.6, 1.3, 2.4], [-0.6, 0.8, -1.0], [1.35, 0.7, 1.75], [0.7, 0.2, 0.3], sm(0.15, 1.1, u), 50, land ? 0.03 * Math.exp(-since * 10) : 0, t);
+};
+S.alarm_held = (u, d, k, t) => {      // up, smiling: holds the (happy) alarm up to the camera
+  mood('day', 0); setClock('6:02');
+  const b = Math.sin(u * 4.2), up = sm(0.05, 0.4, u);
+  pose({ x: 0.3, z: 0.1, yaw: -6, y: STAND_Y + 0.02 * Math.abs(b), face: blinkAt(u, 'happy', [1.3]), head: [4, 10, 3 * b], torso: [-2, 4, 0], aR: [-78 * up, 8, -52 * up], aL: [0, -8, 0], lL: [0, -4, 0], lR: [0, 4, 0] });
+  yaw.updateMatrixWorld(true); const hp = new THREE.Vector3(); aR.h.getWorldPosition(hp);
+  palAt(hp.x, hp.y - 0.02, hp.z + 0.1, 0, 'happy', { lean: -6, tilt: 5 * b, hop: 0.01 * Math.abs(b), s: 1.5 });
+  cam([0.75, 1.3, 2.4], [0.4, 1.12, 0.1], [0.65, 1.3, 2.1], [0.4, 1.14, 0.1], k, 44);
+};
 // story-friendly names for the shots (specs use these)
 const ALIAS = { asleep_smoke_alarm: 's01', bolt_upright: 's02', smoke_alarm_swat: 's03', phone_buzz_asleep: 's04', snooze_slaps: 's05', late_sprint: 's06', set_alarm_in_bed: 's07',
   pushups: 's08', walk_steps: 's09', stretch_win: 's10', floor_ping: 's11', thinking: 's12a', shake_phone: 's12b', out_the_door: 's14', store_art: 'ways' };
-const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15 };
+const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6 };
 window.renderAt = (t) => {
   const sh = SPEC.shots.find((s) => t >= s.t0 && t < s.t1) || SPEC.shots[SPEC.shots.length - 1];
   resetProps();
