@@ -80,7 +80,14 @@ def elevenlabs(lines, out_dir):
             for m in models:
                 try:
                     t = text if "v3" in m or "v4" in m else re.sub(r"\[[a-z ]+\]\s*", "", text)   # tone tags only on the newest model
-                    mp3 = call(f"https://api.elevenlabs.io/v1/text-to-speech/{vid}?output_format=mp3_44100_128", {"text": t, "model_id": m})
+                    url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}?output_format=mp3_44100_128"
+                    stab = cfg.get("elevenlabs_stability")      # same voice, calmer delivery (Chika, 2026-11-28): 1.0 = steadiest
+                    try:
+                        mp3 = call(url, {"text": t, "model_id": m, **({"voice_settings": {"stability": float(stab)}} if stab is not None else {})})
+                    except Exception:
+                        if stab is None:
+                            raise
+                        mp3 = call(url, {"text": t, "model_id": m})
                     (out_dir / f"l{i + 1:02d}.mp3").write_bytes(mp3); break
                 except Exception as e:
                     err = e
@@ -136,19 +143,83 @@ def rounded_img(im, rad):
     ImageDraw.Draw(m).rounded_rectangle((0, 0, im.width - 1, im.height - 1), rad, fill=255); im.putalpha(m); return im
 
 
+# Graphics themes (Chika, 2026-11-28: the videos must not all look alike): caption colours and style, card and stamp style, font.
+# build.py picks one that differs from the last 3 videos and saves it in the spec ("theme"); the download card never changes.
+INTER = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
+THEMES = {
+    "classic": dict(cap=((255, 242, 26), (255, 255, 255)), cap_style="outline", card="dark", stamp="outline", font=BOLD),
+    "paper": dict(cap=((255, 255, 255), (255, 176, 64)), cap_style="box", card="paper", stamp="solid", font=INTER),
+    "clean": dict(cap=((255, 255, 255), (120, 235, 165)), cap_style="outline", card="light", stamp="solid", font=INTER),
+    "pop": dict(cap=((22, 22, 26), (226, 84, 36)), cap_style="pill", card="accent", stamp="outline", font=BOLD),
+}
+THEME = THEMES["classic"]
+
+
+def TF():
+    f = THEME.get("font", BOLD)
+    return f if os.path.exists(f) else BOLD
+
+
+def pick_theme(spec, spec_path, name):
+    import zlib, random
+    if spec.get("theme") in THEMES:
+        return spec["theme"]
+    used = []
+    for f in sorted((HERE.parent / "work" / "anim").glob("A*/spec.json"), key=lambda q: q.stat().st_mtime)[-3:]:
+        try:
+            if f.resolve() != spec_path.resolve():
+                used.append(json.loads(f.read_text()).get("theme") or "classic")
+        except Exception:
+            pass
+    rng = random.Random(zlib.crc32(("theme" + name).encode()))
+    th = next((t for t in rng.sample(sorted(THEMES), len(THEMES)) if t not in used), "classic")
+    spec["theme"] = th
+    if spec_path.name == "spec.json":
+        spec_path.write_text(json.dumps(spec, indent=1, ensure_ascii=False))
+    return th
+
+
 def app_card(label, big, accent=ORANGE, w=None):
-    f = F(BOLD, 98); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(big, font=f))
+    st = THEME["card"]
+    f = F(TF(), 98); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(big, font=f))
     w = w or max(520, tw + 110)
-    c = rr((w, 250), 46, (28, 28, 30, 250)); d = ImageDraw.Draw(c)
-    d.text((50, 36), label, font=F(BOLD, 32), fill=(*accent, 255)); d.text((50, 78), big, font=f, fill=(255, 255, 255, 255))
-    return shadowed(c)
+    fill, lab, txt, rad = {"dark": ((28, 28, 30, 250), accent, (255, 255, 255), 46), "light": ((250, 250, 246, 252), accent, (24, 24, 28), 46),
+                           "accent": ((*accent, 252), (255, 255, 255), (255, 255, 255), 60), "paper": ((255, 232, 130, 255), (130, 96, 20), (30, 26, 20), 10)}[st]
+    c = rr((w, 250), rad, fill); d = ImageDraw.Draw(c)
+    if st == "paper":
+        d.rectangle((w // 2 - 70, 0, w // 2 + 70, 26), fill=(255, 255, 255, 150))
+    d.text((50, 36), label, font=F(BOLD, 32), fill=(*lab, 255)); d.text((50, 78), big, font=f, fill=(*txt, 255))
+    c = shadowed(c)
+    return c.rotate(-4, expand=True, resample=Image.BICUBIC) if st == "paper" else c
 
 
 def stamp(text, color=RED):
-    f = F(BOLD, 96); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(text, font=f))
+    f = F(TF(), 96); tw = int(ImageDraw.Draw(Image.new("RGB", (1, 1))).textlength(text, font=f))
     s = Image.new("RGBA", (tw + 96, 176), (0, 0, 0, 0)); d = ImageDraw.Draw(s)
-    d.rounded_rectangle((6, 6, tw + 89, 169), 22, outline=(*color, 255), width=12, fill=(255, 255, 255, 235)); d.text((48, 22), text, font=f, fill=(*color, 255))
+    if THEME["stamp"] == "solid":
+        d.rounded_rectangle((6, 6, tw + 89, 169), 88, fill=(*color, 255)); d.text((48, 22), text, font=f, fill=(255, 255, 255, 255))
+    else:
+        d.rounded_rectangle((6, 6, tw + 89, 169), 22, outline=(*color, 255), width=12, fill=(255, 255, 255, 235)); d.text((48, 22), text, font=f, fill=(*color, 255))
     return s
+
+
+def bubble(text, sender="", side="left"):
+    """A chat message: {"type": "bubble", "from": "mom", "text": "are you up??", "side": "left|right"}."""
+    f = F(MED, 50); d0 = ImageDraw.Draw(Image.new("RGB", (1, 1))); words, lines, cur = text.split(), [], ""
+    for wd in words:
+        if cur and len(cur) + len(wd) > 20:
+            lines.append(cur); cur = wd
+        else:
+            cur = (cur + " " + wd).strip()
+    lines.append(cur)
+    tw = int(max(d0.textlength(l, font=f) for l in lines)); top = 46 if sender else 0
+    c = Image.new("RGBA", (tw + 90, top + 56 + 64 * len(lines)), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
+    if sender:
+        d.text((26, 0), sender, font=F(BOLD, 30), fill=(255, 255, 255, 255), stroke_width=4, stroke_fill=(0, 0, 0, 200))
+    d.rounded_rectangle((0, top, c.width - 1, c.height - 1), 44, fill=(40, 134, 255, 255) if side == "right" else (236, 236, 240, 255))
+    for i, l in enumerate(lines):
+        d.text((45, top + 24 + 64 * i), l, font=f, fill=(255, 255, 255, 255) if side == "right" else (20, 20, 24, 255))
+    return shadowed(c, 14, 8, 110)
 
 
 PBOX = (78, 320, 582, 1384)   # the phone inside a 660x1434 App Store screenshot
@@ -233,6 +304,8 @@ def draw_overlays(im, beat, t):
             n = int(round(lo + (hi - lo) * min(1, max(0, (t - at) / max(0.3, (b - at) * 0.9)))))
             jit = 10 * math.sin((t - a) * 40) if o["screen"] == "shake" else 0
             pop(im, shadowed(phone_screen(o["screen"], n, total)), o.get("x", W / 2 + 295) + jit, o.get("y", 440) + 8 * math.sin((t - a) * 2.2), t, at, 0.3, rot=o.get("rot", -5) + jit * 0.4, scale=o.get("scale", 0.6))
+        elif kind == "bubble":
+            pop(im, C(key, lambda: bubble(o["text"], o.get("from", ""), o.get("side", "left"))), o.get("x", W / 2 - 60), o.get("y", 330), t, at, 0.2, rot=o.get("rot", 0))
         elif kind == "tiles":
             for q, name in enumerate(o["names"][:3]):
                 x, y, r = [(290, 330, 7), (780, 360, -6), (540, 520, 3)][q]
@@ -243,17 +316,25 @@ def draw_caption(im, beat, t):
     if not beat.get("caption"):
         return
     lines = C(("cap", beat["i"]), lambda: parse_caption(beat["caption"]))
-    font = F(BOLD, 60); d = ImageDraw.Draw(im); sp = d.textlength(" ", font=font)
+    font = F(TF(), 60); d = ImageDraw.Draw(im); sp = d.textlength(" ", font=font)
+    main, hlc = THEME["cap"]; style = THEME["cap_style"]
     nchar = sum(len(w) for ln in lines for w, _ in ln) or 1
     y = int(H * (0.80 if beat["shot"] == "store_art" else 0.68)) - (40 if len(lines) > 2 else 0); acc = 0
     a, dur = beat["line_at"], beat["line_dur"]
     for ln in lines:
-        x = (W - (sum(d.textlength(w, font=font) for w, _ in ln) + sp * (len(ln) - 1))) / 2
+        lw = sum(d.textlength(w, font=font) for w, _ in ln) + sp * (len(ln) - 1); x = (W - lw) / 2
+        if style != "outline" and t >= a + acc / nchar * dur * 0.85:
+            box = Image.new("RGBA", (int(lw) + 56, 84), (0, 0, 0, 0))
+            ImageDraw.Draw(box).rounded_rectangle((0, 0, box.width - 1, 83), 20 if style == "box" else 42, fill=(16, 16, 20, 205) if style == "box" else (255, 255, 255, 240))
+            im.alpha_composite(box, (int(x) - 28, y - 2)); d = ImageDraw.Draw(im)
         for w, hl in ln:
             if t >= a + acc / nchar * dur * 0.85:
-                d.text((x, y), w, font=font, fill=(255, 255, 255, 255) if hl else (255, 242, 26, 255), stroke_width=6, stroke_fill=(0, 0, 0, 255))
+                if style == "outline":
+                    d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255), stroke_width=6, stroke_fill=(0, 0, 0, 255))
+                else:
+                    d.text((x, y), w, font=font, fill=(*(hlc if hl else main), 255))
             acc += len(w); x += d.textlength(w, font=font) + sp
-        y += 80
+        y += 80 if style == "outline" else 90
 
 
 # ------------------------------------------------------------------ CTA card
@@ -374,6 +455,14 @@ def pick_look(spec, spec_path, name):
             "beardColor": hc if hc in ("#15100e", "#3a2416", "#6a3e1e", "#c89a50", "#a8442a", "#2a2a2a") else "#2a1a12", "pack": rng.choice(PACKS), "capColor": rng.choice(PACKS), "wall": wall, "wallTex": wtex, "floorKind": fk, "floor": floor, "floorLine": fline,
             "quilt": quilt, "rug": rug, "rugTrim": rtrim, "curtain": curtain, "poster": poster, "wood": wood, "frame": frame, "sheet": sheet,
             "plant": False, "lights": False, **extra}
+    # body build + clothes (2026-11-28): never the same figure as the last video
+    last = used[-1] if used else {}
+    for _ in range(50):
+        b = dict(tall=rng.choice([0.9, 1.0, 1.08]), wide=rng.choice([0.86, 1.0, 1.24]), headS=rng.choice([0.9, 1.0, 1.2]),
+                 sleeves=rng.choice(["long", "short"]), shorts=rng.random() < 0.35, acc=rng.choice(["none", "none", "headphones", "scarf"]))
+        if (b["wide"], b["headS"]) != (last.get("wide", 1.0), last.get("headS", 1.0)) and (b["wide"], b["headS"], b["tall"]) != (1.0, 1.0, 1.0):
+            break
+    look.update(b)
     spec["look"] = look
     if spec_path.name == "spec.json":
         spec_path.write_text(json.dumps(spec, indent=1, ensure_ascii=False))
@@ -444,8 +533,64 @@ def build_audio(path, beats, total, cta0, voice):
         if m <= SR // 10:
             return
         x = np.resize(ring, m).copy(); f = int(0.03 * SR); x[-f:] *= np.linspace(1, 0, f); x[:f] *= np.linspace(0, 1, f); put(x, t0, vol)
+    rs = np.random.default_rng(7)
+
+    def lp(x, k):
+        return np.convolve(x, np.ones(k) / k, "same")
+
+    def sfx(name, t0, vol=1.0, dur=None):
+        """Synthesised sound effects (no files, no licences). Beats take "sfx": [{"name": "bus", "at": 0.2, "vol": 1, "dur": 2}]."""
+        X = lambda sec: np.arange(int(sec * SR)) / SR
+        if name == "whoosh":
+            x = X(dur or 0.34); nz = lp(rs.standard_normal(len(x)), 14); put(nz / (np.abs(nz).max() + 1e-9) * np.sin(np.pi * x / x[-1]) ** 2, t0, 0.16 * vol)
+        elif name == "pop":
+            x = X(0.09); put(np.sin(TAU * (520 + 5200 * x) * x) * np.exp(-x * 40), t0, 0.22 * vol)
+        elif name == "ding":
+            x = X(0.9); put((np.sin(TAU * 1318 * x) + 0.6 * np.sin(TAU * 1976 * x)) * np.exp(-x * 5), t0, 0.12 * vol)
+        elif name == "bell":
+            x = X(dur or 1.1); put((np.sin(TAU * 2200 * x) + np.sin(TAU * 2930 * x) + 0.6 * np.sin(TAU * 3650 * x)) / 2.6 * (0.55 + 0.45 * np.sign(np.sin(TAU * 26 * x))) * np.minimum(1, (x[-1] - x) / 0.15), t0, 0.10 * vol)
+        elif name == "bus":
+            x = X(dur or 2.4); nz = lp(rs.standard_normal(len(x)), 220); nz = nz / (np.abs(nz).max() + 1e-9)
+            eng = (0.6 * nz + 0.5 * np.sin(TAU * (52 + 14 * x) * x) * (1 + 0.3 * np.sin(TAU * 11 * x))) * np.minimum(1, x / 0.2) * np.minimum(1, (x[-1] - x) / 0.9)
+            put(eng, t0, 0.30 * vol); h = X(0.45); hz = rs.standard_normal(len(h)); put((hz - lp(hz, 6)) * np.exp(-h * 7), t0, 0.07 * vol)
+        elif name == "steps":
+            x = X(0.12); k = 0.0
+            while k < (dur or 1.2):
+                put(np.sin(TAU * (130 - 300 * x) * x) * np.exp(-x * 34), t0 + k, 0.22 * vol); k += 0.27
+        elif name == "scratch":
+            x = X(0.32); nz = rs.standard_normal(len(x)); put(lp(nz, 5) * np.sin(TAU * (900 - 1900 * x) * x) * np.minimum(1, (x[-1] - x) / 0.05), t0, 0.22 * vol)
+        elif name == "sad":
+            for i, f0 in enumerate((233, 220, 207, 196)):
+                x = X(0.34 if i < 3 else 0.75); f = f0 * (1 - 0.03 * x / x[-1]) * (1 + 0.012 * np.sin(TAU * 6 * x))
+                put(lp(np.sign(np.sin(TAU * np.cumsum(f) / SR)) * 0.5 + np.sin(TAU * np.cumsum(f) / SR), 30) * np.minimum(1, x / 0.03) * np.minimum(1, (x[-1] - x) / 0.08), t0 + i * 0.36, 0.11 * vol)
+        elif name == "tick":
+            x = X(0.03); k = 0.0
+            while k < (dur or 2.0):
+                put(np.sin(TAU * (2400 if int(k * 2) % 2 == 0 else 1900) * x) * np.exp(-x * 160), t0 + k, 0.14 * vol); k += 0.5
+        elif name == "flop":
+            x = X(0.3); put(np.sin(TAU * (80 - 90 * x) * x) * np.exp(-x * 16), t0, 0.5 * vol); nz = lp(rs.standard_normal(len(x)), 40); put(nz / (np.abs(nz).max() + 1e-9) * np.exp(-x * 14), t0, 0.14 * vol)
+        elif name == "sparkle":
+            for i, f in enumerate((1568, 1976, 2349, 3136, 3951)):
+                x = X(0.5); put(np.sin(TAU * f * x) * np.exp(-x * 9), t0 + i * 0.06, 0.06 * vol)
+        elif name == "thud":
+            thud(t0)
+    for i, b in enumerate(beats):          # a soft whoosh on every cut, a pop when a card / phone / tile / bubble appears, plus the beat's own "sfx"
+        if i and b["shot"] != "cta":
+            sfx("whoosh", b["t0"] - 0.12, 0.8)
+        for o in b.get("overlay", []):
+            if o["type"] == "tiles":
+                for q in range(len(o["names"][:3])):
+                    sfx("pop", b["t0"] + float(o.get("ats", [0.08, 0.78, 1.4])[q]))
+            elif o["type"] != "stamp":
+                sfx("ding" if o["type"] == "bubble" else "pop", b["t0"] + float(o.get("at", 0.1)))
+        for e in b.get("sfx", []):
+            sfx(e["name"], b["t0"] + float(e.get("at", 0)), float(e.get("vol", 1)), e.get("dur"))
     for b in beats:
         s, t0, t1 = b["shot"], b["t0"], b["t1"]
+        if s == "across_room_go":      # rings until he taps it at 78% of the shot
+            ring_span(t0, t0 + 0.78 * (t1 - t0)); sfx("pop", t0 + 0.78 * (t1 - t0))
+        if s == "back_to_bed":
+            sfx("flop", t0 + 0.62 * (t1 - t0))
         if s in SMOKE:
             t = t0
             while t < t1 - 0.2:
@@ -477,7 +622,8 @@ def build_audio(path, beats, total, cta0, voice):
             v = b["vo"]; i0 = int(b["line_at"] * SR); v = v[: n - i0]; vo[i0:i0 + len(v)] += v * 0.9
     env = np.abs(vo); k = int(0.25 * SR); env = np.clip(np.convolve(env, np.ones(k) / k, mode="same") / 0.08, 0, 1)
     lift = next((b["t0"] for b in beats if b.get("lift")), beats[len(beats) // 2]["t0"])
-    a += music(n, lift) * ((0.34 - 0.17 * env) if voice else 0.42)
+    mg = float(_cfg().get("music_gain", 0.48))      # louder bed (Chika, 2026-11-28; was 0.34), ducked to half under the voice
+    a += music(n, lift) * ((mg - 0.5 * mg * env) if voice else mg + 0.08)
     a += vo
     a = np.tanh(a * 1.1) * 0.95 * np.minimum(1, (total - tt) / 0.3)
     with wave.open(str(path), "wb") as w:
@@ -493,6 +639,8 @@ def main():
     TRACK = pick_track(spec, name); print("music track:", TRACK)
     global LOOK
     LOOK = pick_look(spec, spec_path, name); print("look:", LOOK.get("name", "custom"))
+    global THEME
+    th = pick_theme(spec, spec_path, name); THEME = THEMES[th]; print("theme:", th)
     for b in beats:
         if b["shot"] not in SHOTS and not (HERE / "lowpoly" / "index.html").read_text().count(f"S.{b['shot']} ="):
             sys.exit(f"unknown shot '{b['shot']}'. Shots: {sorted(SHOTS)} (or add S.{b['shot']} to anim/lowpoly/index.html)")

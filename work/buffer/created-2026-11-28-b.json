@@ -1,0 +1,80 @@
+{
+ "slots": [
+  {
+   "variant_id": "A20261128-002_v1",
+   "scheduled_at": "2026-11-28T12:00:00-05:00",
+   "time_slot": "12:00",
+   "hashtag_set": "wake-up",
+   "post_caption_style": "question",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a703ed089f5457190e6b9",
+     "caption": "Download the Unsnooze app\nyour alarm has notes. five alarms, phone across the room, and you still went back to bed ⏰🫠\nbe honest, who else gets up, turns it off and lies right back down?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a703fd089f5457190e7c2",
+     "caption": "Download the Unsnooze app\nwho else walks across the room, turns the alarm off and gets back in bed? ⏰🫠 #wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a703fd089f5457190e7f9",
+     "caption": "Download the Unsnooze app\nif your alarm could talk, what would it say about you? ⏰🫠\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a7040d7e53b12ebe16432",
+     "caption": "Download the Unsnooze app\nyour alarm has notes. five alarms, phone across the room, and you still went back to bed ⏰🫠\nbe honest, who else gets up, turns it off and lies right back down?\n\n#wakeup #morningroutine #heavysleeper #alarm",
+     "status": "scheduled"
+    }
+   ]
+  },
+  {
+   "variant_id": "R20261125-009__v1",
+   "scheduled_at": "2026-11-28T21:00:00-05:00",
+   "time_slot": "21:00",
+   "hashtag_set": "snooze-pov",
+   "post_caption_style": "hook_cta",
+   "post_emoji": "2-3",
+   "posts": [
+    {
+     "platform": "instagram",
+     "channel_id": "6acd0e54778b240e2fe91763",
+     "buffer_post_id": "6b0a7041d481da6c2b4eeecd",
+     "caption": "Download the Unsnooze app\n3:39am and my alarm wants me to memorize 6 colors before it stops 🧠🎨\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "tiktok",
+     "channel_id": "6acd0e18778b240e2fe9157f",
+     "buffer_post_id": "6b0a7041cf6d917730043dc2",
+     "caption": "Download the Unsnooze app\nmy alarm made me memorize 6 colors at 3:39am 🧠🎨 unsnooze makes you actually get up #pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "youtube",
+     "channel_id": "6ad5c498778b240e2f557a0c",
+     "buffer_post_id": "6b0a7042d481da6c2b4ef185",
+     "caption": "Download the Unsnooze app\nmemorize 6 colors or the alarm keeps going 🧠🎨 unsnooze makes you actually get up, it's on the app store\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    },
+    {
+     "platform": "facebook",
+     "channel_id": "6b0698338541f09ecb99dbf0",
+     "buffer_post_id": "6b0a7043cf6d917730044081",
+     "caption": "Download the Unsnooze app\n3:39am and my alarm wants me to memorize 6 colors before it stops 🧠🎨\nunsnooze makes you actually get up. link in bio\n\n#pov #snooze #alarm #relatable",
+     "status": "scheduled"
+    }
+   ]
+  }
+ ]
+}

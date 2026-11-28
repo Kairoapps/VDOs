@@ -31,9 +31,9 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
  ],
  "cta_line": "Download Unsnooze. Link in bio!"}
 ```
-- **beats**: 7-14, in order; the finished video must be under 45 seconds (Chika, 2026-11-27). Each beat is one shot with one caption. The video ends with the download card (app icon, App Store
+- **beats**: 7-14, in order; the finished video is 45-60 seconds (Chika, 2026-11-28; 14-18 beats). Each beat is one shot with one caption. The video ends with the download card (app icon, App Store
   listing, badge, "LINK IN BIO"), added automatically. This CTA is the same on every video (Chika, 2026-11-27):
-  keep `cta_line` as "[excited] Download Unsnooze. Link in bio!" and never remove or restyle the card.
+  keep `cta_line` as "Download Unsnooze. Link in bio." (no tone tag since 2026-11-28: calmer voice) and never remove or restyle the card.
 - **caption**: lowercase, short; `*stars*` mark the 1-3 words shown in white (the rest is yellow). `\n` breaks lines, otherwise it wraps at ~24 characters.
 - **line**: what the voice says (defaults to the caption). ElevenLabs tone tags like `[groggy]` are allowed.
 - **dur** / **min**: fixed or minimum seconds for the beat. Without them a beat lasts as long as its voice line (or reading time).
@@ -61,6 +61,11 @@ Needs Node, ffmpeg, Pillow, numpy and Chrome (`/usr/bin/google-chrome`, or set `
 | `stretch_win` | alarm off: stretch, then fist pump at the sunny window | pump at 0.9 s; `DISMISSED` stamp at 0.9 |
 | `talk` | talks to the camera with his hands | any line |
 | `out_the_door` | walks out with his backpack, smiling | |
+| `across_room_go` | the alarm is on the window sill "across the room": eyes shut, he shuffles over and taps it off (78% of the shot) | added 2026-11-28; needs >= 3.2 s |
+| `back_to_bed` | ...then shuffles straight back and face-plants into bed (62%) | added 2026-11-28; needs >= 3.2 s |
+| `bus_stop` | PLACE: a street with a bus stop. `p.mode` `miss` (default): he sprints after the bus as it pulls away, turns back, sags; `catch`: he waits with his backpack and waves as the bus pulls in | added 2026-11-28; needs >= 2.8 s |
+| `class_late` | PLACE: a classroom. He tiptoes in through the back door and every classmate turns to look | added 2026-11-28 |
+| `class_desk` | classroom, at his desk with the alarm standing on it. `p.mode` `slump` (default): asleep on the desk; `early`: awake, smiling, empty room. `p.face` = the alarm's face | added 2026-11-28 |
 | `store_art` | the real "15+ ways to wake up" App Store screenshot, full screen | no overlays |
 | `alarm_slapped` | the alarm itself (a phone with a face) rears up ringing on the nightstand and gets slapped flat at 0.75 / 1.5 / 2.25 s; he sleeps on | added 2026-11-28; needs >= 3 s; stamp at 0.75 |
 | `alarm_talk` | the alarm talks to the camera from the nightstand | added 2026-11-28; `p`: `face` annoyed/dead/determined/happy, `bg` asleep/gone/made, `view` 0 close / 1 wide with the bed / 2 low hero, plus `mood`, `clock` |
@@ -73,6 +78,7 @@ one (`pose({...})` sets every joint, `cam(...)` the camera, `mood(...)` the ligh
 and check it with `--snap` before building. Shots must depend only on the time arguments.
 
 ### Overlays (2D, on top of the 3D)
+- `bubble`: `{"type": "bubble", "from": "group chat", "text": "where are you??", "side": "left|right", "at": 0.9, "x": 640, "y": 520}` — a chat message (added 2026-11-28).
 - `card`: `{"type": "card", "label": "ALARM", "big": "6:00 AM", "accent": "orange|red|green", "at": 0.1, "x": 500, "y": 320}` — dark app-style card.
 - `stamp`: `{"type": "stamp", "text": "LATE", "color": "red|green", "at": 0.8, "x": 650, "y": 470}` — slams on with a thud.
 - `phone`: `{"type": "phone", "screen": "pushups|walk|shake|squats|grid", "from": 7, "to": 10, "total": 10, "x": 835, "y": 440, "scale": 0.6}` —
@@ -95,3 +101,15 @@ The build writes its own music; there is no music file. `anim/build.py` has five
 `slow_morning`, `get_up`, `late_night`, `bright`: same instruments, different key, tempo and chords). By default the
 track is picked from the video's id, so it changes from video to video but repeats now and then. To choose one, add
 `"music": "<name>"` to the spec. The build prints which track it used.
+
+## Themes, builds and sound effects (2026-11-28)
+
+- **Theme**: `"theme"` in the spec (`classic`, `paper`, `clean`, `pop`): caption colours and style, card and stamp style, font.
+  `build.py` picks one the last 3 videos didn't use and saves it; the download card is never themed.
+- **Build**: `look` also has `tall` (0.9-1.08), `wide` (0.86-1.24), `headS` (0.9-1.2), `sleeves` long/short, `shorts`, `acc` none/headphones/scarf.
+- **Places**: other sets stand far from the bedroom in the same scene (`BX` bus stop, `CX` classroom); a shot poses him there, moves
+  the camera and calls `setSky(...)`. Copy that pattern for a new place.
+- **Sound effects**: a beat's `"sfx": [{"name": "bus", "at": 0.0, "dur": 2.8, "vol": 1}]`. Names: `whoosh`, `pop`, `ding`, `bell`, `bus`,
+  `steps`, `scratch`, `sad`, `tick`, `flop`, `sparkle`, `thud` (all synthesised in `build.py`). Cuts get a whoosh and cards a pop automatically.
+- **Music level**: `music_gain` in `config.toml` `[animation]` (0.48; ducked to half under the voice).
+- **Voice**: `elevenlabs_stability` in `config.toml` (1.0 = steadiest, calmest).

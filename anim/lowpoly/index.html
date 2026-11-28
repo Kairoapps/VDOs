@@ -205,6 +205,8 @@ function zzz(pos, t) { zs.forEach((m, k) => { const ph = ((t * 0.55 + k / 3) % 1
 
 // ---------------------------------------------------------------- character (faces +z; origin at the hips)
 const C = { skin: lam({ color: SKIN }), hood: lam({ color: LOOK.top }), hood2: lam({ color: LOOK.top2 }), pants: lam({ color: LOOK.pants }), hair: lam({ color: LOOK.hair }), shoe: lam({ color: LOOK.shoe }), sole: lam({ color: LOOK.sole }), pack: lam({ color: LOOK.pack }), pack2: lam({ color: new THREE.Color(LOOK.pack).multiplyScalar(0.8) }), cap: lam({ color: LOOK.capColor ? parseInt(String(LOOK.capColor).replace('#', ''), 16) : LOOK.top2 }) };
+C.fore = LOOK.sleeves === 'short' ? C.skin : C.hood; C.shin = LOOK.shorts ? C.skin : C.pants;   // short sleeves / shorts (2026-11-28)
+const BS = +LOOK.tall || 1, BW = +LOOK.wide || 1, HS = +LOOK.headS || 1, BWZ = 0.5 + 0.5 * BW;   // body build: height, width, head size
 const faceMat = lam({ map: F.neutral });
 const yaw = grp(scene), root = grp(yaw), hips = grp(root), torso = grp(hips, 0, 0.06, 0);
 box(hips, 0.4, 0.2, 0.28, C.pants, 0, 0, 0);
@@ -230,15 +232,18 @@ function limb(parent, x, y, len1, len2, w, m1, m2, hand) {
 }
 const hand = (h) => { box(h, 0.12, 0.12, 0.12, C.skin, 0, -0.05, 0); box(h, 0.13, 0.04, 0.13, C.hood2, 0, 0.02, 0); };
 const foot = (h) => { box(h, 0.15, 0.1, 0.26, C.shoe, 0, -0.03, 0.05); box(h, 0.16, 0.035, 0.27, C.sole, 0, -0.09, 0.05); };
-const aL = limb(torso, -0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.hood, hand), aR = limb(torso, 0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.hood, hand);
-const lL = limb(hips, -0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.pants, foot), lR = limb(hips, 0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.pants, foot);
+const aL = limb(torso, -0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.fore, hand), aR = limb(torso, 0.3, 0.46, 0.27, 0.24, 0.14, C.hood, C.fore, hand);
+const lL = limb(hips, -0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.shin, foot), lR = limb(hips, 0.11, -0.06, 0.27, 0.26, 0.16, C.pants, C.shin, foot);
+root.scale.setScalar(BS); head.scale.set(HS / BW, HS, HS / BWZ);
+if (LOOK.acc === 'headphones') { const am = lam({ color: LOOK.sole }); box(head, 0.5, 0.05, 0.1, C.shoe, 0, 0.47, 0.0); box(head, 0.07, 0.18, 0.16, am, -0.25, 0.2, 0.02); box(head, 0.07, 0.18, 0.16, am, 0.25, 0.2, 0.02); }
+if (LOOK.acc === 'scarf') { const am = lam({ color: LOOK.sole }); box(torso, 0.42, 0.11, 0.36, am, 0, 0.53, 0.02); box(torso, 0.12, 0.3, 0.05, am, 0.1, 0.36, 0.19); }
 const handPhone = grp(aR.h, 0, -0.08, 0.08); box(handPhone, 0.11, 0.2, 0.015, M.phone, 0, 0, 0); plane(handPhone, 0.095, 0.18, M.screenUI, 0, 0, 0.009); handPhone.visible = false;
 const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.36, 8), basic({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false })); shadow.rotation.x = -Math.PI / 2; scene.add(shadow);
 const STAND_Y = 0.68;
 function pose(o = {}) {       // angles in degrees; arms/legs: [shoulderX, shoulderZ, elbowX] / [hipX, hipZ, kneeX]
   const d = Object.assign({ x: 0, y: STAND_Y, z: 0, yaw: 0, pitch: 0, roll: 0, torso: [0, 0, 0], head: [0, 0, 0], aL: [0, -6, 0], aR: [0, 6, 0], lL: [0, 0, 0], lR: [0, 0, 0], sq: 0, face: 'neutral', shadow: true }, o);
-  yaw.position.set(d.x, d.y, d.z); yaw.rotation.set(0, d.yaw * D, 0); root.rotation.set(d.pitch * D, 0, d.roll * D);
-  hips.scale.set(1 + d.sq * 0.5, 1 - d.sq, 1 + d.sq * 0.5);
+  yaw.position.set(d.x, Math.abs(d.pitch) < 30 ? d.y * BS : d.y, d.z); yaw.rotation.set(0, d.yaw * D, 0); root.rotation.set(d.pitch * D, 0, d.roll * D);
+  hips.scale.set((1 + d.sq * 0.5) * BW, 1 - d.sq, (1 + d.sq * 0.5) * BWZ);
   torso.rotation.set(d.torso[0] * D, d.torso[1] * D, d.torso[2] * D); neck.rotation.set(d.head[0] * D, d.head[1] * D, d.head[2] * D);
   for (const [L, v] of [[aL, d.aL], [aR, d.aR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
   for (const [L, v] of [[lL, d.lL], [lR, d.lR]]) { L.a.rotation.set(v[0] * D, 0, v[1] * D); L.b.rotation.set(v[2] * D, 0, 0); }
@@ -495,10 +500,113 @@ S.alarm_held = (u, d, k, t) => {      // up, smiling: holds the (happy) alarm up
   palAt(hp.x, hp.y - 0.02, hp.z + 0.1, 0, 'happy', { lean: -6, tilt: 5 * b, hop: 0.01 * Math.abs(b), s: 1.5 });
   cam([0.75, 1.3, 2.4], [0.4, 1.12, 0.1], [0.65, 1.3, 2.1], [0.4, 1.14, 0.1], k, 44);
 };
+// ---------------------------------------------------------------- other places (2026-11-28): each set stands far from the bedroom; a shot moves him and the camera there
+function setSky(c) { scene.background.set(c); scene.fog.color.set(c); }
+const flatTex = (base, line) => tex(16, 16, (g) => { noise(g, 0, 0, 16, 16, base, .05); if (line !== undefined) { px(g, 0, 0, col(line), 16, 1); px(g, 0, 0, col(line), 1, 16); } });
+// --- bus stop (outdoors): sidewalk z -3..1, road z 1..7, he stands near x 0, the bus drives along x at z 2.7
+const BX = 40, busStop = grp(scene, BX, 0, 0), bus = grp(busStop, 0, 0, 2.25);
+{ const g = busStop;
+  plane(g, 26, 4, lam({ map: flatTex(0xb8b4ac, 0x8a867e) }), 0, 0, -1, -Math.PI / 2, 0, 13, 2, 13, 2);
+  box(g, 26, 0.14, 0.16, lam({ color: 0x9a968e }), 0, -0.01, 1.05);
+  plane(g, 26, 7, lam({ map: flatTex(0x3a3c44) }), 0, -0.07, 4.5, -Math.PI / 2, 0, 13, 3, 13, 3);
+  for (let k = -6; k <= 6; k++) box(g, 0.9, 0.01, 0.12, basic({ color: 0xf2e8b0 }), k * 2.1, -0.06, 4.6);
+  const bc = [0xd8a888, 0x9ab0c8, 0xe8d8a8, 0xb8c8a0, 0xc89ab0, 0xd0c0a0];
+  for (let k = 0; k < 7; k++) { const h = 3.6 + ((k * 7) % 3) * 1.3; box(g, 3.5, h, 1, lam({ map: tex(16, 16, (c) => { noise(c, 0, 0, 16, 16, bc[k % 6], .04); for (let y = 2; y < 16; y += 5) for (let x = 2; x < 16; x += 5) px(c, x, y, col(0x4a5a7a), 3, 3); }) }), -11 + k * 3.6, h / 2, -3.6); }
+  const metal = lam({ color: 0x5a6068 }), glass = basic({ color: 0x9ad0f0, transparent: true, opacity: 0.35, depthWrite: false });
+  for (const x of [0.1, 2.5]) box(g, 0.08, 2.3, 0.08, metal, x, 1.15, -1.75);
+  box(g, 2.8, 0.08, 1.3, lam({ color: LOOK.rug }), 1.3, 2.32, -1.25); plane(g, 2.4, 1.5, glass, 1.3, 1.3, -1.75);
+  box(g, 1.7, 0.08, 0.4, lam({ map: T.wood }), 1.3, 0.5, -1.4); for (const x of [0.6, 2.0]) box(g, 0.08, 0.5, 0.36, metal, x, 0.25, -1.4);
+  box(g, 0.07, 2.7, 0.07, metal, 2.9, 1.35, 0.85); box(g, 0.05, 0.56, 0.56, lam({ color: 0x2a6ad0 }), 2.9, 2.55, 0.85); box(g, 0.06, 0.2, 0.3, lam({ color: 0xffffff }), 2.9, 2.58, 0.85);
+  for (let k = 0; k < 4; k++) { const h = 5 + (k % 2) * 1.6; box(g, 1, h, 3.4, lam({ map: tex(16, 16, (c) => { noise(c, 0, 0, 16, 16, bc[(k + 2) % 6], .04); for (let y = 2; y < 16; y += 5) for (let x = 2; x < 16; x += 5) px(c, x, y, col(0x4a5a7a), 3, 3); }) }), 17, h / 2, -4 + k * 3.5); }
+  box(g, 0.24, 1.3, 0.24, lam({ map: T.wood }), 4.2, 0.65, -2.2); for (const [y, r] of [[1.7, 0.9], [2.4, 0.65]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(r, 1.3, 5), lam({ color: 0x3f9a5a })); c.position.set(4.2, y, -2.2); g.add(c); }
+  for (const [x, y, w] of [[-5, 6.4, 2.6], [1.5, 7.2, 3.2], [7, 6.0, 2.2]]) box(g, w, 0.5, 0.2, basic({ color: 0xffffff }), x, y, -7);
+  const bcol = lam({ color: LOOK.poster }), dark = lam({ color: 0x22242a });
+  box(bus, 5.2, 2.2, 1.9, bcol, 0, 1.5, 0); box(bus, 4.9, 0.75, 1.94, lam({ color: 0xbfe6fa }), -0.05, 1.85, 0); box(bus, 5.24, 0.14, 1.94, lam({ color: 0xf4f0e6 }), 0, 1.3, 0);
+  box(bus, 0.7, 1.5, 0.06, dark, 1.7, 1.2, 0.97); box(bus, 0.7, 1.5, 0.06, dark, 1.7, 1.2, -0.97);
+  for (const x of [-1.6, 1.5]) for (const z of [-0.9, 0.9]) { const w = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 8), dark); w.rotation.x = Math.PI / 2; w.position.set(x, 0.38, z); bus.add(w); }
+  box(bus, 0.1, 0.2, 0.3, basic({ color: 0xff4030 }), -2.62, 0.9, 0.6); box(bus, 0.1, 0.2, 0.3, basic({ color: 0xff4030 }), -2.62, 0.9, -0.6); box(bus, 0.06, 1.0, 1.5, lam({ color: 0xbfe6fa }), -2.6, 1.85, 0);
+}
+S.bus_stop = (u, d, k, t) => {      // seen down the street. p.mode 'miss' (default): he sprints after the bus as it pulls away, then turns back and sags. 'catch': he waits with his backpack, the bus pulls in
+  mood('day', 0); setSky(0x8ec8f0);
+  if ((PARAM.mode || 'miss') === 'miss') {
+    bus.rotation.y = 0; bus.position.x = lerp(2.4, 26, Math.pow(clamp(u / Math.max(2.4, d), 0, 1), 1.6));
+    const v = clamp(u / 1.2, 0, 1), stop = sm(0.8, 1, v), run = Math.sin(u * 22) * (1 - stop), turn = sm(1.3, 1.7, u), slump = sm(1.6, 2.1, u), x = lerp(-2.6, 0.3, sm(0, 1, v));
+    pose({ x: BX + x, y: STAND_Y + 0.07 * Math.abs(run), z: 0.45, yaw: 90 - 165 * turn, face: slump > 0.5 ? 'pant' : 'shock', torso: [16 * (1 - stop) + 8 * slump, 0, 0], head: [-10, 0, 6 * slump],
+      aL: [(-60 * run - 20) * (1 - stop), -30 * (1 - stop) - 8, -70 * (1 - stop)], aR: [lerp(60 * run - 20, -160, stop) * (1 - turn), 14, lerp(-70, -8, stop) * (1 - turn)],
+      lL: [-55 * run, 0, 60 * Math.max(0, run)], lR: [55 * run, 0, 60 * Math.max(0, -run)], sq: 0.04 * slump });
+    cam([BX - 4.4, 1.5, 2.6], [BX + 3, 1.15, 0.5], [BX - 2.6, 1.3, 1.7], [BX + 2, 1.1, 0.2], sm(1.2, 2.2, u), 56, 0.01, t);
+  } else {
+    const arr = sm(0, Math.min(2.2, d * 0.85), u); bus.rotation.y = Math.PI; bus.position.x = lerp(24, 3.2, 1 - Math.pow(1 - arr, 2.4));
+    const w = Math.sin(u * 9) * sm(0.2, 0.6, u), b = Math.sin(u * 4);
+    pack.visible = true;
+    pose({ x: BX + 0.1, y: STAND_Y + 0.015 * Math.abs(b), z: 0.45, yaw: -70, face: blinkAt(u, 'happy', [1.1]), head: [-4, -8, 3 * b], torso: [-2, 6, 0], aR: [-160 + 6 * w, 26 + 16 * w, -20], aL: [0, -8, 0], lL: [0, -4, 0], lR: [0, 4, 0] });
+    cam([BX - 3.6, 1.45, 2.3], [BX + 3, 1.15, 0.3], [BX - 3.0, 1.4, 2.0], [BX + 3, 1.15, 0.2], k, 54);
+  }
+};
+// --- classroom, seen from the front: 3 x 3 desks, classmates at eight of them, his desk is front-middle, the door is in the back wall
+const CX = -40, classroom = grp(scene, CX, 0, 0), classmates = [];
+{ const g = classroom, wallM = lam({ map: flatTex(0xe8e0c8) }), deskM = lam({ map: T.wood, color: 0xe8d0a8 }), dark = lam({ color: 0x3a3e48 });
+  plane(g, 9, 9, lam({ map: flatTex(0xc8c0a8, 0xa89e88) }), 0, 0, -1, -Math.PI / 2, 0, 9, 9, 9, 9);
+  plane(g, 9, 3.4, wallM, 0, 1.7, -5.2, 0, 0, 4, 2, 8, 4); plane(g, 9, 3.4, wallM, -4.5, 1.7, -1, 0, Math.PI / 2, 4, 2, 8, 4); plane(g, 9, 3.4, wallM, 4.5, 1.7, -1, 0, -Math.PI / 2, 4, 2, 8, 4);
+  box(g, 9, 0.5, 0.06, lam({ color: LOOK.rug }), 0, 1.05, -5.17);
+  box(g, 1.0, 2.1, 0.06, lam({ map: T.wood, color: 0xd0b090 }), 3.3, 1.05, -5.16); box(g, 0.08, 0.08, 0.1, lam({ color: 0xe8c040 }), 2.95, 1.0, -5.1);
+  box(g, 0.6, 0.6, 0.06, lam({ color: 0xffffff }), -0.2, 2.6, -5.16); box(g, 0.04, 0.22, 0.07, dark, -0.2, 2.68, -5.14); box(g, 0.18, 0.04, 0.07, dark, -0.12, 2.6, -5.14);
+  for (const [x, c] of [[-2.8, 0x5a8af0], [-1.6, 0xe8556a], [1.4, 0x3f9a5a]]) box(g, 0.8, 1.0, 0.04, lam({ color: c }), x, 2.0, -5.17);
+  const skins = [0xf1c6a6, 0x7a4a2e, 0xc68a5e, 0xe0ac84, 0x5a3520, 0xa5673f, 0xf1c6a6, 0xc68a5e], tops = [0x5a8af0, 0xf2d24a, 0xe8556a, 0x3a9a6a, 0xf4f0e6, 0xb07ae8, 0xf2a03a, 0x2a2a30], hairs = [0x15100e, 0x6a3e1e, 0xc89a50, 0x2a2a2a, 0xa8442a, 0x15100e, 0xe8e0d0, 0x3a2416];
+  let n = 0;
+  for (const z of [-0.2, -1.9, -3.6]) for (const x of [-2.3, 0, 2.3]) {
+    box(g, 1.3, 0.06, 0.65, deskM, x, 0.74, z); box(g, 1.3, 0.5, 0.04, deskM, x, 0.47, z + 0.3); box(g, 0.45, 0.05, 0.45, dark, x, 0.45, z - 0.62); box(g, 0.45, 0.5, 0.05, dark, x, 0.72, z - 0.85);
+    if (x === 0 && z === -0.2) continue;
+    const sk = skins[n % 8], e = grp(g, x, 0, z - 0.6), hd = grp(e, 0, 1.2, 0); box(e, 0.46, 0.52, 0.3, lam({ color: tops[n % 8] }), 0, 0.93, 0);
+    const fm = lam({ map: tex(8, 8, (c) => { noise(c, 0, 0, 8, 8, sk, .03); px(c, 1, 3, col(0xffffff), 2, 2); px(c, 5, 3, col(0xffffff), 2, 2); px(c, 2, 3, col(0x1a100a), 1, 2); px(c, 6, 3, col(0x1a100a), 1, 2); px(c, 3, 6, col(0x3a1a12), 2, 1); }) }), sm_ = lam({ color: sk });
+    const m = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.34, 0.32), [sm_, sm_, sm_, sm_, fm, sm_]); m.position.y = 0.17; hd.add(m);
+    box(hd, 0.4, 0.1, 0.36, lam({ color: hairs[n % 8] }), 0, 0.37, 0); box(hd, 0.4, n % 3 ? 0.24 : 0.5, 0.08, lam({ color: hairs[n % 8] }), 0, n % 3 ? 0.24 : 0.1, -0.17);
+    classmates.push({ e, hd, x, z: z - 0.6 }); n++;
+  }
+}
+const lookAtHim = (hx, hz, on = true) => classmates.forEach((c) => { c.e.visible = true; c.hd.rotation.y = on ? clamp(Math.atan2(hx - c.x, hz - c.z), -1.9, 1.9) : 0; });
+S.class_late = (u, d, k, t) => {    // tiptoes in through the back door, late; every classmate turns to look
+  mood('day', 0); setSky(0xd8d0c0);
+  const z = lerp(-4.7, -2.9, sm(0, d, u)), st = Math.sin(u * 7), x = 3.4;
+  lookAtHim(x, z, u > 0.35);
+  pose({ x: CX + x, y: STAND_Y - 0.06 + 0.03 * Math.abs(st), z, yaw: -14, face: u > 0.5 ? 'shock' : 'groggy', torso: [14, 0, 3 * st], head: [-12, -18, 0], aL: [-30, -30, -100], aR: [-30, 30, -100],
+    lL: [-40 * Math.max(0, st), 0, 60 * Math.max(0, st)], lR: [-40 * Math.max(0, -st), 0, 60 * Math.max(0, -st)], sq: 0.05 });
+  cam([CX + 2.75, 1.65, 1.9], [CX + 3.2, 1.05, -3.6], [CX + 2.85, 1.55, 1.4], [CX + 3.25, 1.05, -3.6], k, 54);
+};
+S.class_desk = (u, d, k, t) => {    // at his desk, the alarm standing on it. p.mode 'slump' (default): face down, asleep, class around him; 'early': awake and smiling in an empty room. p.face = the alarm's face
+  mood('day', 0); setSky(0xd8d0c0);
+  const early = PARAM.mode === 'early', talk = Math.abs(Math.sin(u * 8.5)), sway = Math.sin(u * 2.6), br = Math.sin(u * 2.2);
+  classmates.forEach((c) => { c.e.visible = !early; c.hd.rotation.y = 0; });
+  if (early) pose({ x: CX, y: 0.58, z: -0.8, face: blinkAt(u, 'happy', [0.9, 2.6]), torso: [6, 0, 0], head: [-4, 14 + 4 * sway, 3 * sway], aL: [-62, -10, -60], aR: [-70 - 6 * Math.sin(u * 6), 14, -112], lL: [-90, 0, 90], lR: [-90, 0, 90], shadow: false });
+  else { pose({ x: CX, y: 0.58, z: -0.8, face: 'sleep', torso: [56 + 1.5 * br, 0, 0], head: [-34, 0, 26], aL: [-96, -22, -14], aR: [-96, 22, -14], lL: [-90, 0, 90], lR: [-90, 0, 90], shadow: false }); zzz(new THREE.Vector3(CX - 0.35, 1.25, -0.5), t); }
+  palAt(CX + 0.42, 0.775, -0.02, -8, PARAM.face || (early ? 'happy' : 'annoyed'), { lean: -8 + 3 * sway, hop: 0.012 * talk, tilt: 6 * sway, sq: 0.04 * talk });
+  cam([CX + 1.0, 1.35, 1.9], [CX + 0.15, 0.98, -0.4], [CX + 0.85, 1.3, 1.6], [CX + 0.15, 0.98, -0.4], k, 46);
+};
+// --- bedroom, "phone across the room": the alarm sits on the window sill
+const SILL = [1.72, 1.045, -2.84];
+S.across_room_go = (u, d, k, t) => { // eyes shut, he shuffles to the window sill and taps the alarm off (at 78% of the shot)
+  mood('dawn', 0); setClock('6:00'); quilt.position.set(0.7, 0.62, 0.3); quilt.rotation.set(0, 0.5, 0.12);
+  const w = sm(0, 0.7, k), tap = sm(0.7, 0.78, k) * (1 - sm(0.84, 0.95, k)), off = k > 0.78, st = Math.sin(u * 7) * (1 - sm(0.66, 0.72, k));
+  palAt(SILL[0], SILL[1], SILL[2], 0, off ? 'annoyed' : 'ring', { lean: -6, hop: off ? 0 : 0.02 * Math.abs(Math.sin(u * 30)), tilt: off ? 0 : 5 * Math.sin(u * 44), sq: 0.3 * tap });
+  if (!off) rings(ringsO, new THREE.Vector3(SILL[0], SILL[1] + 0.2, SILL[2] + 0.05), t, 2.2, 0.1, 0.45, false);
+  pose({ x: lerp(-0.6, 0.8, w), y: STAND_Y + 0.03 * Math.abs(st), z: lerp(-0.7, -2.25, w), yaw: 135, face: 'sleep', torso: [10, 0, 4 * st], head: [14, 0, 8 * st], aL: [-74, -6, -8], aR: [lerp(-74, -112, tap), 6, -8],
+    lL: [-24 * st, 0, 26 * Math.max(0, st)], lR: [24 * st, 0, 26 * Math.max(0, -st)] });
+  cam([1.3, 1.5, 1.6], [1.0, 1.05, -2.8], [1.5, 1.4, 0.7], [1.25, 1.05, -2.8], k, 50);
+};
+S.back_to_bed = (u, d, k, t) => {    // ...then shuffles straight back and face-plants into bed (lands at 62%)
+  mood('dawn', 0); setClock('6:01'); quilt.position.set(0.7, 0.62, 0.3); quilt.rotation.set(0, 0.5, 0.12);
+  palAt(SILL[0], SILL[1], SILL[2], -20, k > 0.62 ? 'dead' : 'annoyed', { lean: -6 });
+  const w = sm(0, 0.5, k), fall = sm(0.5, 0.62, k), st = Math.sin(u * 7) * (1 - sm(0.45, 0.5, k)), b = Math.exp(-Math.max(0, k - 0.62) * 14) * (k > 0.62 ? 1 : 0);
+  pose({ x: lerp(0.9, -1.0, w), y: lerp(STAND_Y + 0.03 * Math.abs(st), 0.74 + 0.05 * b, fall), z: lerp(-2.0, -1.25, w) - 0.75 * fall, yaw: lerp(240, 180, w), pitch: 90 * fall, face: 'sleep',
+    torso: [8 * (1 - fall), 0, 4 * st], head: [10 * (1 - fall), 0, 0], aL: [-74 * (1 - fall) - 150 * fall, -6 - 30 * fall, 0], aR: [-74 * (1 - fall) - 150 * fall, 6 + 30 * fall, 0],
+    lL: [-24 * st, -8 * fall, 26 * Math.max(0, st)], lR: [24 * st, 8 * fall, 26 * Math.max(0, -st)], shadow: fall < 0.5 });
+  if (k > 0.72) zzz(new THREE.Vector3(-1.0, 1.0, -2.3), t);
+  cam([0.9, 1.6, 1.9], [-0.6, 0.8, -1.9], [0.5, 1.5, 1.3], [-0.8, 0.75, -2.0], k, 50, 0.03 * b, t);
+};
 // story-friendly names for the shots (specs use these)
 const ALIAS = { asleep_smoke_alarm: 's01', bolt_upright: 's02', smoke_alarm_swat: 's03', phone_buzz_asleep: 's04', snooze_slaps: 's05', late_sprint: 's06', set_alarm_in_bed: 's07',
   pushups: 's08', walk_steps: 's09', stretch_win: 's10', floor_ping: 's11', thinking: 's12a', shake_phone: 's12b', out_the_door: 's14', store_art: 'ways' };
-const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6 };
+const TILTS = { s05: 5, s06: 11, s07: 12, s08: 10, s09: 13, s10: 14, s11: 12, s12a: 15, s12b: 13, s14: 14, squats: 12, talk: 15, facepalm: 15, alarm_slapped: 8, alarm_talk: -2, alarm_thrown: 8, alarm_held: 6, bus_stop: 12, class_late: 10, class_desk: 4, across_room_go: 10, back_to_bed: 8 };
 window.renderAt = (t) => {
   const sh = SPEC.shots.find((s) => t >= s.t0 && t < s.t1) || SPEC.shots[SPEC.shots.length - 1];
   resetProps();
