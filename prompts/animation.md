@@ -1,5 +1,24 @@
 # Tonight's animation (part of the daily run)
 
+**Chika, 2026-11-28 ("all animations still look the exact same... the voice sounds too enthusiastic"). These override anything older below:**
+- **Length: 45-60 seconds** (was under 45), 14-18 beats. Check `seconds` in the build output; add or trim beats until it is in range.
+- **A real pain point.** Build the story on something heavy sleepers actually go through, shown specifically: phone across the room and
+  back to bed anyway, five stacked alarms, "five more minutes" turning into forty, missing the bus, walking in late with everyone
+  looking, the group chat asking where you are, a partner or roommate woken instead of you. Name the pain before the app appears.
+- **Different places.** At most a third of the beats in the bedroom; at least 2 other places per video, and every night at least one
+  place the last 3 videos didn't use. Sets so far: `bus_stop` (outdoors), classroom (`class_late`, `class_desk`). Build a new set in
+  `anim/lowpoly/index.html` when needed (kitchen, office, gym, train, shop, car...), the way those two are built, and list it in `anim/README.md`.
+- **Different characters.** `build.py` now also picks body build (`tall`, `wide`, `headS`), short sleeves / shorts and an accessory.
+  On the sheet the figure's silhouette must differ from the last video's, not just its colours. A non-human narrator (the alarm
+  with a face, `alarm_*` shots) or classmates/extras count as variety too; don't use the alarm character two nights running.
+- **Different graphics.** `build.py` picks a `theme` (caption colours/style, card and stamp style, font) that the last 3 videos didn't
+  use. Mix overlay kinds too (`bubble` chat messages, cards, stamps, tiles, phone screens). The download card at the end never changes.
+- **Calmer voice.** Same pinned voice, but dry and conversational: `elevenlabs_stability = 1.0` in `config.toml`, no `[excited]`,
+  `[proud]` or other hype tags (`[deadpan]` at most twice), no exclamation marks. The ending line is now
+  `"cta_line": "Download Unsnooze. Link in bio."` (no tag). Backup queue stories still have the old excited ending recorded.
+- **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
+  least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
+
 Each day 2 of the 4 slots are animated videos (Chika, 2026-11-27; was 1-2). This step makes one new animation a night so the library never runs dry
 (each animation is used at most 3 times, like a clip). Tool docs: `anim/README.md`. Don't stop to ask questions.
 
