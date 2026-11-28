@@ -41,6 +41,9 @@
 - **The ending card never changes (Chika, 2026-11-28: "you changed the original CTA graphic at the end... please don't do that").**
   Every video ends on the original download card (app icon, "Download Unsnooze Today", App Store listing, badge, LINK IN BIO). No
   per-video end card, tagline card or restyle; `build.py` ignores `"end"` in a spec. The callback line belongs in the last story beat.
+- **Facts come from the website (Chika, 2026-11-28: "a good ref to hold onto").** Read `references/unsnooze-site.md` before writing:
+  it lists the 16 real challenges, the features and the limits (iPhone only, snooze is optional, no prices or ratings). Use its
+  wording and only its numbers, and look there first for challenges the videos haven't shown yet.
 - **Sound.** Music is louder (`music_gain` in `config.toml`). Every cut gets a whoosh and every card a pop automatically; add at
   least 4 story sound effects with a beat's `"sfx"` list (bus, steps, bell, scratch, sad, tick, flop, sparkle, ding... see `anim/README.md`).
 

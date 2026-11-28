@@ -17,3 +17,5 @@ Edit this file to tune how captions sound. The daily run reads it before writing
 - `relatable`: one relatable line about the moment, no CTA ("me pretending i'll get up after one more snooze").
 - `question`: one real question people want to answer ("what's the worst challenge you'd put on your alarm?").
 - (`comment_cta` was retired 2026-11-25 — no "comment UNSNOOZE" asks anywhere.)
+
+- App facts (what the challenges are called, what the app can and can't do) come from `references/unsnooze-site.md`: don't invent features, prices or ratings.
